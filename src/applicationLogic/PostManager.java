@@ -1,10 +1,16 @@
 package applicationLogic;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class PostManager extends Manager{
+import databaseAccess.DatabaseCriticalErrorException;
+
+public class PostManager extends Manager {
 
 	/**
 	 * inserts a new Post (creates a Post-Object) and saves it in the Database;
@@ -15,25 +21,35 @@ public class PostManager extends Manager{
 	 * @param text
 	 * @param contact
 	 * @param userId
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String title, String text, String contact, int userId) {
+	public void insert(String title, String text, String contact, int userId)
+			throws DatabaseCriticalErrorException {
+		LocalDateTime date = this.model.getCalenderManager().getDate();
 
+		this.model.getQueryManager().executeQuery("insertPost", title, text,
+				date, contact, userId);
 	}
 
 	/**
 	 * deletes Comment with given id
 	 * 
 	 * @param id
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void delete(int id) {
-
+	public void delete(int id) throws DatabaseCriticalErrorException {
+		this.model.getQueryManager().executeQuery("deletePost", id);
 	}
 
 	/**
 	 * deletes all Posts which are older than 30 days
+	 * 
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void deleteOld() {
-
+	public void deleteOld() throws DatabaseCriticalErrorException {
+		LocalDateTime date = this.model.getCalenderManager().getDate();
+		date.minusDays(30);
+		this.model.getQueryManager().executeQuery("deleteOldPost", date);
 	}
 
 	/**
@@ -45,10 +61,12 @@ public class PostManager extends Manager{
 	 * @param text
 	 * @param contact
 	 * @param userId
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void update(int id, String title, String text, String contact,
-			int userId) {
-
+	public void update(int id, String title, String text, String contact)
+			throws DatabaseCriticalErrorException {
+		this.model.getQueryManager().executeQuery("updatePost", title, text,
+				contact, id);
 	}
 
 	/**
@@ -62,13 +80,54 @@ public class PostManager extends Manager{
 	}
 
 	/**
-	 * returns an ArrayList containing all Post
+	 * returns an ArrayList containing all Post without their Comments
 	 * 
 	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public ArrayList<Post> getAll() {
-		return null;
+	@SuppressWarnings("null")
+	public ArrayList<Post> getAll() throws DatabaseCriticalErrorException,
+			SQLException {
+		int postId;
+		String title;
+		String text;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		String contact;
+		int imageId;
+		String source;
+		int userId;
+		Post lPost;
 
+		ArrayList<Post> posts = null;
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getAllPosts");
+		ResultSet imResult;
+
+		while (result.next()) {
+			postId = result.getInt(1);
+			title = result.getString(2);
+			text = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			contact = result.getString(5);
+			userId = result.getInt(6);
+
+			lPost = new Post(postId, title, text, contact, date, userId);
+
+			imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+			while (imResult.next()) {
+				imageId = result.getInt(1);
+				source = result.getString(2);
+				lPost.setImages(new Image(imageId, source));
+			}
+			posts.add(lPost);
+		}
+		return posts;
 	}
 
 	/**
@@ -76,39 +135,182 @@ public class PostManager extends Manager{
 	 * 
 	 * @param id
 	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public Post getById(int id) {
-		return null;
+	public Post getById(int id) throws DatabaseCriticalErrorException,
+			SQLException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getPostById", id);
+
+		String title = result.getString(2);
+		String text = result.getString(3);
+		long ldate = result.getDate(4).getTime();
+		Instant i = Instant.ofEpochMilli(ldate);
+		LocalDateTime date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+		String contact = result.getString(5);
+		int userId = result.getInt(6);
+
+		Post lPost = new Post(id, title, text, contact, date, userId);
+
+		ResultSet imResult = this.model.getQueryManager().executeQuery(
+				"getImagesByPost", id);
+
+		int imageId;
+		String source;
+		while (imResult.next()) {
+			imageId = result.getInt(1);
+			source = result.getString(2);
+			lPost.setImages(new Image(imageId, source));
+		}
+		ArrayList<Comment> comments = this.model.getCommentManager().getByPost(
+				id);
+		lPost.setComments(comments);
+		return lPost;
 	}
 
 	/**
-	 * returns an ArrayList containing all Post of the given User
+	 * returns an ArrayList containing all Post of the given User without their
+	 * Comments
 	 * 
 	 * @param userId
 	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public ArrayList<Post> getByUser(int userId) {
-		return null;
+	@SuppressWarnings("null")
+	public ArrayList<Post> getByUser(int userId)
+			throws DatabaseCriticalErrorException, SQLException {
+		int postId;
+		String title;
+		String text;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		String contact;
+		int imageId;
+		String source;
+		Post lPost;
+
+		ArrayList<Post> posts = null;
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getPostsByUser");
+		ResultSet imResult;
+
+		while (result.next()) {
+			postId = result.getInt(1);
+			title = result.getString(2);
+			text = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			contact = result.getString(5);
+
+			lPost = new Post(postId, title, text, contact, date, userId);
+
+			imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+			while (imResult.next()) {
+				imageId = result.getInt(1);
+				source = result.getString(2);
+				lPost.setImages(new Image(imageId, source));
+			}
+			posts.add(lPost);
+		}
+		return posts;
 	}
 
 	/**
-	 * reports the Post with given id; the report is passed on to an
-	 * administrator, so he could decide what to do
+	 * reports the Post with given id
 	 * 
 	 * @param id
+	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void report(int id) {
-
+	public void report(int id) throws DatabaseCriticalErrorException,
+			SQLException {
+		this.model.getQueryManager().executeQuery("reportPost", id);
 	}
 	
+	public ArrayList<Post> getReports(){
+		
+	}
+
+	/**
+	 * returns an ArrayList containing all reported Post without their Comments
+	 * 
+	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("null")
+	public ArrayList<Post> getReports() throws DatabaseCriticalErrorException,
+			SQLException {
+
+		int postId;
+		String title;
+		String text;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		String contact;
+		int userId;
+		int imageId;
+		String source;
+		Post lPost;
+
+		ArrayList<Post> posts = null;
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getRreportPost");
+		ResultSet imResult;
+
+		while (result.next()) {
+			postId = result.getInt(1);
+			title = result.getString(2);
+			text = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			contact = result.getString(5);
+			userId = result.getInt(6);
+			lPost = new Post(postId, title, text, contact, date, userId);
+
+			imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+			while (imResult.next()) {
+				imageId = result.getInt(1);
+				source = result.getString(2);
+				lPost.setImages(new Image(imageId, source));
+			}
+			posts.add(lPost);
+		}
+		return posts;
+	}
+
 	/**
 	 * returns an ArrayList containing all Events of the given Month
 	 * 
 	 * @param month
 	 * @return
+	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public ArrayList<Event> getEvents(YearMonth month) {
-		return null;
+	@SuppressWarnings("null")
+	public ArrayList<Event> getEvents(int month)
+			throws DatabaseCriticalErrorException, SQLException {
+		ArrayList<Event> events = null;
+		ArrayList<Event> all = this.getEvents();
+		Iterator<Event> iter = all.iterator();
+		while (iter.hasNext()) {
+			Event actual = (Event) iter.next();
+			if (actual.getEventDate().getMonthValue() == month
+					&& actual.getEventDate().getYear() == model
+							.getCalenderManager().getDate().getYear()) {
+				events.add(actual);
+			}
+		}
+
+		return events;
 	}
 
 	/**
@@ -116,8 +318,56 @@ public class PostManager extends Manager{
 	 * in the future)
 	 * 
 	 * @return
+	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public ArrayList<Event> getEvents() {
-		return null;
+	@SuppressWarnings("null")
+	public ArrayList<Event> getEvents() throws DatabaseCriticalErrorException,
+			SQLException {
+		ArrayList<Event> events = null;
+		int postId;
+		String title;
+		String text;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		String contact;
+		int imageId;
+		String source;
+		int userId;
+		LocalDateTime eventDate;
+		Event lEvent;
+
+		ResultSet result = this.model.getQueryManager()
+				.executeQuery("getEvens");
+		ResultSet imResult;
+
+		while (result.next()) {
+			postId = result.getInt(1);
+			title = result.getString(2);
+			text = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			contact = result.getString(5);
+			userId = result.getInt(6);
+			ldate = result.getDate(7).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			eventDate = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+
+			lEvent = new Event(postId, title, text, contact, date, userId,
+					eventDate);
+
+			imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+			while (imResult.next()) {
+				imageId = result.getInt(1);
+				source = result.getString(2);
+				lEvent.setImages(new Image(imageId, source));
+			}
+			events.add(lEvent);
+		}
+
+		return events;
 	}
 }

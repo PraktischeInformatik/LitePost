@@ -1,6 +1,7 @@
 package applicationLogic;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Comment {
 	private int commentId;
@@ -10,6 +11,8 @@ public class Comment {
 	private LocalDateTime date;
 	private int parentId;
 	private int postId;
+	private ArrayList<Comment> subComments;
+	private boolean reported = false;
 
 	public Comment(int commentId, int userId, String text, LocalDateTime date,
 			int parentId, int postId) {
@@ -55,6 +58,22 @@ public class Comment {
 
 	public int getPostId() {
 		return postId;
+	}
+
+	public ArrayList<Comment> getSubComments() {
+		return subComments;
+	}
+
+	public void setSubComments(Comment comment) {
+		this.subComments.add(comment);
+	}
+
+	public boolean isReported() {
+		return reported;
+	}
+
+	public void setReported() {
+		this.reported = true;
 	}
 
 }

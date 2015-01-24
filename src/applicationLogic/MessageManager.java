@@ -2,15 +2,17 @@ package applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
-import databaseAccess.DatabaseDeleteMessage;
-import databaseAccess.DatabaseGetMessageByUser;
-import databaseAccess.DatabaseGetMessageId;
-import databaseAccess.DatabaseInsertComment;
-import databaseAccess.IllegalParameterLengthException;
+import databaseAccess.DatabaseCriticalErrorException;
 
+/**
+ * @author Julia Moos
+ *
+ */
 public class MessageManager extends Manager {
 
 	/**
@@ -18,26 +20,18 @@ public class MessageManager extends Manager {
 	 * Database; the messageId is taken from the corresponding id-table, the
 	 * Date is taken from the CalenderManager
 	 * 
-	 * @param username
-	 * @param password
-	 * @param firstname
-	 * @param lastname
-	 * @param email
-	 * @throws IllegalParameterLengthException
+	 * @param sender
+	 * @param receiver
+	 * @param subject
+	 * @param text
 	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
 	 */
 	public void insert(String sender, String receiver, String subject,
-			String text) throws SQLException, IllegalParameterLengthException {
-		int messageId;
+			String text) throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
-		String sdate = date.toString();
-		DatabaseGetMessageId sqlId = new DatabaseGetMessageId();
-		ResultSet result = sqlId.execute();
-		messageId = result.getInt(1);
-		String sid = String.valueOf(messageId);
-
-		DatabaseInsertComment sqlComment = new DatabaseInsertComment();
-		sqlComment.execute(sid, sdate, sender, receiver, subject, text);
+		this.model.getQueryManager().executeQuery("insertMessage", date,
+				sender, receiver, subject, text);
 	}
 
 	/**
@@ -46,17 +40,18 @@ public class MessageManager extends Manager {
 	 * @param userId
 	 * @return
 	 * @throws SQLException
-	 * @throws IllegalParameterLengthException
+	 * @throws DatabaseCriticalErrorException
 	 */
 	@SuppressWarnings("null")
-	public ArrayList<Message> getByUser(String sUserId) throws SQLException,
-			IllegalParameterLengthException {
-		DatabaseGetMessageByUser sqlGet = new DatabaseGetMessageByUser();
-		ResultSet result = sqlGet.execute(sUserId);
+	public ArrayList<Message> getByUser(int userId) throws SQLException,
+			DatabaseCriticalErrorException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getMessagesByUser", userId);
 
 		ArrayList<Message> messages = null;
 		int messageId;
-		String sDate;
+		long ldate;
+		Instant i;
 		LocalDateTime date;
 		int sender;
 		int receiver;
@@ -67,8 +62,9 @@ public class MessageManager extends Manager {
 		Message lmessage;
 		while (result.next()) {
 			messageId = result.getInt(1);
-			sDate = result.getString(2);
-			date = LocalDateTime.parse(sDate);
+			ldate = result.getDate(2).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
 			sender = result.getInt(3);
 			receiver = result.getInt(4);
 			subject = result.getString(5);
@@ -93,15 +89,15 @@ public class MessageManager extends Manager {
 	 * @param id
 	 * @return
 	 * @throws SQLException
-	 * @throws IllegalParameterLengthException
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public Message getById(String sId) throws SQLException,
-			IllegalParameterLengthException {
-		DatabaseGetMessageByUser sqlGet = new DatabaseGetMessageByUser();
-		ResultSet result = sqlGet.execute(sId);
+	public Message getById(int id) throws SQLException,
+			DatabaseCriticalErrorException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getMessagesById", id);
 
-		int messageId;
-		String sDate;
+		long ldate;
+		Instant i;
 		LocalDateTime date;
 		int sender;
 		int receiver;
@@ -111,16 +107,16 @@ public class MessageManager extends Manager {
 		boolean read;
 		Message lmessage;
 
-		messageId = result.getInt(1);
-		sDate = result.getString(2);
-		date = LocalDateTime.parse(sDate);
+		ldate = result.getDate(2).getTime();
+		i = Instant.ofEpochMilli(ldate);
+		date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
 		sender = result.getInt(3);
 		receiver = result.getInt(4);
 		subject = result.getString(5);
 		text = result.getString(6);
 		hidden = result.getBoolean(7);
 		read = result.getBoolean(8);
-		lmessage = new Message(messageId, date, sender, receiver, subject, text);
+		lmessage = new Message(id, date, sender, receiver, subject, text);
 		if (hidden)
 			lmessage.isHidden();
 		if (read)
@@ -133,12 +129,11 @@ public class MessageManager extends Manager {
 	 * deletes the message with given id
 	 * 
 	 * @param id
-	 * @throws IllegalParameterLengthException
 	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
 	 */
 	public void delete(String id) throws SQLException,
-			IllegalParameterLengthException {
-		DatabaseDeleteMessage sqlDelete = new DatabaseDeleteMessage();
-		sqlDelete.execute(id);
+			DatabaseCriticalErrorException {
+		this.model.getQueryManager().executeQuery("deleteMessage", id);
 	}
 }

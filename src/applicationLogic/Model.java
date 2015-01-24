@@ -2,7 +2,7 @@ package applicationLogic;
 
 import databaseAccess.DatabaseConnector;
 import databaseAccess.DatabaseCriticalErrorException;
-import databaseAccess.DatabaseRequestManager;
+import databaseAccess.DatabaseQueryManager;
 
 /**
  * Model which initializes all Managers
@@ -33,8 +33,7 @@ public class Model {
 		commentManager = new CommentManager();
 		commentManager.setModel(this);
 		dbConnector = new DatabaseConnector();
-		dbQueryManager = new DatabaseQueryManager(
-				this.dbConnector);
+		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
 
 	}
 
@@ -62,7 +61,8 @@ public class Model {
 		return commentManager;
 	}
 
-	public DatabaseRequestManager getDatabaseRequestManager() {
-		return databaseRequestManager;
+	public DatabaseQueryManager getQueryManager() {
+		return dbQueryManager;
 	}
+
 }

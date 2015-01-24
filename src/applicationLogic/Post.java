@@ -10,6 +10,9 @@ public class Post {
 	private LocalDateTime date;
 	private String contact;
 	private ArrayList<Image> images = null;
+	private int userId;
+	private ArrayList<Comment> comments;
+	private boolean reported = false;
 
 	public Post(int postId, String title, String text, String contact,
 			LocalDateTime date, int userId) {
@@ -19,9 +22,6 @@ public class Post {
 		this.contact = contact;
 		this.userId = userId;
 	}
-
-	private int userId;
-	private int[] comments;
 
 	public int getPostId() {
 		return postId;
@@ -63,11 +63,11 @@ public class Post {
 		return userId;
 	}
 
-	public int[] getComments() {
+	public ArrayList<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(int[] comments) {
+	public void setComments(ArrayList<Comment> comments) {
 		this.comments = comments;
 	}
 
@@ -81,6 +81,14 @@ public class Post {
 
 	public void setImages(Image image) {
 		images.add(image);
+	}
+
+	public boolean isReported() {
+		return reported;
+	}
+
+	public void setReported() {
+		this.reported = true;
 	}
 
 }
