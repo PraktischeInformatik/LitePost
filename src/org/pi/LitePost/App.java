@@ -41,7 +41,10 @@ public class App extends NanoHTTPD{
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
         p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-        p.setProperty("file.resource.loader.path", "templates");
+        File f = new File("templates");
+        System.out.println(f.getAbsolutePath());
+        p.setProperty("file.resource.loader.path", f.getAbsolutePath());
+        
         
 		Velocity.init(p);
 		
