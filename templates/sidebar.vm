@@ -1,0 +1,12 @@
+<div id="sidebar">
+    <h2>Neuer Post</h2>
+    <form>
+      <input id="input-title" type="text" name="title" placeholder="Titel" />
+      <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
+      <input id="input-contact" type="text" name="contact" placeholder="Kontakt" />
+    </form>
+    <a href="newpost.html">
+      <button>Erweitert</button>
+    </a>
+    <button id="submit">Posten</button>
+  </div>

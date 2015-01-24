@@ -1,0 +1,49 @@
+#parse("header.vm")
+
+<div id="wrapper">
+  <div id="main">
+    <form id="post-form">
+      <div class="block">
+        <input id="input-contact" type="text" name="contact" placeholder="Kontakt">
+      </div>
+      <div class="block">
+        <input id="input-event" type="checkbox" name="is-event" onclick="toggle_event(this)">
+          <label for="input-event">Dieser Post ist ein Event</label>
+      </div>
+      <div id="sweg" class="block">
+        <input id="input-date" type="text" name="date" placeholder="Datum">
+      </div>
+      <div class="block">
+        <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
+      </div>
+      <div class="block">
+        <button id="post-submit">Post</button>
+      </div>
+
+    </form>
+
+
+  </div>
+</div>
+
+<script type="text/javascript" src="public/js/pikaday.js"></script>
+
+<script>
+var picker = new Pikaday({
+  field: document.getElementById("isnput-date")
+});
+function toggle_event(checkbox) {
+   var input = document.getElementById("sweg");
+   if(checkbox.checked) {
+      input.className = "show"
+   }else {
+      input.className = ""
+   }
+}
+</script>
+
+
+
+#parse("footer.vm")
+</body>
+</html>
