@@ -9,7 +9,7 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class HomeController {
-	public static Response getFile(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data) {
+	public static Response getHome(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data) {
 		return new Response(View.make("home", data));
 	}
 }
