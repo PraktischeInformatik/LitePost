@@ -19,7 +19,7 @@ public class View {
 		return writer.toString();
 	}
 	private static Template getTemplate(String templateName) {
-		String path = "templates" + File.separatorChar + templateName.replace('.', File.separatorChar) + ".vm"; 
+		String path = File.separatorChar + templateName.replace('.', File.separatorChar) + ".vm"; 
 		return Velocity.getTemplate(path);
 	}
 }
