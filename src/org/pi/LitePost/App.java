@@ -23,7 +23,7 @@ public class App extends NanoHTTPD{
 		super(port);
 		
 		Router.add("files", Method.GET, "/public/.*", FileController::getFile);
-		Router.add("home", Method.GET, "/", HomeController::getHome)
+		Router.add("home", Method.GET, "/", HomeController::getHome);
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
@@ -38,7 +38,12 @@ public class App extends NanoHTTPD{
 	}
 
 	public static void main(String[] args) {
-		Velocity.init();
+		Properties p = new Properties();
+		p.setProperty("resource.loader", "file");
+        p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
+        p.setProperty("file.resource.loader.path", "templates");
+        
+		Velocity.init(p);
 		
 		InputStream inStream = null;
 		try {
