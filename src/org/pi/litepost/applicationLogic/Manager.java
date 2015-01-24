@@ -1,4 +1,4 @@
-package applicationLogic;
+package org.pi.litepost.applicationLogic;
 
 /**
  * Superclass for all Managers; sets the Model, so one Manager can use another

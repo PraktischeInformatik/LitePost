@@ -1,4 +1,4 @@
-package applicationLogic;
+package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-import databaseAccess.DatabaseCriticalErrorException;
+import ort.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 /**
  * @author Julia Moos

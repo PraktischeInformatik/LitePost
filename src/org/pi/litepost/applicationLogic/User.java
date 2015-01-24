@@ -1,4 +1,4 @@
-package applicationLogic;
+package org.pi.litepost.applicationLogic;
 
 public class User {
 	private int userId;

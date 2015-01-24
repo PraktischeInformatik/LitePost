@@ -1,4 +1,4 @@
-package applicationLogic;
+package org.pi.litepost.applicationLogic;
 
 import java.time.LocalDateTime;
 

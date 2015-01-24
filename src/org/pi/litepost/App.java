@@ -1,4 +1,4 @@
-package org.pi.LitePost;
+package org.pi.litepost;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.velocity.app.Velocity;
-import org.pi.LitePost.Router.Route;
-import org.pi.LitePost.controllers.FileController;
-import org.pi.LitePost.controllers.HomeController;
+import org.pi.litepost.Router.Route;
+import org.pi.litepost.controllers.FileController;
+import org.pi.litepost.controllers.HomeController;
 
 import fi.iki.elonen.NanoHTTPD;
 

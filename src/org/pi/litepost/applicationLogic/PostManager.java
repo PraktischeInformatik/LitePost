@@ -1,4 +1,4 @@
-package applicationLogic;
+package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import databaseAccess.DatabaseCriticalErrorException;
+import ort.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 public class PostManager extends Manager {
 
@@ -230,10 +230,6 @@ public class PostManager extends Manager {
 	public void report(int id) throws DatabaseCriticalErrorException,
 			SQLException {
 		this.model.getQueryManager().executeQuery("reportPost", id);
-	}
-	
-	public ArrayList<Post> getReports(){
-		
 	}
 
 	/**

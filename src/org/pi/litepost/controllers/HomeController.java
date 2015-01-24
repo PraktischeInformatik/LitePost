@@ -1,9 +1,9 @@
-package org.pi.LitePost.controllers;
+package org.pi.litepost.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pi.LitePost.View;
+import org.pi.litepost.View;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;

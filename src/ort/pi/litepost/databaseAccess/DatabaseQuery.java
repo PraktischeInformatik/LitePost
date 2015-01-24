@@ -1,4 +1,4 @@
-package databaseAccess;
+package ort.pi.litepost.databaseAccess;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

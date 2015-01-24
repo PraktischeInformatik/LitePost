@@ -1,4 +1,4 @@
-package org.pi.LitePost;
+package org.pi.litepost;
 
 import java.io.File;
 import java.io.StringWriter;

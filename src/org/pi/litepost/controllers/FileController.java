@@ -1,4 +1,4 @@
-package org.pi.LitePost.controllers;
+package org.pi.litepost.controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pi.LitePost.App;
+import org.pi.litepost.App;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;

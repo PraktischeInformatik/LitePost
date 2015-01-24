@@ -1,4 +1,4 @@
-package databaseAccess;
+package ort.pi.litepost.databaseAccess;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
