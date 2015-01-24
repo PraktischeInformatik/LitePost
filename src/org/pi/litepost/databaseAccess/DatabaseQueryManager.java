@@ -1,4 +1,4 @@
-package ort.pi.litepost.databaseAccess;
+package org.pi.litepost.databaseAccess;
 
 import java.sql.ResultSet;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package org.pi.litepost.applicationLogic;
 
-import ort.pi.litepost.databaseAccess.DatabaseConnector;
-import ort.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
-import ort.pi.litepost.databaseAccess.DatabaseQueryManager;
+import org.pi.litepost.databaseAccess.DatabaseConnector;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
+import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 
 /**
  * Model which initializes all Managers

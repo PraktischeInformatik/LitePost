@@ -1,4 +1,4 @@
-package ort.pi.litepost.databaseAccess;
+package org.pi.litepost.databaseAccess;
 
 public class DatabaseCriticalErrorException extends Exception {
 	

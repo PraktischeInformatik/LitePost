@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import ort.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 public class PostManager extends Manager {
 

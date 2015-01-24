@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-import ort.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 /**
  * @author Julia Moos
