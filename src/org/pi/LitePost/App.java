@@ -11,6 +11,7 @@ import java.util.Properties;
 import org.apache.velocity.app.Velocity;
 import org.pi.LitePost.Router.Route;
 import org.pi.LitePost.controllers.FileController;
+import org.pi.LitePost.controllers.HomeController;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -22,6 +23,7 @@ public class App extends NanoHTTPD{
 		super(port);
 		
 		Router.add("files", Method.GET, "/public/.*", FileController::getFile);
+		Router.add("home", Method.GET, "/", HomeController::getHome)
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
