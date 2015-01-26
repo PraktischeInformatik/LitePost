@@ -3,6 +3,12 @@ package org.pi.litepost.databaseAccess;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
+/**
+ * the DatabaseQueryManager
+ * 
+ * @author Andreas Linzenberger, Julia Moos
+ *
+ */
 public class DatabaseQueryManager {
 	DatabaseConnector databaseConnector;
 	HashMap<String, DatabaseQuery> databaseQueries;
@@ -11,9 +17,10 @@ public class DatabaseQueryManager {
 		this.databaseConnector = databaseConnector;
 		databaseQueries = new HashMap<String, DatabaseQuery>();
 
-		// TODO Correct all Requests
 		// Comments:
 		databaseQueries.put("deleteComment", new DatabaseQuery(
+				"DELETE FROM Comments WHERE comment_id = ?"));
+		databaseQueries.put("deleteCommentByUser", new DatabaseQuery(
 				"DELETE FROM Comments WHERE comment_id = ?"));
 		databaseQueries.put("getComment", new DatabaseQuery(
 				"SELECT * FROM Comments WHERE comment_id = ?"));
@@ -35,6 +42,8 @@ public class DatabaseQueryManager {
 		// Messages:
 		databaseQueries.put("deleteMessage", new DatabaseQuery(
 				"DELETE FROM Messages WHERE message_id = ?"));
+		databaseQueries.put("deleteMessageByUser", new DatabaseQuery(
+				"DELETE FROM Messages WHERE receiver = ? OR sender = ?"));
 		databaseQueries.put("getMessagesByUser", new DatabaseQuery(
 				"SELECT * FROM Messages WHERE userId = ?"));
 		databaseQueries
@@ -47,6 +56,8 @@ public class DatabaseQueryManager {
 		// Posts:
 		databaseQueries.put("deletePost", new DatabaseQuery(
 				"DELETE FROM Posts WHERE post_id = ?"));
+		databaseQueries.put("deletePostByUser", new DatabaseQuery(
+				"DELETE FROM Posts WHERE user_id = ?"));
 		databaseQueries.put("getReportPost", new DatabaseQuery(
 				"SELECT * FROM Posts WHERE reported = 1"));
 		databaseQueries
@@ -80,6 +91,28 @@ public class DatabaseQueryManager {
 				.put("getImagesByPost",
 						new DatabaseQuery(
 								"SELECT * FROM Images WHERE image_id = (SELECT image_id FROM Post_has_Images WHERE post_id = ?"));
+
+		// User:
+		databaseQueries.put("deleteUser", new DatabaseQuery(
+				"DELETE FROM Users WHERE user_id = ?"));
+		databaseQueries.put("checkUsername", new DatabaseQuery(
+				"SELECT * FROM Users WHERE username = ?"));
+		databaseQueries
+				.put("insertUser",
+						new DatabaseQuery(
+								"INSERT INTO Users VALUES(username = ?, password = ?, fistname= ?, lastname = ?, email = ?, admin = 0 )"));
+		databaseQueries.put("checkUser", new DatabaseQuery(
+				"SELECT * FROM Users WHERE username = ?, password = ?"));
+		databaseQueries
+				.put("updateUser",
+						new DatabaseQuery(
+								"UPDATE Users SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? WHERE id = ?"));
+		databaseQueries.put("getUserByUsername", new DatabaseQuery(
+				"SELECT * FROM Users WHERE username = ?"));
+		databaseQueries.put("getUserById", new DatabaseQuery(
+				"SELECT * FROM Users WHERE user_id = ?"));
+		databaseQueries.put("setAdmin", new DatabaseQuery(
+				"UPDATE Users SET admin = 1"));
 
 		// Ids:
 		databaseQueries.put("setCommentId", new DatabaseQuery(
