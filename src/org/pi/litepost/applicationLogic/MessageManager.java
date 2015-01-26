@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 /**
+ * the MessageManager
+ * 
  * @author Julia Moos
  *
  */

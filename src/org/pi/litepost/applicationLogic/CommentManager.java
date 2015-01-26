@@ -9,6 +9,12 @@ import java.util.ArrayList;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
+/**
+ * the CommentManager
+ * 
+ * @author Julia Moos
+ *
+ */
 public class CommentManager extends Manager {
 
 	/**
@@ -16,7 +22,7 @@ public class CommentManager extends Manager {
 	 * Database; the commentId is taken from the corresponding id-table,the Date
 	 * is taken from the CalenderManager
 	 * 
-	 * @param text
+	 * @param content
 	 * @param date
 	 * @param parentId
 	 * @param postId
@@ -24,12 +30,12 @@ public class CommentManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void insert(int userId, String text, int parentId, int postId)
+	public void insert(int userId, String content, int parentId, int postId)
 			throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 
 		this.model.getQueryManager().executeQuery("insertComment", userId,
-				text, date, parentId, postId);
+				content, date, parentId, postId);
 	}
 
 	/**
@@ -46,17 +52,17 @@ public class CommentManager extends Manager {
 	}
 
 	/**
-	 * updates the text of Comment with given id
+	 * updates the content of Comment with given id
 	 * 
 	 * @param id
-	 * @param text
+	 * @param content
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void update(int id, String text) throws SQLException,
+	public void update(int id, String content) throws SQLException,
 			DatabaseCriticalErrorException {
-		this.model.getQueryManager().executeQuery("UpdateComment", text, id);
+		this.model.getQueryManager().executeQuery("UpdateComment", content, id);
 	}
 
 	/**
@@ -68,44 +74,55 @@ public class CommentManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Comment> getByPost(int postId) throws SQLException,
 			DatabaseCriticalErrorException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getCommentsByPost", postId);
-
-		ArrayList<Comment> comments = null;
-		int commentId;
-		int userId;
-		String text;
-		long ldate;
-		Instant i;
-		LocalDateTime date;
-		int parentId;
-		while (result.next()) {
-			commentId = result.getInt(1);
-			userId = result.getInt(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			parentId = result.getInt(5);
-			Comment lComment = new Comment(commentId, userId, text, date,
-					parentId, postId);
-			this.setSubComments(lComment);
-			comments.add(lComment);
-		}
-
+		ArrayList<Comment> comments = this.createComments(result);
 		return comments;
 	}
 
-	private void setSubComments(Comment comment)
+	/**
+	 * set the Comment to reported
+	 * 
+	 * @param id
+	 * @throws DatabaseCriticalErrorException
+	 */
+	public void report(int id) throws DatabaseCriticalErrorException {
+		this.model.getQueryManager().executeQuery("reportComment", id);
+	}
+
+	/**
+	 * returns an ArrayList containing all reported Comments
+	 * 
+	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	public ArrayList<Comment> getReports()
 			throws DatabaseCriticalErrorException, SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getCommentsByParentId", comment.getCommentId());
+				"getReportedComments");
+		ArrayList<Comment> comments = this.createComments(result);
+		return comments;
+	}
+
+	/**
+	 * method creates all Comments of given ResultSet and calls method to create
+	 * the subcomments
+	 * 
+	 * @param result
+	 * @return
+	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
+	 */
+	@SuppressWarnings("null")
+	private ArrayList<Comment> createComments(ResultSet result)
+			throws SQLException, DatabaseCriticalErrorException {
+		ArrayList<Comment> comments = null;
 		int commentId;
 		int userId;
-		String text;
+		String content;
 		long ldate;
 		Instant i;
 		LocalDateTime date;
@@ -114,21 +131,56 @@ public class CommentManager extends Manager {
 		while (result.next()) {
 			commentId = result.getInt(1);
 			userId = result.getInt(2);
-			text = result.getString(3);
+			content = result.getString(3);
 			ldate = result.getDate(4).getTime();
 			i = Instant.ofEpochMilli(ldate);
 			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
 			parentId = result.getInt(5);
 			postId = result.getInt(6);
-			Comment lComment = new Comment(commentId, userId, text, date,
+			Comment lComment = new Comment(commentId, userId, content, date,
+					parentId, postId);
+			comments.add(lComment);
+			result = this.model.getQueryManager().executeQuery(
+					"getCommentsByParentId", commentId);
+			this.setSubComments(lComment);
+		}
+		return comments;
+	}
+
+	/**
+	 * method adds all Subcomments to a given Comment (and the Subcomments to
+	 * the Subcomments and so on)
+	 * 
+	 * @param comment
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	private void setSubComments(Comment comment)
+			throws DatabaseCriticalErrorException, SQLException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getCommentsByParentId", comment.getCommentId());
+		int commentId;
+		int userId;
+		String content;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		int parentId;
+		int postId;
+		while (result.next()) {
+			commentId = result.getInt(1);
+			userId = result.getInt(2);
+			content = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			parentId = result.getInt(5);
+			postId = result.getInt(6);
+			Comment lComment = new Comment(commentId, userId, content, date,
 					parentId, postId);
 			comment.setSubComments(lComment);
 			this.setSubComments(lComment);
 		}
 
-	}
-
-	public void report() {
-		this.model.getQueryManager().executeQuery("reportComment", id);
 	}
 }

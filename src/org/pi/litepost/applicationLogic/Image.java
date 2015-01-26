@@ -1,5 +1,9 @@
 package org.pi.litepost.applicationLogic;
 
+/**
+ * @author Julia Moos
+ *
+ */
 public class Image {
 	private int imageId;
 	private String source;

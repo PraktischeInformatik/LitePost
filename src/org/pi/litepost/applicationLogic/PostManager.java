@@ -10,6 +10,12 @@ import java.util.Iterator;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
+/**
+ * the PostManager
+ * 
+ * @author Julia Moos
+ *
+ */
 public class PostManager extends Manager {
 
 	/**
@@ -86,52 +92,16 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Post> getAll() throws DatabaseCriticalErrorException,
 			SQLException {
-		int postId;
-		String title;
-		String text;
-		long ldate;
-		Instant i;
-		LocalDateTime date;
-		String contact;
-		int imageId;
-		String source;
-		int userId;
-		Post lPost;
-
-		ArrayList<Post> posts = null;
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getAllPosts");
-		ResultSet imResult;
-
-		while (result.next()) {
-			postId = result.getInt(1);
-			title = result.getString(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString(5);
-			userId = result.getInt(6);
-
-			lPost = new Post(postId, title, text, contact, date, userId);
-
-			imResult = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-			while (imResult.next()) {
-				imageId = result.getInt(1);
-				source = result.getString(2);
-				lPost.setImages(new Image(imageId, source));
-			}
-			posts.add(lPost);
-		}
+		ArrayList<Post> posts = this.createPosts(result);
 		return posts;
 	}
 
 	/**
-	 * returns a Post with the given id
+	 * returns a Post with the given id and its Comments and Subcomments
 	 * 
 	 * @param id
 	 * @return
@@ -178,45 +148,11 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Post> getByUser(int userId)
 			throws DatabaseCriticalErrorException, SQLException {
-		int postId;
-		String title;
-		String text;
-		long ldate;
-		Instant i;
-		LocalDateTime date;
-		String contact;
-		int imageId;
-		String source;
-		Post lPost;
-
-		ArrayList<Post> posts = null;
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser");
-		ResultSet imResult;
-
-		while (result.next()) {
-			postId = result.getInt(1);
-			title = result.getString(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString(5);
-
-			lPost = new Post(postId, title, text, contact, date, userId);
-
-			imResult = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-			while (imResult.next()) {
-				imageId = result.getInt(1);
-				source = result.getString(2);
-				lPost.setImages(new Image(imageId, source));
-			}
-			posts.add(lPost);
-		}
+		ArrayList<Post> posts = this.createPosts(result);
 		return posts;
 	}
 
@@ -239,47 +175,11 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Post> getReports() throws DatabaseCriticalErrorException,
 			SQLException {
-
-		int postId;
-		String title;
-		String text;
-		long ldate;
-		Instant i;
-		LocalDateTime date;
-		String contact;
-		int userId;
-		int imageId;
-		String source;
-		Post lPost;
-
-		ArrayList<Post> posts = null;
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getRreportPost");
-		ResultSet imResult;
-
-		while (result.next()) {
-			postId = result.getInt(1);
-			title = result.getString(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString(5);
-			userId = result.getInt(6);
-			lPost = new Post(postId, title, text, contact, date, userId);
-
-			imResult = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-			while (imResult.next()) {
-				imageId = result.getInt(1);
-				source = result.getString(2);
-				lPost.setImages(new Image(imageId, source));
-			}
-			posts.add(lPost);
-		}
+		ArrayList<Post> posts = this.createPosts(result);
 		return posts;
 	}
 
@@ -365,5 +265,55 @@ public class PostManager extends Manager {
 		}
 
 		return events;
+	}
+
+	/**
+	 * method creates all Posts of given ResultSet
+	 * 
+	 * @param result
+	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("null")
+	private ArrayList<Post> createPosts(ResultSet result)
+			throws DatabaseCriticalErrorException, SQLException {
+		int postId;
+		String title;
+		String text;
+		long ldate;
+		Instant i;
+		LocalDateTime date;
+		String contact;
+		int imageId;
+		String source;
+		int userId;
+		Post lPost;
+
+		ArrayList<Post> posts = null;
+		ResultSet imResult;
+
+		while (result.next()) {
+			postId = result.getInt(1);
+			title = result.getString(2);
+			text = result.getString(3);
+			ldate = result.getDate(4).getTime();
+			i = Instant.ofEpochMilli(ldate);
+			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			contact = result.getString(5);
+			userId = result.getInt(6);
+
+			lPost = new Post(postId, title, text, contact, date, userId);
+
+			imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+			while (imResult.next()) {
+				imageId = result.getInt(1);
+				source = result.getString(2);
+				lPost.setImages(new Image(imageId, source));
+			}
+			posts.add(lPost);
+		}
+		return posts;
 	}
 }

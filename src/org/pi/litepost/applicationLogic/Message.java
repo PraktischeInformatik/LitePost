@@ -2,6 +2,10 @@ package org.pi.litepost.applicationLogic;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author Julia Moos
+ *
+ */
 public class Message {
 	private int messageId;
 	private LocalDateTime date;

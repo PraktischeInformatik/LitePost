@@ -3,6 +3,10 @@ package org.pi.litepost.applicationLogic;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * @author Julia Moos
+ *
+ */
 public class Comment {
 	private int commentId;
 	private int userId;

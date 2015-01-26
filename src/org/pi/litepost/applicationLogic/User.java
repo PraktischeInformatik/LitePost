@@ -1,5 +1,9 @@
 package org.pi.litepost.applicationLogic;
 
+/**
+ * @author Julia Moos
+ *
+ */
 public class User {
 	private int userId;
 	private String username;
