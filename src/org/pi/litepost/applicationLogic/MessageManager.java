@@ -2,9 +2,8 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
@@ -25,15 +24,15 @@ public class MessageManager extends Manager {
 	 * @param sender
 	 * @param receiver
 	 * @param subject
-	 * @param text
+	 * @param content
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 */
 	public void insert(String sender, String receiver, String subject,
-			String text) throws SQLException, DatabaseCriticalErrorException {
+			String content) throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		this.model.getQueryManager().executeQuery("insertMessage", date,
-				sender, receiver, subject, text);
+				sender, receiver, subject, content);
 	}
 
 	/**
@@ -52,29 +51,28 @@ public class MessageManager extends Manager {
 
 		ArrayList<Message> messages = null;
 		int messageId;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int sender;
 		int receiver;
 		String subject;
-		String text;
+		String content;
 		boolean hidden;
 		boolean read;
 		Message lmessage;
 		while (result.next()) {
-			messageId = result.getInt(1);
-			ldate = result.getDate(2).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			sender = result.getInt(3);
-			receiver = result.getInt(4);
-			subject = result.getString(5);
-			text = result.getString(6);
-			hidden = result.getBoolean(7);
-			read = result.getBoolean(8);
+			messageId = result.getInt("message_id");
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
+			;
+			sender = result.getInt("sender");
+			receiver = result.getInt("receiver");
+			subject = result.getString("subject");
+			content = result.getString("content");
+			hidden = result.getBoolean("hidden");
+			read = result.getBoolean("read");
 			lmessage = new Message(messageId, date, sender, receiver, subject,
-					text);
+					content);
 			if (hidden)
 				lmessage.isHidden();
 			if (read)
@@ -98,27 +96,25 @@ public class MessageManager extends Manager {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesById", id);
 
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int sender;
 		int receiver;
 		String subject;
-		String text;
+		String content;
 		boolean hidden;
 		boolean read;
 		Message lmessage;
 
-		ldate = result.getDate(2).getTime();
-		i = Instant.ofEpochMilli(ldate);
-		date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-		sender = result.getInt(3);
-		receiver = result.getInt(4);
-		subject = result.getString(5);
-		text = result.getString(6);
-		hidden = result.getBoolean(7);
-		read = result.getBoolean(8);
-		lmessage = new Message(id, date, sender, receiver, subject, text);
+		ldate = result.getTimestamp("date");
+		date = ldate.toLocalDateTime();
+		sender = result.getInt("sender");
+		receiver = result.getInt("receiver");
+		subject = result.getString("subjct");
+		content = result.getString("content");
+		hidden = result.getBoolean("hidden");
+		read = result.getBoolean("read");
+		lmessage = new Message(id, date, sender, receiver, subject, content);
 		if (hidden)
 			lmessage.isHidden();
 		if (read)

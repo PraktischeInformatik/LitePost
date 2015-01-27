@@ -84,7 +84,7 @@ public class DatabaseQueryManager {
 
 		// Events:
 		databaseQueries.put("getEvents", new DatabaseQuery(
-				"SELECT * FROM Posts, Events"));
+				"SELECT * FROM Posts NATURAL JOIN Events"));
 
 		// images
 		databaseQueries
@@ -101,8 +101,8 @@ public class DatabaseQueryManager {
 				.put("insertUser",
 						new DatabaseQuery(
 								"INSERT INTO Users VALUES(username = ?, password = ?, fistname= ?, lastname = ?, email = ?, admin = 0 )"));
-		databaseQueries.put("checkUser", new DatabaseQuery(
-				"SELECT * FROM Users WHERE username = ?, password = ?"));
+		databaseQueries.put("getPasswordHash", new DatabaseQuery(
+				"SELECT password FROM Users WHERE username = ?"));
 		databaseQueries
 				.put("updateUser",
 						new DatabaseQuery(

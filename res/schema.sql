@@ -42,7 +42,7 @@ CREATE TABLE Events
 (
   event_id INT PRIMARY KEY NOT NULL,
   post_id INT NOT NULL,
-  date DATE NOT NULL,
+  event_date DATE NOT NULL,
   FOREIGN KEY(post_id) REFERENCES Posts(post_id)
 );
 

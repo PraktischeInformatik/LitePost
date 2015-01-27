@@ -428,3 +428,86 @@ button.general:hover{
     display: none;
   }
 }
+
+
+
+/*----------------------------------------------------
+   Calender
+----------------------------------------------------*/
+
+#month_dates{
+font-size:1em;
+}
+
+
+.space{
+margin:0.5em;
+padding:0.3em;
+width:1.8em;
+/*background-color:#38E05D;*/
+}
+
+.spaceh{
+margin:0.5em;
+padding:0.3em;
+}
+
+#dates{
+/*border-spacing:1em; */
+empty-cells:hide;
+table-layout:fixed;
+}
+
+#dates tr th {
+font-size:2.5em;
+width:1.6em;
+height:1.6em;
+background-color:#65E080;
+}
+
+
+#dates tr td{
+font-size:2.5em;
+width:1.6em;
+height:1.6em;
+
+border-spacing:2em; 
+}
+
+#dates caption button{
+float:right;
+font-size:2em;
+margin-right:0.2em;
+border-radius:30px;
+background-color:black;
+color:white;
+}
+
+#dates caption h1{
+float:right;
+font-size:2.3em;
+padding-left:0.5em;
+padding-right:0.7em;
+}
+
+#wochentage{
+background-color:#38E05D;
+}
+
+
+/*----------------------------------------------------
+   AllEvents
+----------------------------------------------------*/
+
+#All_Events{
+font-size:7em;
+}
+
+#events li{
+
+border-style:solid;
+border-width:2px;
+margin-bottom:0.5em;
+margin-top:0.1em;
+margin-left:5px;
+}

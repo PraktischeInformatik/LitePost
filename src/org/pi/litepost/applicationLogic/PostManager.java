@@ -2,6 +2,7 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,16 +25,16 @@ public class PostManager extends Manager {
 	 * from the CalenderManager
 	 * 
 	 * @param title
-	 * @param text
+	 * @param content
 	 * @param contact
 	 * @param userId
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String title, String text, String contact, int userId)
+	public void insert(String title, String content, String contact, int userId)
 			throws DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 
-		this.model.getQueryManager().executeQuery("insertPost", title, text,
+		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
 	}
 
@@ -64,14 +65,14 @@ public class PostManager extends Manager {
 	 * 
 	 * @param id
 	 * @param title
-	 * @param text
+	 * @param content
 	 * @param contact
 	 * @param userId
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void update(int id, String title, String text, String contact)
+	public void update(int id, String title, String content, String contact)
 			throws DatabaseCriticalErrorException {
-		this.model.getQueryManager().executeQuery("updatePost", title, text,
+		this.model.getQueryManager().executeQuery("updatePost", title, content,
 				contact, id);
 	}
 
@@ -114,14 +115,14 @@ public class PostManager extends Manager {
 				"getPostById", id);
 
 		String title = result.getString(2);
-		String text = result.getString(3);
+		String content = result.getString(3);
 		long ldate = result.getDate(4).getTime();
 		Instant i = Instant.ofEpochMilli(ldate);
 		LocalDateTime date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
 		String contact = result.getString(5);
 		int userId = result.getInt(6);
 
-		Post lPost = new Post(id, title, text, contact, date, userId);
+		Post lPost = new Post(id, title, content, contact, date, userId);
 
 		ResultSet imResult = this.model.getQueryManager().executeQuery(
 				"getImagesByPost", id);
@@ -129,8 +130,8 @@ public class PostManager extends Manager {
 		int imageId;
 		String source;
 		while (imResult.next()) {
-			imageId = result.getInt(1);
-			source = result.getString(2);
+			imageId = result.getInt("image_id");
+			source = result.getString("source");
 			lPost.setImages(new Image(imageId, source));
 		}
 		ArrayList<Comment> comments = this.model.getCommentManager().getByPost(
@@ -223,9 +224,8 @@ public class PostManager extends Manager {
 		ArrayList<Event> events = null;
 		int postId;
 		String title;
-		String text;
-		long ldate;
-		Instant i;
+		String content;
+		Timestamp ldate;
 		LocalDateTime date;
 		String contact;
 		int imageId;
@@ -239,29 +239,27 @@ public class PostManager extends Manager {
 		ResultSet imResult;
 
 		while (result.next()) {
-			postId = result.getInt(1);
-			title = result.getString(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString(5);
-			userId = result.getInt(6);
-			ldate = result.getDate(7).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			eventDate = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-
-			lEvent = new Event(postId, title, text, contact, date, userId,
-					eventDate);
-
-			imResult = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-			while (imResult.next()) {
-				imageId = result.getInt(1);
-				source = result.getString(2);
-				lEvent.setImages(new Image(imageId, source));
+			ldate = result.getTimestamp("date");
+			eventDate = ldate.toLocalDateTime();
+			if (eventDate.isAfter(model.getCalenderManager().getDate())) {
+				postId = result.getInt("post_id");
+				title = result.getString("title");
+				content = result.getString("content");
+				ldate = result.getTimestamp("date");
+				date = ldate.toLocalDateTime();
+				contact = result.getString("contact");
+				userId = result.getInt("user_id");
+				lEvent = new Event(postId, title, content, contact, date,
+						userId, eventDate);
+				imResult = this.model.getQueryManager().executeQuery(
+						"getImagesByPost", postId);
+				while (imResult.next()) {
+					imageId = result.getInt("image_id");
+					source = result.getString("source");
+					lEvent.setImages(new Image(imageId, source));
+				}
+				events.add(lEvent);
 			}
-			events.add(lEvent);
 		}
 
 		return events;
@@ -280,9 +278,8 @@ public class PostManager extends Manager {
 			throws DatabaseCriticalErrorException, SQLException {
 		int postId;
 		String title;
-		String text;
-		long ldate;
-		Instant i;
+		String content;
+		Timestamp ldate;
 		LocalDateTime date;
 		String contact;
 		int imageId;
@@ -294,22 +291,21 @@ public class PostManager extends Manager {
 		ResultSet imResult;
 
 		while (result.next()) {
-			postId = result.getInt(1);
-			title = result.getString(2);
-			text = result.getString(3);
-			ldate = result.getDate(4).getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString(5);
-			userId = result.getInt(6);
+			postId = result.getInt("post_id");
+			title = result.getString("title");
+			content = result.getString("content");
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
+			contact = result.getString("contact");
+			userId = result.getInt("user_id");
 
-			lPost = new Post(postId, title, text, contact, date, userId);
+			lPost = new Post(postId, title, content, contact, date, userId);
 
 			imResult = this.model.getQueryManager().executeQuery(
 					"getImagesByPost", postId);
 			while (imResult.next()) {
-				imageId = result.getInt(1);
-				source = result.getString(2);
+				imageId = result.getInt("image_id");
+				source = result.getString("source");
 				lPost.setImages(new Image(imageId, source));
 			}
 			posts.add(lPost);

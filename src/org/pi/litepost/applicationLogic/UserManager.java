@@ -1,7 +1,11 @@
 package org.pi.litepost.applicationLogic;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.pi.litepost.PasswordHash;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
@@ -25,16 +29,20 @@ public class UserManager extends Manager {
 	 * @param email
 	 * @throws DatabaseCriticalErrorException
 	 * @throws UseranameExistsException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
 	 */
 	public void insert(String username, String password, String firstname,
 			String lastname, String email)
-			throws DatabaseCriticalErrorException, UseranameExistsException {
+			throws DatabaseCriticalErrorException, UseranameExistsException,
+			NoSuchAlgorithmException, InvalidKeySpecException {
 		// check if username is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"checkUsername", username);
 		if (result == null) {
+			String hpassword = PasswordHash.createHash(password);
 			this.model.getQueryManager().executeQuery("insertUser", username,
-					password, firstname, lastname, email);
+					hpassword, firstname, lastname, email);
 		} else {
 			throw new UseranameExistsException();
 		}
@@ -48,15 +56,24 @@ public class UserManager extends Manager {
 	 * @param password
 	 * @throws DatabaseCriticalErrorException
 	 * @throws LoginFailedException
+	 * @throws SQLException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
 	 */
 	public void login(String username, String password)
-			throws DatabaseCriticalErrorException, LoginFailedException {
+			throws DatabaseCriticalErrorException, LoginFailedException,
+			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"checkUser", username);
-		if (result == null) {
+				"getPasswordHash", username);
+		if(result == null){
 			throw new LoginFailedException();
 		}
-		// TODO muss man nochwas machen um User einzuloggen?
+		String hpassword = result.getString("password");
+
+		if (!PasswordHash.validatePassword(password, hpassword)) {
+			throw new LoginFailedException();
+		}
+
 	}
 
 	/**
@@ -155,15 +172,15 @@ public class UserManager extends Manager {
 		String firstname;
 		String lastname;
 		String email;
-		userId = result.getInt(1);
-		username = result.getString(2);
-		password = result.getString(3);
-		firstname = result.getString(4);
-		lastname = result.getString(5);
-		email = result.getString(6);
+		userId = result.getInt("user_id");
+		username = result.getString("username");
+		password = result.getString("password");
+		firstname = result.getString("firstname");
+		lastname = result.getString("lastname");
+		email = result.getString("email");
 		User luser = new User(userId, username, password, firstname, lastname,
 				email);
-		if (result.getBoolean(7)) {
+		if (result.getBoolean("admin")) {
 			luser.setAdmin();
 		}
 		return luser;
