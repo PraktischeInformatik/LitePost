@@ -14,6 +14,7 @@ public class View {
 		for(String key : data.keySet()) {
 			context.put(key, data.get(key));
 		}
+		context.put("Router", Router.class);
 		StringWriter writer = new StringWriter();
 		 getTemplate(template).merge(context, writer);
 		return writer.toString();

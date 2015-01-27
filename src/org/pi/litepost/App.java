@@ -24,6 +24,7 @@ public class App extends NanoHTTPD{
 		
 		Router.add("files", Method.GET, "/public/.*", FileController::getFile);
 		Router.add("home", Method.GET, "/", HomeController::getHome);
+		Router.add("login", Method.GET, "/login", HomeController::getLogin);
 	}
 	
 	@Override public Response serve(IHTTPSession session) {

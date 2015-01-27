@@ -65,6 +65,15 @@ public class Router {
 		return resp;
 	}
 	
+	public static String linkTo(String location){
+		for (Route route : routes) {
+			if (route.name.equals(location)) {
+				return route.route;
+			}
+		}
+		return location;
+	}
+	
 	public static Response error(Exception e) {
 		HashMap<String, Object> data = new HashMap<>();
 		if(App.config.getProperty("Debug").equalsIgnoreCase("true")) {
