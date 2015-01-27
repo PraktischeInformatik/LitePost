@@ -20,7 +20,8 @@
     </ul>
   </nav>
 
-  <a href="login.html">
+  <a href="${Router.linkTo("login")}">
+
     <div id="login">
       Login
     </div>

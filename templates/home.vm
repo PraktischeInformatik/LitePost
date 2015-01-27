@@ -2,7 +2,7 @@
 <div id="wrapper">
   <div id="main">
     <div id="registration-container">
-      <form id=""
+      <form id="registration"
       <button class="general" id="register">Registrieren</button>
     </div>
   </div>
