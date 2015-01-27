@@ -214,17 +214,26 @@ a:visited {
   color: #404040;
 }
 
+
+
 /*----------------------------------------------------
    Elements
 ----------------------------------------------------*/
 
 #wrapper {
-  
+  margin:auto;
+  max-width: 1250px;
 }
 
 .block {
   display: block;
 }
+
+#main{
+  width: calc(100% - 240px);
+  float: left;
+}
+
 
 button.general {
   border-style: none;
@@ -374,7 +383,7 @@ button.general:hover{
   width: 250px;
   margin-top: 4em;
   margin-left: 3em;
-  float: left;
+  /*float: left;*/
 }
 
 #login-container h2 {
