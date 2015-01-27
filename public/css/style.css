@@ -80,7 +80,7 @@ a img {
    Typography
 ----------------------------------------------------*/
 
-/*38ZE050D
+/*38E05D
 colors:
 base:       #00C12B
 background: #65E080
@@ -107,18 +107,8 @@ textarea {
   resize: none;
 }
 
-button {
-  border-style: none;
-  background: #65E080;
-  border-radius: 5px;
-}
-
-button:hover{
-  background: #27D04C;
-}
-
 h1,h2,h3,h4,h5,h6 {
-   font-family: Lato;
+   font-family: Lato, sans-serif;
    font-weight: bold;
 }
 
@@ -236,6 +226,16 @@ a:visited {
   display: block;
 }
 
+button.general {
+  border-style: none;
+  background: #65E080;
+  border-radius: 5px;
+}
+
+button.general:hover{
+  background: #27D04C;
+}
+
 /*----------------------------------------------------
    Header
 ----------------------------------------------------*/
@@ -251,10 +251,6 @@ a:visited {
   line-height: 1;
   padding: 0.1em;
   padding-right: 0.2em;
-}
-
-#nav {
-  
 }
 
 #head li {
@@ -300,6 +296,9 @@ a:visited {
 #sidebar textarea {
   width: 230px;
   margin-bottom: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #CCC;
 }
 
 #sidebar form {
@@ -315,6 +314,10 @@ a:visited {
   margin-right: 10px;
 }
 
+/*----------------------------------------------------
+   new post
+----------------------------------------------------*/
+
 #post-form {
   margin-left: 5em;
 }
@@ -323,7 +326,7 @@ a:visited {
   margin-top: 0.3em;
 }
 
-#post-form input, textarea{
+#post-form input{
   width: 60%;
   border: solid;
   border-width: 1px;
@@ -335,14 +338,14 @@ a:visited {
   width: auto;
 }
 
-#sweg {
+#date-div {
   height: 0;
   overflow: hidden;
   -webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
   transition: height 0.3s;
 }
 
-#sweg.show {
+#date-div.show {
   height: 2.7em;
   margin-top: 0.3em;
 }
@@ -351,8 +354,52 @@ a:visited {
   height: 1.5em;
   border: solid;
   border-width: 1px;
-  border-color: #DDD;
+  border-color: #CCC;
 }
+
+#input-editor {
+  height: 500px;
+  width: 60%;
+  border: solid;
+  border-width: 1px;
+  border-color: #CCC;
+  font-size: ;
+}
+
+/*----------------------------------------------------
+   Login
+----------------------------------------------------*/
+
+#login-container {
+  width: 250px;
+  margin-top: 4em;
+  margin-left: 3em;
+  float: left;
+}
+
+#login-container h2 {
+  font-size: 1.8em;
+}
+
+#login-container button {
+  font-size: 1.2em;
+  margin-top: 4px;
+}
+
+#register {
+  float: right;
+}
+
+#login-form input {
+  margin-top: 4px;
+  font-size: 1.2em;
+  height: 2em;
+  width: 250px;
+}
+
+/*----------------------------------------------------
+   Register
+----------------------------------------------------*/
 
 
 

@@ -5,8 +5,8 @@
       <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
       <input id="input-contact" type="text" name="contact" placeholder="Kontakt" />
     </form>
-    <a href="newpost.html">
-      <button>Erweitert</button>
+    <a href="newpost.vm">
+      <button class="general">Erweitert</button>
     </a>
-    <button id="submit">Posten</button>
+    <button class="general" id="submit">Posten</button>
   </div>
