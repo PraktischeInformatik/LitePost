@@ -2,6 +2,7 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -224,8 +225,7 @@ public class PostManager extends Manager {
 		int postId;
 		String title;
 		String content;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		String contact;
 		int imageId;
@@ -239,30 +239,27 @@ public class PostManager extends Manager {
 		ResultSet imResult;
 
 		while (result.next()) {
-			postId = result.getInt("post_id");
-			title = result.getString("title");
-			content = result.getString("content");
-			ldate = result.getDate("date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			contact = result.getString("contact");
-			userId = result.getInt("user_id");
-			//TODO Events.date in event_date umbenennen
-			ldate = result.getDate("event_date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			eventDate = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-
-			lEvent = new Event(postId, title, content, contact, date, userId,
-					eventDate);
-
-			imResult = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-			while (imResult.next()) {
-				imageId = result.getInt("image_id");
-				source = result.getString("source");
-				lEvent.setImages(new Image(imageId, source));
+			ldate = result.getTimestamp("date");
+			eventDate = ldate.toLocalDateTime();
+			if (eventDate.isAfter(model.getCalenderManager().getDate())) {
+				postId = result.getInt("post_id");
+				title = result.getString("title");
+				content = result.getString("content");
+				ldate = result.getTimestamp("date");
+				date = ldate.toLocalDateTime();
+				contact = result.getString("contact");
+				userId = result.getInt("user_id");
+				lEvent = new Event(postId, title, content, contact, date,
+						userId, eventDate);
+				imResult = this.model.getQueryManager().executeQuery(
+						"getImagesByPost", postId);
+				while (imResult.next()) {
+					imageId = result.getInt("image_id");
+					source = result.getString("source");
+					lEvent.setImages(new Image(imageId, source));
+				}
+				events.add(lEvent);
 			}
-			events.add(lEvent);
 		}
 
 		return events;
@@ -282,8 +279,7 @@ public class PostManager extends Manager {
 		int postId;
 		String title;
 		String content;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		String contact;
 		int imageId;
@@ -298,9 +294,8 @@ public class PostManager extends Manager {
 			postId = result.getInt("post_id");
 			title = result.getString("title");
 			content = result.getString("content");
-			ldate = result.getDate("date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
 			contact = result.getString("contact");
 			userId = result.getInt("user_id");
 

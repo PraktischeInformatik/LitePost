@@ -2,9 +2,8 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
@@ -52,8 +51,7 @@ public class MessageManager extends Manager {
 
 		ArrayList<Message> messages = null;
 		int messageId;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int sender;
 		int receiver;
@@ -64,9 +62,9 @@ public class MessageManager extends Manager {
 		Message lmessage;
 		while (result.next()) {
 			messageId = result.getInt("message_id");
-			ldate = result.getDate("date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
+			;
 			sender = result.getInt("sender");
 			receiver = result.getInt("receiver");
 			subject = result.getString("subject");
@@ -98,8 +96,7 @@ public class MessageManager extends Manager {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesById", id);
 
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int sender;
 		int receiver;
@@ -109,9 +106,8 @@ public class MessageManager extends Manager {
 		boolean read;
 		Message lmessage;
 
-		ldate = result.getDate("date").getTime();
-		i = Instant.ofEpochMilli(ldate);
-		date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+		ldate = result.getTimestamp("date");
+		date = ldate.toLocalDateTime();
 		sender = result.getInt("sender");
 		receiver = result.getInt("receiver");
 		subject = result.getString("subjct");

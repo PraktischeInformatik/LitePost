@@ -20,7 +20,7 @@ public class Model {
 	private DatabaseConnector dbConnector;
 	private DatabaseQueryManager dbQueryManager;
 
-	public Model() throws DatabaseCriticalErrorException {
+	public Model(String path) throws DatabaseCriticalErrorException {
 		sessionManager = new SessionManager();
 		sessionManager.setModel(this);
 		userManager = new UserManager();
@@ -32,7 +32,7 @@ public class Model {
 		calenderManager = new CalenderManager();
 		commentManager = new CommentManager();
 		commentManager.setModel(this);
-		dbConnector = new DatabaseConnector();
+		dbConnector = new DatabaseConnector(path);
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
 
 	}

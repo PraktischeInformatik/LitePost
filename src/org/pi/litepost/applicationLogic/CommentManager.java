@@ -2,9 +2,8 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
@@ -123,8 +122,7 @@ public class CommentManager extends Manager {
 		int commentId;
 		int userId;
 		String content;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int parentId;
 		int postId;
@@ -132,9 +130,8 @@ public class CommentManager extends Manager {
 			commentId = result.getInt("comment_id");
 			userId = result.getInt("user_id");
 			content = result.getString("content");
-			ldate = result.getDate("date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
 			parentId = result.getInt("parent_id");
 			postId = result.getInt("post_id");
 			Comment lComment = new Comment(commentId, userId, content, date,
@@ -162,8 +159,7 @@ public class CommentManager extends Manager {
 		int commentId;
 		int userId;
 		String content;
-		long ldate;
-		Instant i;
+		Timestamp ldate;
 		LocalDateTime date;
 		int parentId;
 		int postId;
@@ -171,9 +167,8 @@ public class CommentManager extends Manager {
 			commentId = result.getInt("comment_id");
 			userId = result.getInt("user_id");
 			content = result.getString("content");
-			ldate = result.getDate("date").getTime();
-			i = Instant.ofEpochMilli(ldate);
-			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
 			parentId = result.getInt("parent_id");
 			postId = result.getInt("post_id");
 			Comment lComment = new Comment(commentId, userId, content, date,
