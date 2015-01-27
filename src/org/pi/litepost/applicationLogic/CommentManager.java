@@ -129,14 +129,14 @@ public class CommentManager extends Manager {
 		int parentId;
 		int postId;
 		while (result.next()) {
-			commentId = result.getInt(1);
-			userId = result.getInt(2);
-			content = result.getString(3);
-			ldate = result.getDate(4).getTime();
+			commentId = result.getInt("comment_id");
+			userId = result.getInt("user_id");
+			content = result.getString("content");
+			ldate = result.getDate("date").getTime();
 			i = Instant.ofEpochMilli(ldate);
 			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			parentId = result.getInt(5);
-			postId = result.getInt(6);
+			parentId = result.getInt("parent_id");
+			postId = result.getInt("post_id");
 			Comment lComment = new Comment(commentId, userId, content, date,
 					parentId, postId);
 			comments.add(lComment);
@@ -168,14 +168,14 @@ public class CommentManager extends Manager {
 		int parentId;
 		int postId;
 		while (result.next()) {
-			commentId = result.getInt(1);
-			userId = result.getInt(2);
-			content = result.getString(3);
-			ldate = result.getDate(4).getTime();
+			commentId = result.getInt("comment_id");
+			userId = result.getInt("user_id");
+			content = result.getString("content");
+			ldate = result.getDate("date").getTime();
 			i = Instant.ofEpochMilli(ldate);
 			date = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
-			parentId = result.getInt(5);
-			postId = result.getInt(6);
+			parentId = result.getInt("parent_id");
+			postId = result.getInt("post_id");
 			Comment lComment = new Comment(commentId, userId, content, date,
 					parentId, postId);
 			comment.setSubComments(lComment);
