@@ -1,0 +1,16 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main">
+    <div id="login-container">
+      <form id="login-form">
+        <h2>Login</h2>
+        <input id:"login-username" type="text" name="username" placeholder="Nutzername">
+        <input id:"login-password" type="text" name="password" placeholder="Passwort">
+      </form>
+      <button class="general">Login</button>
+      <button class="general" id="register">Registrieren</button>
+    </div>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
