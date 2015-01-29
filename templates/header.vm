@@ -16,7 +16,7 @@
     <ul>
       <a href="about.html"><li>About</li></a>
       <a href="index.html"><li>Posts</li></a>
-      <a href="events.html"><li>Events</li></a>
+      <a href="${Router.linkTo("calendar")}"><li>Events</li></a>
     </ul>
   </nav>
 

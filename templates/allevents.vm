@@ -1,0 +1,67 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+	<div id="All_Events">
+	<h2>Events</h2>
+
+		<ul id="events">
+			<li>
+				<div class="single_event">
+					<table  class="event_table" rules="cols">
+					  <tr>
+						<td class="information">
+							<ul>
+								<li>
+									Name
+								</li>
+								<li>
+									Datum
+								</li>
+								<li>
+									Uhrzeit
+								</li>
+							</ul> 
+						</td>
+						<td class="picture">
+							Bild
+						</td>	
+					  </tr>
+					</table>
+				</div>
+			</li>
+			
+			<li>
+				<div class="single_event">
+					<table  class="event_table" rules="cols">
+					  <tr>
+						<td class="information">
+							<ul>
+								<li>
+									Name
+								</li>
+								<li>
+									Datum
+								</li>
+								<li>
+									Uhrzeit
+								</li>
+							</ul> 
+						</td>
+						<td class="picture">
+							Bild
+						</td>	
+					  </tr>
+					</table>
+				</div>
+			</li>
+		 
+		</ul> 
+
+
+	</div>
+	
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

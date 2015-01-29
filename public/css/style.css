@@ -495,19 +495,37 @@ background-color:#38E05D;
 }
 
 
+
 /*----------------------------------------------------
    AllEvents
 ----------------------------------------------------*/
 
 #All_Events{
-font-size:7em;
+font-size:1em;
 }
 
 #events li{
 
-border-style:solid;
-border-width:2px;
-margin-bottom:0.5em;
-margin-top:0.1em;
-margin-left:5px;
+width:100%;
 }
+
+.single_event{
+border-style:solid;
+border-width:0.1em;
+margin:0.5em;
+}
+
+.event_table{
+width:100%;
+border-color:black;
+border-width:1em;
+}
+
+.information ul li{
+padding:0.4em;
+}
+
+.picture{
+
+}
+

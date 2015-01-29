@@ -29,4 +29,12 @@ public class HomeController {
 	public static Response getLogin(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data, Model model) {
 		return new Response(View.make("login", data));
 	}
+	
+	public static Response getCalendar(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data, Model model) {
+		return new Response(View.make("calendar", data));
+	}
+	
+	public static Response getAllEvents(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data, Model model) {
+		return new Response(View.make("allevents", data));
+	}
 }
