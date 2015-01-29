@@ -10,8 +10,10 @@ import java.util.Properties;
 
 import org.apache.velocity.app.Velocity;
 import org.pi.litepost.Router.Route;
+import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -28,11 +30,17 @@ public class App extends NanoHTTPD{
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
+		Model model;
+		try {
+			model = new Model();
+		} catch (DatabaseCriticalErrorException e) {
+			return Router.error(e);
+		}
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		Route route = Router.getHandler(session);
 		if (route != null) {
 			HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
-			return route.getHandler().handle(session, args, new HashMap<>());
+			return route.getHandler().handle(session, args, new HashMap<>(), model);
 		}else {
 			return new Response(Response.Status.NOT_FOUND, "text/plain", "404 - Resource not found");
 		}

@@ -1,79 +1,9 @@
 #parse("header.vm")
 <div id="wrapper">
-  <div id="main"> 
+  	<div id="main"> 
 
-    <div id="month_dates">
-     <table id="dates" >
-      <caption> 
-        <h1>Januar 2015</h1> 
-        <button class="incaption_button" id="next_month">--></button>
-        <button class="incaption_button" id="previous_month"></button>
-        
-      </caption>
-      <thead > 
-          <tr>
-          <th><div class="spaceh">Mo</div></th>
-          <th><div class="spaceh">Di</div></th>
-          <th><div class="spaceh">Mi</div></th>
-          <th><div class="spaceh">Do</div></th>
-          <th><div class="spaceh">Fr</div></th>
-          <th><div class="spaceh">Sa</div></th>
-          <th><div class="spaceh">So</div></th>
-          </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td id="month_day1"><div class="space">01</div></td>
-          <td id="month_day2"><div class="space">02</div></td>
-          <td id="month_day3"><div class="space">03</div></td>
-          <td id="month_day4"><div class="space">04</div></td>
-          <td id="month_day5"><div class="space">05</div></td>
-          <td id="month_day6"><div class="space">06</div></td>
-          <td id="month_day7"><div class="space">07</div></td>
-        </tr>
-        
-        <tr>
-          <td id="month_day8"><div class="space">08</div></td>
-          <td id="month_day9"><div class="space">09</div></td>
-          <td id="month_day10"><div class="space">10</div></td>
-          <td id="month_day11"><div class="space">11</div></td>
-          <td id="month_day12"><div class="space">12</div></td>
-          <td id="month_day13"><div class="space">13</div></td>
-          <td id="month_day14"><div class="space">14</div></td>
-        </tr>
-        <tr>
-          <td id="month_day15"><div class="space">15</div></td>
-          <td id="month_day16"><div class="space">16</div></td>
-          <td id="month_day17"><div class="space">17</div></td>
-          <td id="month_day18"><div class="space">18</div></td>
-          <td id="month_day19"><div class="space">19</div></td>
-          <td id="month_day20"><div class="space">20</div></td>
-          <td id="month_day21"><div class="space">21</div></td>
-        </tr>
-        <tr>
-          <td id="month_day22"><div class="space">22</div></td>
-          <td id="month_day23"><div class="space">23</div></td>
-          <td id="month_day24"><div class="space">24</div></td>
-          <td id="month_day25"><div class="space">25</div></td>
-          <td id="month_day26"><div class="space">26</div></td>
-          <td id="month_day27"><div class="space">27</div></td>
-          <td id="month_day28"><div class="space">28</div></td>
-        </tr>
-        <tr>
-          <td id="month_day29"><div class="space">29</div></td>
-          <td id="month_day30"><div class="space">30</div></td>
-          <td id="month_day31"><div class="space"></div></td>
-          <td id="month_day32"><div class="space"></div></td>
-          <td id="month_day33"><div class="space"></div></td>
-          <td id="month_day34"><div class="space"></div></td>
-          <td id="month_day35"><div class="space"></div></td>
-        </tr>
-        
-        
-      </tbody>
-     </table>
-    </div>
     
+    </div>
   </div>
   #parse("sidebar.vm")
 </div>
