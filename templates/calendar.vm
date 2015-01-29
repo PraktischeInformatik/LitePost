@@ -6,8 +6,8 @@
      <table id="dates" >
       <caption> 
         <h1>Januar 2015</h1> 
-        <button class="incaption_button" id="next_month">--></button>
-        <button class="incaption_button" id="previous_month"></button>
+        <button class="incaption_button" id="next_month">--&gt</button>
+        <button class="incaption_button" id="previous_month">&lt--</button>
         
       </caption>
       <thead > 
