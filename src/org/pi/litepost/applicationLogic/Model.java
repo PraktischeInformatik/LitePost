@@ -35,7 +35,7 @@ public class Model {
 		calenderManager = new CalenderManager();
 		commentManager = new CommentManager();
 		commentManager.setModel(this);
-		String defaultDbpath = "res" + File.pathSeparatorChar + "litepost.db";
+		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
 		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
 

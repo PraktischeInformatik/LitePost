@@ -1,0 +1,19 @@
+#parse("header.vm")
+<div id="wrapper">
+  	<div id="main"> 
+		<h2>Oops an error occured!</h2>
+		<p>in $classname: $message</p>
+		<ul>
+			#foreach($frame in $trace)
+				#if($frame.getFileName())
+					<li>in $frame.getClassName()#$frame.getMethodName()() line $frame.getLineNumber()</li>
+				#else
+					<li>in $frame.getClassName()#$frame.getMethodName()()</li>
+				#end
+			#end
+		</ul>
+    </div>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
