@@ -1,5 +1,8 @@
 package org.pi.litepost.applicationLogic;
 
+import java.io.File;
+
+import org.pi.litepost.App;
 import org.pi.litepost.databaseAccess.DatabaseConnector;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 import org.pi.litepost.databaseAccess.DatabaseQueryManager;
@@ -20,7 +23,7 @@ public class Model {
 	private DatabaseConnector dbConnector;
 	private DatabaseQueryManager dbQueryManager;
 
-	public Model(String path) throws DatabaseCriticalErrorException {
+	public Model() throws DatabaseCriticalErrorException {
 		sessionManager = new SessionManager();
 		sessionManager.setModel(this);
 		userManager = new UserManager();
@@ -32,7 +35,8 @@ public class Model {
 		calenderManager = new CalenderManager();
 		commentManager = new CommentManager();
 		commentManager.setModel(this);
-		dbConnector = new DatabaseConnector(path);
+		String defaultDbpath = "res" + File.pathSeparatorChar + "litepost.db";
+		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
 
 	}

@@ -12,9 +12,9 @@ public class DatabaseConnector {
 	private final String databasePath;
 	private Connection connection;
 	
-	public DatabaseConnector() throws DatabaseCriticalErrorException{
+	public DatabaseConnector(String dbpath) throws DatabaseCriticalErrorException{
 		jdbcDriverPath = "org.sqlite.JDBC";
-		databasePath = "jdbc:sqlite:src\\litepost.db";
+		databasePath = "jdbc:sqlite:" + dbpath;
 		
 		try{
 			Class.forName(jdbcDriverPath);
