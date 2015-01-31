@@ -502,32 +502,30 @@ background-color:#38E05D;
    AllEvents
 ----------------------------------------------------*/
 
-#All_Events{
-font-size:1em;
-}
 
-#events li{
-
-width:100%;
-}
-
-.single_event{
-border-style:solid;
-border-width:0.1em;
-margin:0.5em;
-}
-
-.event_table{
-width:100%;
-border-color:black;
-border-width:1em;
-}
-
-.information ul li{
-padding:0.4em;
-}
-
-.picture{
+.singleEvent{
+  height:5em;
 
 }
 
+.info{
+  float:left;
+  margin-right:1em;
+}
+
+.image{
+  float:right;
+}
+
+.tableSingleEvent{
+  padding:1em;
+  border-style:solid;
+  border-color:black;
+  border-width:0.1em;
+  margin-bottom:4em;
+  margin-left:1em;
+}
+
+.tabelinfo{
+  width:50%;
+}
