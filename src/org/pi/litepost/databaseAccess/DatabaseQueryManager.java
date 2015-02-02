@@ -21,7 +21,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getComment", new DatabaseQuery(true, 
 			"SELECT * FROM Comments WHERE comment_id = ?"
 		));
-		databaseQueries.put("getCommentsByPosts", new DatabaseQuery(true, 
+		databaseQueries.put("getCommentsByPost", new DatabaseQuery(true, 
 			"SELECT * FROM Comments WHERE post_id = ?"
 		));
 		databaseQueries.put("insertComment", new DatabaseQuery(false, 
