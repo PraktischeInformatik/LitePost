@@ -1,0 +1,65 @@
+package org.pi.litepost.controllers;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.pi.litepost.Router;
+import org.pi.litepost.View;
+import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.applicationLogic.Post;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
+
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
+
+public class PostController {
+	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		ArrayList<Post> posts = new ArrayList<>();
+		try {
+			posts = model.getPostManager().getAll();
+		} catch (DatabaseCriticalErrorException | SQLException e) {
+			return Router.error(e);
+		}
+		data.put("posts", posts);
+		return new Response(View.make("post.all", data));
+	} 
+	
+	public static Response getSingle(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) { 
+		int postId = 0;
+		try {
+			postId = Integer.parseInt(args.getOrDefault("post_id", ""));
+		}catch(NumberFormatException e) {
+			return new Response(Status.NOT_FOUND, "text/html", View.make("404", data));
+		}
+		
+		Post post = null;
+		try {
+			post = model.getPostManager().getById(postId);
+		} catch (DatabaseCriticalErrorException | SQLException e) {
+			return Router.error(e);
+		}
+		data.put("post", post);
+		return new Response(View.make("post.single", data));
+	}
+	
+	public static Response getNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		return new Response(View.make("post.new", data));
+	}
+	
+	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		Map<String, String> params = session.getParms();
+		String title = params.get("title");
+		String content = params.get("content");
+		String contact = params.get("contact");
+		try {
+			model.getPostManager().insert(title, content, contact, 0);
+		} catch (DatabaseCriticalErrorException e) {
+			Router.error(e);
+		}
+		return Router.redirectTo("allPosts");
+	}
+	
+}
