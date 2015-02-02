@@ -2,16 +2,19 @@
 
 <div id="wrapper">
   <div id="main">
+    #if($error)
+      <p>Bitte füllen sie alle benötigten Felder aus</p>
+    #end
     <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}">
       <div class="block">
-        <input id="input-title" type="text" name="title" placeholder="Titel">
+        <input id="input-title" type="text" name="title" placeholder="Titel" value="$title">
       </div>
       <div class="block">
         <input type="hidden" id="input-content" name="content">
-        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt" ></div>
+        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
       </div>
       <div class="block">
-        <input id="input-contact" type="text" name="contact" placeholder="Kontakt">
+        <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
       </div>
       <div class="block">
         <input id="input-event" type="checkbox" name="is-event" onclick="toggle_event(this)">
