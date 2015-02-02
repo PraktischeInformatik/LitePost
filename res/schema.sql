@@ -62,8 +62,7 @@ CREATE TABLE Comments
 DROP TABLE IF EXISTS Sessions;
 CREATE TABLE Sessions
 (
-  token VARCHAR(255) NOT NULL,
-  expiration INT NOT NULL,
+  session_id VARCHAR(255) NOT NULL,
   key VARCHAR(64) NOT NULL,
   value TEXT NOT NULL,
   PRIMARY KEY(token, key)

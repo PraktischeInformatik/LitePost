@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -35,9 +36,12 @@ public class App extends NanoHTTPD{
 		Model model;
 		try {
 			model = new Model();
-		} catch (DatabaseCriticalErrorException e) {
+			model.getSessionManager().cleanSessions();
+			model.getSessionManager().resumeSession(session.getCookies());
+		} catch (DatabaseCriticalErrorException | SQLException e) {
 			return Router.error(e);
 		}
+		
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		Route route = Router.getHandler(session);
 		if (route != null) {

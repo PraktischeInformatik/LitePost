@@ -136,6 +136,39 @@ public class DatabaseQueryManager {
 			"UPDATE Users SET admin = 1"
 		));
 
+		// Session
+		databaseQueries.put("startSession", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("endSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE token = ?"
+			));
+		
+		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("getSessionVar", new DatabaseQuery(true,
+				"SELECT value FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("updateSessionVar", new DatabaseQuery(true,
+				"UPDATE Sessions SET value = ? where session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("sessionKeyExists", new DatabaseQuery(true,
+				"SELECT Count(*) FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("getAllSessions", new DatabaseQuery(true,
+				"SELECT * FROM Sessions WHERE key = \"expiration\""
+			));
+		
+		databaseQueries.put("removeSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE session_id = ?"
+			));
+		
 		// Ids:
 		databaseQueries.put("getIdByTableName", new DatabaseQuery(true,
 			"SELECT next_id FROM Ids WHERE table_name = ?"
@@ -145,8 +178,8 @@ public class DatabaseQueryManager {
 		));
 	}
 
-	public ResultSet executeQuery(String requestName, Object... values) throws DatabaseCriticalErrorException{
-		DatabaseQuery databaseQuery = databaseQueries.get(requestName);
+	public ResultSet executeQuery(String queryName, Object... values) throws DatabaseCriticalErrorException{
+		DatabaseQuery databaseQuery = databaseQueries.get(queryName);
 		return databaseQuery.execute(this, databaseConnector, values);
 	}
 }
