@@ -13,7 +13,7 @@ import org.pi.litepost.databaseAccess.DatabaseQueryManager;
  * @author Julia Moos
  *
  */
-public class Model {
+public class Model implements AutoCloseable{
 	private SessionManager sessionManager;
 	private UserManager userManager;
 	private MessageManager messageManager;
