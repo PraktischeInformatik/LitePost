@@ -48,33 +48,89 @@ public class Router {
 		}
 		return args;
 	}
+	
+	private static Route getRoute(String location) {
+		for (Route route : routes) {
+			if (route.name.equals(location)) {
+				return route;
+			}
+		}
+		return null;
+	}
 
 	public static Response redirectTo(String location) {
 		return redirectTo(location, new HashMap<>());
 	}
-	public static Response redirectTo(String location, Map<String, String> args) {
-		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
-		for (Route route : routes) {
-			if (route.name.equals(location)) {
-				String uri = route.getRoute();
-				for(String arg : args.values()) {
-					uri.replace("{" + arg + "}", args.get(arg));
-				}
-				resp.addHeader("location", uri);
-				return resp;
-			}
+	
+	public static Response redirectTo(String location, String... args) {
+		Route route = getRoute(location);
+		if(route != null) {
+			return redirectTo(route, args);
 		}
+		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
 		resp.addHeader("location", location);
 		return resp;
 	}
 	
-	public static String linkTo(String location){
-		for (Route route : routes) {
-			if (route.name.equals(location)) {
-				return route.route;
+	public static Response redirectTo(String location, Map<String, String> args) {
+		Route route = getRoute(location);
+		if(route != null) {
+			String[] argsList = new String[route.argNames.size()];
+			int i = 0;
+			for(String argName : route.argNames) {
+				argsList[i] = args.getOrDefault(argName, "");
+				i++;
 			}
+			return redirectTo(route, argsList);
+		}
+		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
+		resp.addHeader("location", location);
+		return resp;
+	}
+	
+	private static Response redirectTo(Route route, String[] args) {
+		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
+		String uri = route.getRoute();
+		for(int i = 0; i < args.length; i++) {
+			uri.replace("{" + route.argNames.get(i) + "}", args[i]);
+		}
+		resp.addHeader("location", uri);
+		return resp;
+	}
+	
+	
+	public static String linkTo(String location) {
+		return linkTo(location, new HashMap<>());
+	}
+	
+	public static String linkTo(String location, String... args) {
+		Route route = getRoute(location);
+		if(route != null) {
+			return linkTo(route, args);
 		}
 		return location;
+	}
+	
+	public static String linkTo(String location, Map<String, String> args) {
+		Route route = getRoute(location);
+		if(route != null) {
+			String[] argsList = new String[route.argNames.size()];
+			int i = 0;
+			for(String argName : route.argNames) {
+				argsList[i] = args.getOrDefault(argName, "");
+				i++;
+			}
+			return linkTo(route, argsList);
+		}
+		return location;
+	}
+	
+	private static String linkTo(Route route, String[] args) {
+		String uri = route.getRoute();
+		for(int i = 0; i < args.length; i++) {
+			uri.replace("{" + route.argNames.get(i) + "}", args[i]);
+		}
+		return uri;
 	}
 	
 	public static Response error(Exception e) {
