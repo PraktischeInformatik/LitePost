@@ -1,0 +1,13 @@
+#parse("header.vm")
+<div id="wrapper">
+  	<div id="main"> 
+  	   <h2>$post.getTitle()</h2>
+      $post.getText()
+    	
+      <small>$post.getContact()</small>
+      </ul>
+    </div>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

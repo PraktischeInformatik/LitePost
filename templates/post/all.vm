@@ -1,0 +1,13 @@
+#parse("header.vm")
+<div id="wrapper">
+  	<div id="main"> 
+  	  <ul>
+    	#foreach($post in $posts)
+    	  <li><a href="${Router.linkTo("singlePost", $post.getPostId())}">$post.getTitle()</a></li>
+    	#end
+      </ul>
+    </div>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
