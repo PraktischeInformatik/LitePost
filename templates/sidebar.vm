@@ -1,11 +1,11 @@
 <div id="sidebar">
     <h2>Neuer Post</h2>
-    <form>
+    <form method="POST" action="${Router.linkTo("newPost")}">
       <input id="input-title" type="text" name="title" placeholder="Titel" />
       <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
       <input id="input-contact" type="text" name="contact" placeholder="Kontakt" />
     </form>
-    <a href="newpost.vm">
+    <a href="${Router.linkTo("newPost")}">
       <button class="general">Erweitert</button>
     </a>
     <button class="general" id="submit">Posten</button>
