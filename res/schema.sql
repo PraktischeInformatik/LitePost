@@ -97,8 +97,5 @@ INSERT INTO Ids(table_name, next_id) VALUES("Messages", 0);
 INSERT INTO Ids(table_name, next_id) VALUES("Posts", 0);
 INSERT INTO Ids(table_name, next_id) VALUES("Events ", 0);
 INSERT INTO Ids(table_name, next_id) VALUES("Comments", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Sessions", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Ids", 0);
 INSERT INTO Ids(table_name, next_id) VALUES("Images", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Post_has_Images", 0);
 
