@@ -21,4 +21,8 @@ public class HomeController {
 	public static Response getAllEvents(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		return new Response(View.make("allevents", data));
 	}
+	
+	public static Response getDaySight(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		return new Response(View.make("daysight", data));
+	}
 }

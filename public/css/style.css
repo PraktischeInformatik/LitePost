@@ -529,3 +529,49 @@ background-color:#38E05D;
 .tabelinfo{
   width:50%;
 }
+
+.allEvents{
+width:100%;
+}
+
+
+/*----------------------------------------------------
+   DaySight
+----------------------------------------------------*/
+
+
+.allEvents_day{
+  width:100%;
+}
+
+.singleEvent_day{
+  height:5em;
+
+}
+
+.info_day{
+  float:left;
+  margin-right:1em;
+}
+
+.image_day{
+  float:right;
+}
+
+.tableSingleEvent_day{
+  padding:1em;
+  border-style:solid;
+  border-color:black;
+  border-width:0.1em;
+  margin-bottom:4em;
+  margin-left:1em;
+}
+
+.tabelinfo_day{
+  width:50%;
+}
+
+.eventDayButtons{
+  margin-left:1em;
+  margin-bottom:1em;
+}

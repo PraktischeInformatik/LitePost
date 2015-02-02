@@ -30,6 +30,8 @@ public class App extends NanoHTTPD{
 		Router.add("home", Method.GET, "/", HomeController::getHome);
 		Router.add("calendar", Method.GET, "/calendar", HomeController::getCalendar);
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
+		Router.add("daysight", Method.GET, "/daysight", HomeController::getDaySight);
+		
 		
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
