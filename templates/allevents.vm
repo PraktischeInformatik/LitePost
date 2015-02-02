@@ -2,64 +2,51 @@
 <div id="wrapper">
   <div id="main"> 
 
-	<div id="All_Events">
-	<h2>Events</h2>
-
-		<ul id="events">
-			<li>
-				<div class="single_event">
-					<table  class="event_table" rules="cols">
-					  <tr>
-						<td class="information">
-							<ul>
-								<li>
-									Name
-								</li>
-								<li>
-									Datum
-								</li>
-								<li>
-									Uhrzeit
-								</li>
-							</ul> 
-						</td>
-						<td class="picture">
-							Bild
-						</td>	
-					  </tr>
-					</table>
-				</div>
-			</li>
-			
-			<li>
-				<div class="single_event">
-					<table  class="event_table" rules="cols">
-					  <tr>
-						<td class="information">
-							<ul>
-								<li>
-									Name
-								</li>
-								<li>
-									Datum
-								</li>
-								<li>
-									Uhrzeit
-								</li>
-							</ul> 
-						</td>
-						<td class="picture">
-							Bild
-						</td>	
-					  </tr>
-					</table>
-				</div>
-			</li>
-		 
-		</ul> 
+	<div class=allEvents>
+   <h2>Events</h2>
 
 
-	</div>
+     <table class=tableSingleEvent>
+       <tr>
+         <td class="tabelinfo">
+           <div class=info>
+             <div id="name"> Name </div></br>
+             <div id="date"> Datum </div></br>
+             <div id="time"> Uhrzeit </div></br>
+
+           </div>
+          </td>
+          <td class="tableimage">
+            <div class=image>
+              <img src="http://lorempixel.com/200/200/nature">
+            </div>
+          </td>
+         </tr>
+        </table>
+
+
+
+
+
+      <table class=tableSingleEvent>
+        <tr>
+          <td class="tabelinfo">
+            <div class=info>
+              <div id="name"> Name2 </div></br>
+              <div id="date"> Datum2 </div></br>
+              <div id="time"> Uhrzeit2 </div></br>
+
+            </div>
+           </td>
+           <td class="tableimage">
+             <div class=image>
+               <img src="http://lorempixel.com/200/200/nature">
+             </div>
+           </td>
+         </tr>
+        </table>
+
+ </div>
 	
   </div>
   #parse("sidebar.vm")

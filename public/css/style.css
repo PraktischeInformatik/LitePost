@@ -502,32 +502,76 @@ background-color:#38E05D;
    AllEvents
 ----------------------------------------------------*/
 
-#All_Events{
-font-size:1em;
+
+.singleEvent{
+  height:5em;
+
 }
 
-#events li{
+.info{
+  float:left;
+  margin-right:1em;
+}
 
+.image{
+  float:right;
+}
+
+.tableSingleEvent{
+  padding:1em;
+  border-style:solid;
+  border-color:black;
+  border-width:0.1em;
+  margin-bottom:4em;
+  margin-left:1em;
+}
+
+.tabelinfo{
+  width:50%;
+}
+
+.allEvents{
 width:100%;
 }
 
-.single_event{
-border-style:solid;
-border-width:0.1em;
-margin:0.5em;
+
+/*----------------------------------------------------
+   DaySight
+----------------------------------------------------*/
+
+
+.allEvents_day{
+  width:100%;
 }
 
-.event_table{
-width:100%;
-border-color:black;
-border-width:1em;
-}
-
-.information ul li{
-padding:0.4em;
-}
-
-.picture{
+.singleEvent_day{
+  height:5em;
 
 }
 
+.info_day{
+  float:left;
+  margin-right:1em;
+}
+
+.image_day{
+  float:right;
+}
+
+.tableSingleEvent_day{
+  padding:1em;
+  border-style:solid;
+  border-color:black;
+  border-width:0.1em;
+  margin-bottom:4em;
+  margin-left:1em;
+}
+
+.tabelinfo_day{
+  width:50%;
+}
+
+.eventDayButtons{
+  margin-left:1em;
+  margin-bottom:1em;
+}
