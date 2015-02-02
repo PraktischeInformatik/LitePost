@@ -62,7 +62,7 @@ public class Router {
 		return redirectTo(location, new HashMap<>());
 	}
 	
-	public static Response redirectTo(String location, String... args) {
+	public static Response redirectTo(String location, Object... args) {
 		Route route = getRoute(location);
 		if(route != null) {
 			return redirectTo(route, args);
@@ -88,11 +88,11 @@ public class Router {
 		return resp;
 	}
 	
-	private static Response redirectTo(Route route, String[] args) {
+	private static Response redirectTo(Route route, Object[] args) {
 		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
 		String uri = route.getRoute();
 		for(int i = 0; i < args.length; i++) {
-			uri.replace("{" + route.argNames.get(i) + "}", args[i]);
+			uri = uri.replace("{" + route.argNames.get(i) + "}", args[i].toString());
 		}
 		resp.addHeader("location", uri);
 		return resp;
@@ -103,7 +103,7 @@ public class Router {
 		return linkTo(location, new HashMap<>());
 	}
 	
-	public static String linkTo(String location, String... args) {
+	public static String linkTo(String location, Object... args) {
 		Route route = getRoute(location);
 		if(route != null) {
 			return linkTo(route, args);
@@ -125,10 +125,10 @@ public class Router {
 		return location;
 	}
 	
-	private static String linkTo(Route route, String[] args) {
+	private static String linkTo(Route route, Object[] args) {
 		String uri = route.getRoute();
 		for(int i = 0; i < args.length; i++) {
-			uri.replace("{" + route.argNames.get(i) + "}", args[i]);
+			uri = uri.replace("{" + route.argNames.get(i) + "}", args[i].toString());
 		}
 		return uri;
 	}
