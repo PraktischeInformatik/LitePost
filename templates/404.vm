@@ -1,0 +1,8 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+	<h2>404 - Resource not found</h2>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
