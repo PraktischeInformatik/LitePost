@@ -68,5 +68,9 @@ public class Model {
 	public DatabaseQueryManager getQueryManager() {
 		return dbQueryManager;
 	}
+	
+	public void close() throws DatabaseCriticalErrorException {
+		dbConnector.close();
+	}
 
 }

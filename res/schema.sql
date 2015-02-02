@@ -7,7 +7,7 @@ CREATE TABLE Users
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    admin INT(1) NOT NULL
+    admin INT(1) NOT NULL DEFAULT 0
 );
 
 DROP TABLE IF EXISTS Messages;
@@ -62,11 +62,10 @@ CREATE TABLE Comments
 DROP TABLE IF EXISTS Sessions;
 CREATE TABLE Sessions
 (
-  token VARCHAR(255) NOT NULL,
-  expiration INT NOT NULL,
+  session_id VARCHAR(255) NOT NULL,
   key VARCHAR(64) NOT NULL,
   value TEXT NOT NULL,
-  PRIMARY KEY(token, key)
+  PRIMARY KEY(session_id, key)
 );
 
 DROP TABLE IF EXISTS Ids;
@@ -92,3 +91,14 @@ CREATE TABLE Post_has_Images
   FOREIGN KEY(post_id) REFERENCES Posts(post_id),
   FOREIGN KEY(image_id) REFERENCES Images(image_id)
 );
+
+INSERT INTO Ids(table_name, next_id) VALUES("Users", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Messages", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Posts", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Events ", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Comments", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Sessions", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Ids", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Images", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Post_has_Images", 0);
+

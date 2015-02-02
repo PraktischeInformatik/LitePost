@@ -9,5 +9,5 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public interface Handler {
-	public Response handle(IHTTPSession session, Map<String, String> args, HashMap<String, Object> data, Model model);
+	public Response handle(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model);
 }

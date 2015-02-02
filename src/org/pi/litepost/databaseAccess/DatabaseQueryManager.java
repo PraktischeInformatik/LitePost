@@ -3,12 +3,6 @@ package org.pi.litepost.databaseAccess;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-/**
- * the DatabaseQueryManager
- * 
- * @author Andreas Linzenberger, Julia Moos
- *
- */
 public class DatabaseQueryManager {
 	DatabaseConnector databaseConnector;
 	HashMap<String, DatabaseQuery> databaseQueries;
@@ -16,119 +10,176 @@ public class DatabaseQueryManager {
 	public DatabaseQueryManager(DatabaseConnector databaseConnector) {
 		this.databaseConnector = databaseConnector;
 		databaseQueries = new HashMap<String, DatabaseQuery>();
-
+		
 		// Comments:
-		databaseQueries.put("deleteComment", new DatabaseQuery(
-				"DELETE FROM Comments WHERE comment_id = ?"));
-		databaseQueries.put("deleteCommentByUser", new DatabaseQuery(
-				"DELETE FROM Comments WHERE comment_id = ?"));
-		databaseQueries.put("getComment", new DatabaseQuery(
-				"SELECT * FROM Comments WHERE comment_id = ?"));
-		databaseQueries.put("getCommentsByPosts", new DatabaseQuery(
-				"SELECT * FROM Comments WHERE post_id = ?"));
-		databaseQueries
-				.put("insertComment",
-						new DatabaseQuery(
-								"INSERT INTO Comments VALUES(user_id = ?, content = ?, date = ?, parent_id = ?, post_id = ?)"));
-		databaseQueries.put("updateComment", new DatabaseQuery(
-				"UPDATE Comments SET text = ? WHERE comment_id = ?"));
-		databaseQueries.put("reportComment", new DatabaseQuery(
-				"UPDATE comments SET reported = 1"));
-		databaseQueries.put("getCommentByParentId", new DatabaseQuery(
-				"SELECT * FROM Comments WHERE parentId = ?"));
-		databaseQueries.put("getReportedComments", new DatabaseQuery(
-				"SELECT * FROM Comments WHERE reported = 1"));
+		databaseQueries.put("deleteComment", new DatabaseQuery(false, 
+			"DELETE FROM Comments WHERE comment_id = ?"
+		));
+		databaseQueries.put("deleteCommentByUser", new DatabaseQuery(false, 
+			"DELETE FROM Comments WHERE comment_id = ?"
+		));
+		databaseQueries.put("getComment", new DatabaseQuery(true, 
+			"SELECT * FROM Comments WHERE comment_id = ?"
+		));
+		databaseQueries.put("getCommentsByPosts", new DatabaseQuery(true, 
+			"SELECT * FROM Comments WHERE post_id = ?"
+		));
+		databaseQueries.put("insertComment", new DatabaseQuery(false, 
+			"INSERT INTO Comments(comment_id, user_id, content, date, parent_id, post_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Comments"
+		));
+		databaseQueries.put("updateComment", new DatabaseQuery(false, 
+			"UPDATE Comments SET text = ? WHERE comment_id = ?"
+		));
+		databaseQueries.put("reportComment", new DatabaseQuery(false, 
+			"UPDATE comments SET reported = 1"
+		));
+		databaseQueries.put("getCommentByParentId", new DatabaseQuery(true, 
+			"SELECT * FROM Comments WHERE parentId = ?"
+		));
+		databaseQueries.put("getReportedComments", new DatabaseQuery(true, 
+			"SELECT * FROM Comments WHERE reported = 1"
+		));
 
 		// Messages:
-		databaseQueries.put("deleteMessage", new DatabaseQuery(
-				"DELETE FROM Messages WHERE message_id = ?"));
-		databaseQueries.put("deleteMessageByUser", new DatabaseQuery(
-				"DELETE FROM Messages WHERE receiver = ? OR sender = ?"));
-		databaseQueries.put("getMessagesByUser", new DatabaseQuery(
-				"SELECT * FROM Messages WHERE userId = ?"));
-		databaseQueries
-				.put("insertMessage",
-						new DatabaseQuery(
-								"INSERT INTO Messages VALUES(date = ?,sender = ?, receiver = ?, subject = ?, content = ?, hidden = 0, read = 0 )"));
-		databaseQueries.put("getMessagesById", new DatabaseQuery(
-				"SELECT * FROM Messages WHERE message_id = ?"));
+		databaseQueries.put("deleteMessage", new DatabaseQuery(false, 
+			"DELETE FROM Messages WHERE message_id = ?"
+		));
+		databaseQueries.put("deleteMessageByUser", new DatabaseQuery(false, 
+			"DELETE FROM Messages WHERE receiver = ? OR sender = ?"
+		));
+		databaseQueries.put("getMessagesByUser", new DatabaseQuery(true, 
+			"SELECT * FROM Messages WHERE userId = ?"
+		));
+		databaseQueries.put("insertMessage",new DatabaseQuery(false, 
+			"INSERT INTO Messages(message_id, date, sender, receiver, subject, content) VALUES(?, ?, ?, ?, ?, ?)",
+			"Messages"
+		));
+		databaseQueries.put("getMessagesById", new DatabaseQuery(true, 
+			"SELECT * FROM Messages WHERE message_id = ?"
+		));
 
 		// Posts:
-		databaseQueries.put("deletePost", new DatabaseQuery(
-				"DELETE FROM Posts WHERE post_id = ?"));
-		databaseQueries.put("deletePostByUser", new DatabaseQuery(
-				"DELETE FROM Posts WHERE user_id = ?"));
-		databaseQueries.put("getReportPost", new DatabaseQuery(
-				"SELECT * FROM Posts WHERE reported = 1"));
-		databaseQueries
-				.put("insertPost",
-						new DatabaseQuery(
-								"INSERT INTO Posts VALUES(title = ?, content = ?, date = ?, contact = ?, user_id= ?)"));
+		databaseQueries.put("deletePost", new DatabaseQuery(false, 
+			"DELETE FROM Posts WHERE post_id = ?"
+		));
+		databaseQueries.put("deletePostByUser", new DatabaseQuery(false, 
+			"DELETE FROM Posts WHERE user_id = ?"
+		));
+		databaseQueries.put("getReportPost", new DatabaseQuery(true, 
+			"SELECT * FROM Posts WHERE reported = 1"
+		));
+		databaseQueries.put("insertPost", new DatabaseQuery(false, 
+			"INSERT INTO Posts(post_id, title, content, date, contact, user_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Posts"
+		));
 		// TODO funktioniert das so?
-		databaseQueries.put("deleteOldPosts", new DatabaseQuery(
-				"DELETE FROM Posts WHERE date < ?"));
-		databaseQueries
-				.put("updatePost",
-						new DatabaseQuery(
-								"UPDATE Comments SET title = ?, content = ?, contact = ? WHERE comment_id = ?"));
-		databaseQueries.put("getAllPosts", new DatabaseQuery(
-				"SELECT * FROM Posts"));
-		databaseQueries.put("getPostById", new DatabaseQuery(
-				"SELECT * FROM Posts WHERE post_id = ?"));
-		databaseQueries.put("getPostByUser", new DatabaseQuery(
-				"SELECT * FROM Posts WHERE user_id = ?"));
-		databaseQueries.put("reportPost", new DatabaseQuery(
-				"UPDATE posts SET reported = 1"));
-		databaseQueries.put("getReportedPosts", new DatabaseQuery(
-				"SELECT * FROM posts WHERE reported = 1"));
-
+		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false, 
+			"DELETE FROM Posts WHERE date < ?"
+		));
+		databaseQueries.put("updatePost", new DatabaseQuery(false, 
+			"UPDATE Comments SET title = ?,"
+			+ " content = ?, contact = ? WHERE comment_id = ?"
+		));
+		databaseQueries.put("getAllPosts", new DatabaseQuery(true, 
+			"SELECT * FROM Posts"
+		));
+		databaseQueries.put("getPostById", new DatabaseQuery(true, 
+			"SELECT * FROM Posts WHERE post_id = ?"
+		));
+		databaseQueries.put("getPostByUser", new DatabaseQuery(true, 
+			"SELECT * FROM Posts WHERE user_id = ?"
+		));
+		databaseQueries.put("reportPost", new DatabaseQuery(false, 
+			"UPDATE posts SET reported = 1"
+		));
+		databaseQueries.put("getReportedPosts", new DatabaseQuery(true, 
+			"SELECT * FROM posts WHERE reported = 1"
+		));
+		
 		// Events:
-		databaseQueries.put("getEvents", new DatabaseQuery(
-				"SELECT * FROM Posts NATURAL JOIN Events"));
-
-		// images
-		databaseQueries
-				.put("getImagesByPost",
-						new DatabaseQuery(
-								"SELECT * FROM Images WHERE image_id = (SELECT image_id FROM Post_has_Images WHERE post_id = ?"));
+		databaseQueries.put("getEvents", new DatabaseQuery(true,
+			"SELECT * FROM Posts NATURAL JOIN Events"
+		));
+		// Images:
+		databaseQueries.put("getImagesByPost", new DatabaseQuery(true, 
+			"SELECT * FROM Images"
+			+ " WHERE image_id = "
+			+ "(SELECT image_id FROM Post_has_Images WHERE post_id = ?)"
+		));
 
 		// User:
-		databaseQueries.put("deleteUser", new DatabaseQuery(
-				"DELETE FROM Users WHERE user_id = ?"));
-		databaseQueries.put("checkUsername", new DatabaseQuery(
-				"SELECT * FROM Users WHERE username = ?"));
-		databaseQueries
-				.put("insertUser",
-						new DatabaseQuery(
-								"INSERT INTO Users VALUES(username = ?, password = ?, fistname= ?, lastname = ?, email = ?, admin = 0 )"));
-		databaseQueries.put("getPasswordHash", new DatabaseQuery(
-				"SELECT password FROM Users WHERE username = ?"));
-		databaseQueries
-				.put("updateUser",
-						new DatabaseQuery(
-								"UPDATE Users SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? WHERE id = ?"));
-		databaseQueries.put("getUserByUsername", new DatabaseQuery(
-				"SELECT * FROM Users WHERE username = ?"));
-		databaseQueries.put("getUserById", new DatabaseQuery(
-				"SELECT * FROM Users WHERE user_id = ?"));
-		databaseQueries.put("setAdmin", new DatabaseQuery(
-				"UPDATE Users SET admin = 1"));
+		databaseQueries.put("deleteUser", new DatabaseQuery(false, 
+			"DELETE FROM Users WHERE user_id = ?"
+		));
+		databaseQueries.put("checkUsername", new DatabaseQuery(true, 
+			"SELECT * FROM Users WHERE username = ?"
+		));
+		databaseQueries.put("insertUser", new DatabaseQuery(false, 
+			"INSERT INTO Users(user_id, username, password, firstname, lastname, email, admin) VALUES(?, ?, ?, ?, ?, ?)",
+			"Users"
+		));
+		databaseQueries.put("checkUser", new DatabaseQuery(true, 
+			"SELECT * FROM Users WHERE username = ?, password = ?"
+		));
+		databaseQueries.put("updateUser", new DatabaseQuery(false, 
+			"UPDATE Users SET username = ?, password = ?,"
+			+ " firstname = ?, lastname = ?, email = ? WHERE id = ?"
+		));
+		databaseQueries.put("getUserByUsername", new DatabaseQuery(true, 
+			"SELECT * FROM Users WHERE username = ?"
+		));
+		databaseQueries.put("getUserById", new DatabaseQuery(true, 
+			"SELECT * FROM Users WHERE user_id = ?"
+		));
+		databaseQueries.put("setAdmin", new DatabaseQuery(false, 
+			"UPDATE Users SET admin = 1"
+		));
 
+		// Session
+		databaseQueries.put("startSession", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("endSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE token = ?"
+			));
+		
+		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("getSessionVar", new DatabaseQuery(true,
+				"SELECT value FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("updateSessionVar", new DatabaseQuery(true,
+				"UPDATE Sessions SET value = ? where session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("sessionKeyExists", new DatabaseQuery(true,
+				"SELECT Count(*) FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("getAllSessions", new DatabaseQuery(true,
+				"SELECT * FROM Sessions WHERE key = \"expiration\""
+			));
+		
+		databaseQueries.put("removeSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE session_id = ?"
+			));
+		
 		// Ids:
-		databaseQueries.put("setCommentId", new DatabaseQuery(
-				"UPDATE Ids SET commentId= commentId+1"));
-		databaseQueries.put("setMessageId", new DatabaseQuery(
-				"UPDATE Ids SET messageId= messageId+1"));
-		databaseQueries.put("setPostId", new DatabaseQuery(
-				"UPDATE Ids SET postId= postId+1"));
-		databaseQueries.put("setUserId", new DatabaseQuery(
-				"UPDATE Ids SET userId= userId+1"));
-
+		databaseQueries.put("getIdByTableName", new DatabaseQuery(true,
+			"SELECT next_id FROM Ids WHERE table_name = ?"
+		));
+		databaseQueries.put("incrementId", new DatabaseQuery(false,
+			"UPDATE Ids SET next_Id = next_Id + 1 WHERE table_name = ?"
+		));
 	}
 
-	public ResultSet executeQuery(String requestName, Object... values)
-			throws DatabaseCriticalErrorException {
-		DatabaseQuery databaseQuery = databaseQueries.get(requestName);
-		return databaseQuery.execute(databaseConnector, values);
+	public ResultSet executeQuery(String queryName, Object... values) throws DatabaseCriticalErrorException{
+		DatabaseQuery databaseQuery = databaseQueries.get(queryName);
+		return databaseQuery.execute(this, databaseConnector, values);
 	}
 }

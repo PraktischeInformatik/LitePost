@@ -273,7 +273,6 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	private ArrayList<Post> createPosts(ResultSet result)
 			throws DatabaseCriticalErrorException, SQLException {
 		int postId;
@@ -287,7 +286,7 @@ public class PostManager extends Manager {
 		int userId;
 		Post lPost;
 
-		ArrayList<Post> posts = null;
+		ArrayList<Post> posts = new ArrayList<>();
 		ResultSet imResult;
 
 		while (result.next()) {

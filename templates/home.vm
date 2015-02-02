@@ -1,8 +1,11 @@
 #parse("header.vm")
 <div id="wrapper">
   	<div id="main"> 
-
-    
+  	  <ul>
+    	#foreach($post in $posts)
+    	  <li>$post.getTitle()</li>
+    	#end
+      </ul>
     </div>
   </div>
   #parse("sidebar.vm")
