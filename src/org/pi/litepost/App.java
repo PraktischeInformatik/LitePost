@@ -15,6 +15,7 @@ import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
+import org.pi.litepost.controllers.PostController;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -31,42 +32,44 @@ public class App extends NanoHTTPD{
 		Router.add("calendar", Method.GET, "/calendar", HomeController::getCalendar);
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
 		
+		//user
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
+		
+		//posts
+		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
+		Router.add("newPost", Method.GET, "/posts/new", PostController::getNew);
+		Router.add("insertPost", Method.POST, "/posts/new", PostController::postNew);
+		Router.add("singlePost", Method.GET, "/posts/{post_id}", PostController::getSingle);
+		
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
-		Model model;
-		try {
-			model = new Model();
+		try (Model model = new Model()) {
 			model.getSessionManager().cleanSessions();
 			model.getSessionManager().resumeSession(session.getCookies());
+			
+			System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
+			Route route = Router.getHandler(session);
+			Response resp = null;
+			if (route != null) {
+				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
+				HashMap<String, String> files = new HashMap<>();
+				if (Method.PUT.equals(session.getMethod()) || Method.POST.equals(session.getMethod())) {
+					try {
+						session.parseBody(files);
+					} catch (Exception e) {
+						return Router.error(e);
+					}
+				}
+				resp = route.getHandler().handle(session, args, files, new HashMap<>(), model);
+			}else {
+				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", new HashMap<>()));
+			}
+			return resp;
 		} catch (DatabaseCriticalErrorException | SQLException e) {
 			return Router.error(e);
 		}
-		
-		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
-		Route route = Router.getHandler(session);
-		Response resp = null;
-		if (route != null) {
-			HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
-			HashMap<String, String> files = new HashMap<>();
-			if (Method.PUT.equals(session.getMethod()) || Method.POST.equals(session.getMethod())) {
-				try {
-					session.parseBody(files);
-				} catch (Exception e) {
-					return Router.error(e);
-				}
-			}
-			resp = route.getHandler().handle(session, args, files, new HashMap<>(), model);
-		}else {
-			resp = new Response(Response.Status.NOT_FOUND, "text/plain", "404 - Resource not found");
-		}
-		try {
-			model.close();
-		} catch (DatabaseCriticalErrorException e) {
-		}
-		return resp;
 	}
 
 	public static void main(String[] args) {
