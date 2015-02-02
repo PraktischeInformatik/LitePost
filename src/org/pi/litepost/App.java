@@ -45,11 +45,23 @@ public class App extends NanoHTTPD{
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
+		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
+		
+		//performance improvement: /public/.* needs no model. bypass everything
+		if(session.getUri().startsWith("/public/")) {
+			Route route = Router.getHandler(session);
+			if(route != null) {
+				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
+				HashMap<String, String> files = new HashMap<>();
+				return route.getHandler().handle(session, args, files, new HashMap<>(), null);
+			}
+		}
+		
+		// standard setup & route handling
 		try (Model model = new Model()) {
 			model.getSessionManager().cleanSessions();
 			model.getSessionManager().resumeSession(session.getCookies());
 			
-			System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 			Route route = Router.getHandler(session);
 			Response resp = null;
 			if (route != null) {

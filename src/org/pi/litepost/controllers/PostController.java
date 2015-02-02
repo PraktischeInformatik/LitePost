@@ -46,14 +46,27 @@ public class PostController {
 	}
 	
 	public static Response getNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		data.put("title", "");
+		data.put("content", "");
+		data.put("contact", "");
+		data.put("error", false);
 		return new Response(View.make("post.new", data));
 	}
 	
 	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		Map<String, String> params = session.getParms();
-		String title = params.get("title");
-		String content = params.get("content");
-		String contact = params.get("contact");
+		
+		String title = View.sanitizeStrict(params.getOrDefault("title", ""));
+		String content = View.sanitizePostContent(params.getOrDefault("content", ""));
+		String contact = View.sanitizeStrict(params.getOrDefault("contact", ""));
+		if(title.equals("") || content.equals("") || contact.equals("")) {
+			data.put("title", title);
+			data.put("content", content);
+			data.put("contact", contact);
+			data.put("error", true);
+			return new Response(View.make("post.new", data));
+		}
+		
 		try {
 			model.getPostManager().insert(title, content, contact, 0);
 		} catch (DatabaseCriticalErrorException e) {
