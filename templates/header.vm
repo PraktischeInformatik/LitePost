@@ -14,8 +14,8 @@
   <h1 id="title">Lite Post</h1>
   <nav id="nav">
     <ul>
-      <a href="about.html"><li>About</li></a>
-      <a href="index.html"><li>Posts</li></a>
+      <a href="#"><li>About</li></a>
+      <a href="${Router.linkTo("allPosts")}"><li>Posts</li></a>
       <a href="${Router.linkTo("calendar")}"><li>Events</li></a>
     </ul>
   </nav>
