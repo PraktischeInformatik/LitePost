@@ -1,0 +1,61 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+  
+  
+ <div class=allEvents_day>
+   <h2>Sonntag, 25.02.2015</h2>
+
+   <div class="eventDayButtons">
+   <button>&lt 24.02.2015</button>
+   <button>&gt 26.02.2015</button>
+   </div>
+
+     <table class=tableSingleEvent_day>
+       <tr>
+         <td class="tabelinfo_day">
+           <div class=info_day>
+             <div id="name_day"> Name </div></br>
+             <div id="date_day"> Datum </div></br>
+             <div id="time_day"> Uhrzeit </div></br>
+
+           </div>
+          </td>
+          <td class="tableimage_day">
+            <div class=image_day>
+              <img src="http://lorempixel.com/200/200/nature">
+            </div>
+          </td>
+         </tr>
+        </table>
+
+
+
+
+
+      <table class=tableSingleEvent_day>
+        <tr>
+          <td class="tabelinfo_day">
+            <div class=info_day>
+              <div id="name_day"> Name2 </div></br>
+              <div id="date_day"> Datum2 </div></br>
+              <div id="time_day"> Uhrzeit2 </div></br>
+
+            </div>
+           </td>
+           <td class="tableimage_day">
+             <div class=image_day>
+               <img src="http://lorempixel.com/200/200/nature">
+             </div>
+           </td>
+          </tr>
+         </table>
+
+ </div>
+
+ 
+    
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
