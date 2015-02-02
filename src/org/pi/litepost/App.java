@@ -14,6 +14,7 @@ import org.pi.litepost.Router.Route;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
+import org.pi.litepost.controllers.LoginController;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -27,9 +28,11 @@ public class App extends NanoHTTPD{
 		
 		Router.add("files", Method.GET, "/public/.*", FileController::getFile);
 		Router.add("home", Method.GET, "/", HomeController::getHome);
-		Router.add("login", Method.GET, "/login", HomeController::getLogin);
 		Router.add("calendar", Method.GET, "/calendar", HomeController::getCalendar);
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
+		
+		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
+		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
 	}
 	
 	@Override public Response serve(IHTTPSession session) {
@@ -44,12 +47,26 @@ public class App extends NanoHTTPD{
 		
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		Route route = Router.getHandler(session);
+		Response resp = null;
 		if (route != null) {
 			HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
-			return route.getHandler().handle(session, args, new HashMap<>(), model);
+			HashMap<String, String> files = new HashMap<>();
+			if (Method.PUT.equals(session.getMethod()) || Method.POST.equals(session.getMethod())) {
+				try {
+					session.parseBody(files);
+				} catch (Exception e) {
+					return Router.error(e);
+				}
+			}
+			resp = route.getHandler().handle(session, args, files, new HashMap<>(), model);
 		}else {
-			return new Response(Response.Status.NOT_FOUND, "text/plain", "404 - Resource not found");
+			resp = new Response(Response.Status.NOT_FOUND, "text/plain", "404 - Resource not found");
 		}
+		try {
+			model.close();
+		} catch (DatabaseCriticalErrorException e) {
+		}
+		return resp;
 	}
 
 	public static void main(String[] args) {
@@ -57,7 +74,6 @@ public class App extends NanoHTTPD{
 		p.setProperty("resource.loader", "file");
         p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
         File f = new File("templates");
-        System.out.println(f.getAbsolutePath());
         p.setProperty("file.resource.loader.path", f.getAbsolutePath());
         
         

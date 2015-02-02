@@ -25,8 +25,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Comments WHERE post_id = ?"
 		));
 		databaseQueries.put("insertComment", new DatabaseQuery(false, 
-			"INSERT INTO Comments VALUES(user_id = ?,"
-			+ " content = ?, date = ?, parent_id = ?, post_id = ?)"
+			"INSERT INTO Comments(comment_id, user_id, content, date, parent_id, post_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Comments"
 		));
 		databaseQueries.put("updateComment", new DatabaseQuery(false, 
 			"UPDATE Comments SET text = ? WHERE comment_id = ?"
@@ -52,8 +52,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Messages WHERE userId = ?"
 		));
 		databaseQueries.put("insertMessage",new DatabaseQuery(false, 
-			"INSERT INTO Messages VALUES(date = ?,sender = ?, receiver = ?,"
-			+ " subject = ?, content = ?, hidden = 0, read = 0 )"
+			"INSERT INTO Messages(message_id, date, sender, receiver, subject, content) VALUES(?, ?, ?, ?, ?, ?)",
+			"Messages"
 		));
 		databaseQueries.put("getMessagesById", new DatabaseQuery(true, 
 			"SELECT * FROM Messages WHERE message_id = ?"
@@ -70,8 +70,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Posts WHERE reported = 1"
 		));
 		databaseQueries.put("insertPost", new DatabaseQuery(false, 
-			"INSERT INTO Posts VALUES(title = ?, content = ?,"
-			+ " date = ?, contact = ?, user_id= ?)"
+			"INSERT INTO Posts(post_id, title, content, date, contact, user_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Posts"
 		));
 		// TODO funktioniert das so?
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false, 
@@ -116,8 +116,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Users WHERE username = ?"
 		));
 		databaseQueries.put("insertUser", new DatabaseQuery(false, 
-			"INSERT INTO Users VALUES(username = ?, password = ?,"
-			+ " fistname= ?, lastname = ?, email = ?, admin = 0 )"
+			"INSERT INTO Users(user_id, username, password, firstname, lastname, email, admin) VALUES(?, ?, ?, ?, ?, ?)",
+			"Users"
 		));
 		databaseQueries.put("checkUser", new DatabaseQuery(true, 
 			"SELECT * FROM Users WHERE username = ?, password = ?"
@@ -174,7 +174,7 @@ public class DatabaseQueryManager {
 			"SELECT next_id FROM Ids WHERE table_name = ?"
 		));
 		databaseQueries.put("incrementId", new DatabaseQuery(false,
-			"UPDATE Ids SET next_Id= next_Id + 1 WHERE table_name = ?"
+			"UPDATE Ids SET next_Id = next_Id + 1 WHERE table_name = ?"
 		));
 	}
 

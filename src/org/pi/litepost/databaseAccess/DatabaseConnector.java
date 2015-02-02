@@ -172,7 +172,7 @@ public class DatabaseConnector {
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Events", "post_id").next())
 				throw new SQLException();
-			if(!databaseMetaData.getColumns(null, null, "Evnts", "date").next())
+			if(!databaseMetaData.getColumns(null, null, "Events", "event_date").next())
 				throw new SQLException();
 		}catch(SQLException e){
 			try{
@@ -232,7 +232,7 @@ public class DatabaseConnector {
 	
 	private void createSessionsTable(DatabaseMetaData databaseMetaData) throws DatabaseCriticalErrorException{
 		try{
-			if(!databaseMetaData.getColumns(null, null, "Sessions", "token").next())
+			if(!databaseMetaData.getColumns(null, null, "Sessions", "sesion_id").next())
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Sessions", "key").next())
 				throw new SQLException();
@@ -245,10 +245,10 @@ public class DatabaseConnector {
 				);
 				connection.createStatement().execute(
 					"CREATE TABLE Sessions("
-					+ "token VARCHAR(255) NOT NULL,"
+					+ "session_id VARCHAR(255) NOT NULL,"
 					+ "key VARCHAR(64) NOT NULL,"
 					+ "value TEXT NOT NULL,"
-					+ "PRIMARY KEY(token, key));"
+					+ "PRIMARY KEY(session_id, key));"
 				);
 			}catch (SQLException e1) {
 				e1.printStackTrace();
@@ -340,6 +340,10 @@ public class DatabaseConnector {
 	public void commitTransaction() throws SQLException{
 		connection.commit();
 		connection.setAutoCommit(true);
+	}
+	
+	public void rollbackTransaction() throws SQLException {
+		connection.rollback();
 	}
 	
 	public void close() throws DatabaseCriticalErrorException{

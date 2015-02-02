@@ -50,7 +50,7 @@ public class FileController {
         put("class", "application/octet-stream");
     }};
     
-	public static Response getFile(IHTTPSession session, Map<String, String> routeArgs, HashMap<String, Object> data, Model model) {
+	public static Response getFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		//remove first '/'
 		String uri = session.getUri().trim().substring(1);
 		//remove root folder

@@ -49,6 +49,9 @@ public class Router {
 		return args;
 	}
 
+	public static Response redirectTo(String location) {
+		return redirectTo(location, new HashMap<>());
+	}
 	public static Response redirectTo(String location, Map<String, String> args) {
 		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
 		for (Route route : routes) {

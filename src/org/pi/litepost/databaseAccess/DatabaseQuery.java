@@ -81,7 +81,6 @@ public class DatabaseQuery{
 		else{
 			try{
 				databaseConnector.beginTransaction();
-				
 				ResultSet resultSet = databaseQueryManager.executeQuery("getIdByTableName", tableName);
 				int idValue = resultSet.getInt(1);
 				databaseQueryManager.executeQuery("incrementId", tableName);
@@ -124,6 +123,11 @@ public class DatabaseQuery{
 					databaseConnector.commitTransaction();
 				}
 				catch(SQLException e){
+					try {
+						databaseConnector.rollbackTransaction();
+					} catch (SQLException e1) {
+						throw new DatabaseCriticalErrorException("Could not rollback transactions");
+					}
 					throw new DatabaseCriticalErrorException("Could not commit transactions and activate auto commit!");
 				}
 			}
