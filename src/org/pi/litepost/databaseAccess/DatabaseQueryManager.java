@@ -21,12 +21,12 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getComment", new DatabaseQuery(true, 
 			"SELECT * FROM Comments WHERE comment_id = ?"
 		));
-		databaseQueries.put("getCommentsByPosts", new DatabaseQuery(true, 
+		databaseQueries.put("getCommentsByPost", new DatabaseQuery(true, 
 			"SELECT * FROM Comments WHERE post_id = ?"
 		));
 		databaseQueries.put("insertComment", new DatabaseQuery(false, 
-			"INSERT INTO Comments VALUES(user_id = ?,"
-			+ " content = ?, date = ?, parent_id = ?, post_id = ?)"
+			"INSERT INTO Comments(comment_id, user_id, content, date, parent_id, post_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Comments"
 		));
 		databaseQueries.put("updateComment", new DatabaseQuery(false, 
 			"UPDATE Comments SET text = ? WHERE comment_id = ?"
@@ -52,8 +52,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Messages WHERE userId = ?"
 		));
 		databaseQueries.put("insertMessage",new DatabaseQuery(false, 
-			"INSERT INTO Messages VALUES(date = ?,sender = ?, receiver = ?,"
-			+ " subject = ?, content = ?, hidden = 0, read = 0 )"
+			"INSERT INTO Messages(message_id, date, sender, receiver, subject, content) VALUES(?, ?, ?, ?, ?, ?)",
+			"Messages"
 		));
 		databaseQueries.put("getMessagesById", new DatabaseQuery(true, 
 			"SELECT * FROM Messages WHERE message_id = ?"
@@ -70,8 +70,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Posts WHERE reported = 1"
 		));
 		databaseQueries.put("insertPost", new DatabaseQuery(false, 
-			"INSERT INTO Posts VALUES(title = ?, content = ?,"
-			+ " date = ?, contact = ?, user_id= ?)"
+			"INSERT INTO Posts(post_id, title, content, date, contact, user_id) VALUES(?, ?, ?, ?, ?, ?)",
+			"Posts"
 		));
 		// TODO funktioniert das so?
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false, 
@@ -116,8 +116,8 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Users WHERE username = ?"
 		));
 		databaseQueries.put("insertUser", new DatabaseQuery(false, 
-			"INSERT INTO Users VALUES(username = ?, password = ?,"
-			+ " fistname= ?, lastname = ?, email = ?, admin = 0 )"
+			"INSERT INTO Users(user_id, username, password, firstname, lastname, email, admin) VALUES(?, ?, ?, ?, ?, ?)",
+			"Users"
 		));
 		databaseQueries.put("checkUser", new DatabaseQuery(true, 
 			"SELECT * FROM Users WHERE username = ?, password = ?"
@@ -136,20 +136,53 @@ public class DatabaseQueryManager {
 			"UPDATE Users SET admin = 1"
 		));
 
+		// Session
+		databaseQueries.put("startSession", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("endSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE token = ?"
+			));
+		
+		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
+				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"
+			));
+		
+		databaseQueries.put("getSessionVar", new DatabaseQuery(true,
+				"SELECT value FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("updateSessionVar", new DatabaseQuery(true,
+				"UPDATE Sessions SET value = ? where session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("sessionKeyExists", new DatabaseQuery(true,
+				"SELECT Count(*) FROM Sessions WHERE session_id = ? and key = ?"
+			));
+		
+		databaseQueries.put("getAllSessions", new DatabaseQuery(true,
+				"SELECT * FROM Sessions WHERE key = \"expiration\""
+			));
+		
+		databaseQueries.put("removeSession", new DatabaseQuery(false,
+				"DELETE FROM Sessions WHERE session_id = ?"
+			));
+		
 		// Ids:
 		databaseQueries.put("getIdByTableName", new DatabaseQuery(true,
 			"SELECT next_id FROM Ids WHERE table_name = ?"
 		));
 		databaseQueries.put("incrementId", new DatabaseQuery(false,
-			"UPDATE Ids SET next_Id= next_Id + 1 WHERE table_name = ?"
+			"UPDATE Ids SET next_Id = next_Id + 1 WHERE table_name = ?"
 		));
 		databaseQueries.put("initialiseByTableName", new DatabaseQuery(false,
-			"INSERT INTO Ids VALUES(?, 2)"
+        	"INSERT INTO Ids VALUES(?, 2)"
 		));
 	}
 
-	public ResultSet executeQuery(String requestName, Object... values) throws DatabaseCriticalErrorException{
-		DatabaseQuery databaseQuery = databaseQueries.get(requestName);
+	public ResultSet executeQuery(String queryName, Object... values) throws DatabaseCriticalErrorException{
+		DatabaseQuery databaseQuery = databaseQueries.get(queryName);
 		return databaseQuery.execute(this, databaseConnector, values);
 	}
 }
