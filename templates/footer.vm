@@ -1,2 +1,5 @@
-</body>
+   #foreach($script in $Resources.getScriptsFooter())
+      <script type="text/javascript" src="$script"></script>
+   #end
+   </body>
 </html>

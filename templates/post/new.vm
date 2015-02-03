@@ -1,3 +1,9 @@
+$Resources.addStyle("/public/css/pikaday.css")
+$Resources.addStyle("/public/css/medium-editor.css")
+$Resources.addStyle("/public/css/themes/bootstrap.css")
+$Resources.addScriptFooter("/public/js/pikaday.js")
+$Resources.addScriptFooter("/public/js/medium-editor.min.js")
+
 #parse("header.vm")
 
 <div id="wrapper">
@@ -32,10 +38,6 @@
 
   </div>
 </div>
-
-<script type="text/javascript" src="/public/js/pikaday.js"></script>
-
-<script src="/public/js/medium-editor.min.js"></script>
 
 <script>
 var picker = new Pikaday({

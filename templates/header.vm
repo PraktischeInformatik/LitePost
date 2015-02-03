@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Lite Post</title>
-  <link href='http://fonts.googleapis.com/css?family=Merriweather:400,400italic,700,700italic|Lato:400,400italic,700italic,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="/public/css/style.css">
-  <link rel="stylesheet" type="text/css" href="/public/css/pikaday.css">
-  <link rel="stylesheet" type="text/css" href="/public/css/medium-editor.css">
-  <link rel="stylesheet" type="text/css" href="/public/css/themes/bootstrap.css">
+   <meta charset="utf-8">
+   <title>Lite Post</title>
+   <link href='http://fonts.googleapis.com/css?family=Merriweather:400,400italic,700,700italic|Lato:400,400italic,700italic,700' rel='stylesheet' type='text/css'>
+   #foreach($style in $Resources.getStyles())
+      <link rel="stylesheet" type="text/css" href="$style">
+   #end
+   #foreach($script in $Resources.getScriptsHeader())
+      <script type="text/javascript" src="$script"></script>
+   #end
 </head>
 <body>
-<header id="head">
-  <h1 id="title">Lite Post</h1>
-  <nav id="nav">
-    <ul>
+   <header id="head">
+    <h1 id="title">Lite Post</h1>
+    <nav id="nav">
+     <ul>
       <a href="#"><li>About</li></a>
       <a href="${Router.linkTo("allPosts")}"><li>Posts</li></a>
       <a href="${Router.linkTo("calendar")}"><li>Events</li></a>
-    </ul>
-  </nav>
+   </ul>
+</nav>
 
-  <a href="${Router.linkTo("login")}">
-
-    <div id="login">
+<a href="${Router.linkTo("login")}">
+   <div id="login">
       Login
-    </div>
-  </a>
+   </div>
+</a>
 </header>
