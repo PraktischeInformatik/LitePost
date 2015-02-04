@@ -1,0 +1,36 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+<div class="profile">
+    <h1> Mein Profil </h1>
+
+    <table>
+      <tr id="username">
+          <td class="term" id="username_term"><div>Username:</div></td>
+          <td class="data" id="username_data"><div>Hansi</div></td>
+      </tr>
+      <tr id="prename">
+          <td class="term" id="prename_term"><div>Vorname:</div></td>
+          <td class="data" id="prename_data"><div>Hans</div></td>
+      </tr>
+      <tr id="lastname">
+          <td class="term" id="lastname_term"><div>Nachname:</div></td>
+          <td class="data" id="lastname_data"><div>Mueller</div></td>
+      </tr>
+      <tr id="mail">
+          <td class="term" id="mail_term"><div>E-Mail Adresse:</div></td>
+          <td class="data" id="mail_data"><div>meineadresse.de</div></td>
+      </tr>
+      <tr> <td></td> <td></td> <td> <button id="edit_profile_button">Bearbeiten</button> </td> </tr>
+    </table>
+
+
+
+  </div>
+  
+  
+    </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

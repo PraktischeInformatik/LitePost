@@ -575,3 +575,99 @@ width:100%;
   margin-left:1em;
   margin-bottom:1em;
 }
+
+
+/*----------------------------------------------------
+   AllPosts
+----------------------------------------------------*/
+
+.allPosts{
+  width:100%;
+}
+
+
+.info_post{
+  float:left;
+  margin-right:1em;
+}
+
+.image_post{
+  float:right;
+}
+
+.tableSinglePost{
+  padding:1em;
+  border-style:solid;
+  border-color:black;
+  border-width:0.1em;
+  margin-bottom:4em;
+  margin-left:1em;
+}
+
+.tabelinfo_post{
+  width:50%;
+}
+
+
+
+/*----------------------------------------------------
+   Profile
+----------------------------------------------------*/
+
+
+
+.profile{
+  width:100%;
+}
+
+.profile table tr td div{
+  margin: 0.5em;
+}
+
+.term{
+  font-weight:bold;
+}
+
+
+.profile table{
+  margin-top:1em;
+  margin-left:0.5em;
+}
+
+#edit_profile_button{
+  margin-top:0.5em;
+  margin-left:0.5em;
+}
+
+
+
+
+/*----------------------------------------------------
+   EditProfile
+----------------------------------------------------*/
+
+
+
+.edit_profile{
+  width:100%;
+}
+
+.edit_profile table tr td div{
+  margin: 0.5em;
+}
+
+
+.term_edit{
+  font-weight:bold;
+}
+
+
+.edit_profile table{
+  margin-top:1em;
+  margin-left:0.5em;
+}
+
+#save_button{
+  margin-top:0.5em;
+  margin-left:0.5em;
+}
