@@ -68,8 +68,8 @@ public class PostController {
 		}
 		
 		try {
-			model.getPostManager().insert(title, content, contact, 0);
-		} catch (DatabaseCriticalErrorException e) {
+			model.getPostManager().insert(title, content, contact);
+		} catch (DatabaseCriticalErrorException | SQLException e) {
 			Router.error(e);
 		}
 		return Router.redirectTo("allPosts");

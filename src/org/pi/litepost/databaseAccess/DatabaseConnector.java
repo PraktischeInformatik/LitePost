@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
@@ -172,7 +173,7 @@ public class DatabaseConnector {
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Events", "post_id").next())
 				throw new SQLException();
-			if(!databaseMetaData.getColumns(null, null, "Evnts", "date").next())
+			if(!databaseMetaData.getColumns(null, null, "Events", "event_date").next())
 				throw new SQLException();
 		}catch(SQLException e){
 			try{
@@ -232,7 +233,7 @@ public class DatabaseConnector {
 	
 	private void createSessionsTable(DatabaseMetaData databaseMetaData) throws DatabaseCriticalErrorException{
 		try{
-			if(!databaseMetaData.getColumns(null, null, "Sessions", "token").next())
+			if(!databaseMetaData.getColumns(null, null, "Sessions", "sesion_id").next())
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Sessions", "key").next())
 				throw new SQLException();
@@ -245,10 +246,10 @@ public class DatabaseConnector {
 				);
 				connection.createStatement().execute(
 					"CREATE TABLE Sessions("
-					+ "token VARCHAR(255) NOT NULL,"
+					+ "session_id VARCHAR(255) NOT NULL,"
 					+ "key VARCHAR(64) NOT NULL,"
 					+ "value TEXT NOT NULL,"
-					+ "PRIMARY KEY(token, key));"
+					+ "PRIMARY KEY(session_id, key));"
 				);
 			}catch (SQLException e1) {
 				e1.printStackTrace();
@@ -263,6 +264,26 @@ public class DatabaseConnector {
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Ids", "next_id").next())
 				throw new SQLException();
+			
+			ResultSet idResultSet = connection.createStatement().executeQuery("SELECT * FROM Ids");
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Users") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Messages") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Posts") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Events") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Comments") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Images") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
 		}catch(SQLException e){
 			try {
 				connection.createStatement().execute(
@@ -272,6 +293,24 @@ public class DatabaseConnector {
 					"CREATE TABLE Ids("
 					+ "table_name varchar(128) PRIMARY KEY NOT NULL,"
 					+ "next_id INT NOT NULL DEFAULT 0);"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Users', 1)"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Messages', 1)"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Posts', 1)"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Events', 1)"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Comments', 1)"
+				);
+				connection.createStatement().execute(
+					"INSERT INTO Ids VALUES('Images', 1)"
 				);
 			}catch (SQLException e1) {
 				e1.printStackTrace();
@@ -340,6 +379,10 @@ public class DatabaseConnector {
 	public void commitTransaction() throws SQLException{
 		connection.commit();
 		connection.setAutoCommit(true);
+	}
+	
+	public void rollbackTransaction() throws SQLException {
+		connection.rollback();
 	}
 	
 	public void close() throws DatabaseCriticalErrorException{

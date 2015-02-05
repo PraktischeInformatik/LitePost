@@ -1,0 +1,32 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+<div class="edit_profile">
+    <h1> Mein Profil bearbeiten </h1>
+
+    <table>
+      <tr>
+          <td class="term_edit"><div><h4>Vorname:</h4></div></td>
+          <td class="data_edit"><div><input type="text" name="iprename" value="Hans"></div></td>
+      </tr>
+      <tr>
+          <td class="term_edit"><div><h4>Nachname:</h4></div></td>
+          <td class="data_edit"><div><input type="text" name="ilastname" value="Mueller"></div></td>
+      </tr>
+      <tr>
+          <td class="term_edit"><div><h4>Passwort:</h4></div></td>
+          <td class="data_edit"><div><input type="text" name="imypsswd" value="123passwort4"></div></td>
+      </tr>
+      <tr> <td></td> <td></td> <td> <button id="save_button">Speichern</button> </td> </tr>
+    </table>
+
+
+
+  </div>
+  
+  
+    </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

@@ -1,0 +1,56 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+
+<div class=allPosts>
+   <h2>Posts</h2>
+
+     <table class=tableSinglePost>
+       <tr>
+         <td class="tabelinfo_post">
+           <div class=info_post>
+             <div id="title_post"> Titel </div></br>
+             <div id="date_post"> Datum </div></br>
+             <div id="contact_post"> Kontakt </div></br>
+
+           </div>
+          </td>
+          <td class="tableimage_post">
+            <div class=image_post>
+              <img src="http://lorempixel.com/200/200/nature">
+            </div>
+          </td>
+        </tr>
+      </table>
+
+
+
+
+
+      <table class=tableSinglePost>
+        <tr>
+          <td class="tabelinfo_post">
+            <div class=info_post>
+              <div id="title_post"> Titel2 </div></br>
+              <div id="date_post"> Datum2 </div></br>
+              <div id="contact_post"> Kontakt&#64gmx.de </div></br>
+
+            </div>
+           </td>
+           <td class="tableimage_post">
+             <div class=image_post>
+               <img src="http://lorempixel.com/200/200/nature">
+             </div>
+           </td>
+         </tr>
+       </table>
+
+ </div>
+ 
+ 
+    
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

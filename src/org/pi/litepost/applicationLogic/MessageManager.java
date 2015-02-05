@@ -28,24 +28,31 @@ public class MessageManager extends Manager {
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String sender, String receiver, String subject,
-			String content) throws SQLException, DatabaseCriticalErrorException {
+	public void insert(String receiver, String subject, String content)
+			throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
+		String sender = "Anonym";
+		if (this.model.getSessionManager().exists("username")) {
+			sender = model.getUserManager().getActual().getUsername();
+		}
 		this.model.getQueryManager().executeQuery("insertMessage", date,
 				sender, receiver, subject, content);
 	}
 
 	/**
-	 * returns an ArrayList containing all Messages of the given User
+	 * returns an ArrayList containing all Messages of the actual User
 	 * 
-	 * @param userId
 	 * @return
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 */
 	@SuppressWarnings("null")
-	public ArrayList<Message> getByUser(int userId) throws SQLException,
+	public ArrayList<Message> getByUser() throws SQLException,
 			DatabaseCriticalErrorException {
+		int userId = 0;
+		if (this.model.getSessionManager().exists("username")) {
+			userId = model.getUserManager().getActual().getUserId();
+		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesByUser", userId);
 
