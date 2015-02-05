@@ -7,16 +7,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseConnector {
+public class DatabaseConnector implements AutoCloseable{
 	private final String jdbcDriverPath;
 	private final String databasePath;
 	private Connection connection;
 	
 	
-	public DatabaseConnector(String databasePath) throws DatabaseCriticalErrorException{
+	public DatabaseConnector(String databasePath){
 		jdbcDriverPath = "org.sqlite.JDBC";
 		this.databasePath = "jdbc:sqlite:" + databasePath;
-		
+	}
+	
+	public void connect() throws DatabaseCriticalErrorException {
 		try{
 			Class.forName(jdbcDriverPath);
 		}catch (ClassNotFoundException e){
@@ -49,6 +51,8 @@ public class DatabaseConnector {
 			createPostHasImageTable(databaseMetaData);
 		}
 	}
+	
+	
 	
 	private void createUsersTable(DatabaseMetaData databaseMetaData) throws DatabaseCriticalErrorException{
 		try{
@@ -313,7 +317,6 @@ public class DatabaseConnector {
 					"INSERT INTO Ids VALUES('Images', 1)"
 				);
 			}catch (SQLException e1) {
-				e1.printStackTrace();
 				throw new DatabaseCriticalErrorException("Could not create table 'Ids'!");
 			}
 		}

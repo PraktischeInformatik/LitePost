@@ -38,7 +38,12 @@ public class Model implements AutoCloseable{
 		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
 		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
-
+		
+		try {
+			dbConnector.connect();
+		} finally {
+			dbConnector.close();
+		}
 	}
 
 	public SessionManager getSessionManager() {

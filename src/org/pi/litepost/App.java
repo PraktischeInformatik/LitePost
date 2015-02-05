@@ -60,7 +60,7 @@ public class App extends NanoHTTPD{
 		}
 		
 		// standard setup & route handling
-		try (Model model = new Model()) {
+		try (Model model = new Model()){
 			model.getSessionManager().cleanSessions();
 			model.getSessionManager().resumeSession(session.getCookies());
 			if(session.getCookies().read("sessionId") == null) {
@@ -86,7 +86,7 @@ public class App extends NanoHTTPD{
 			return resp;
 		} catch (DatabaseCriticalErrorException | SQLException e) {
 			return Router.error(e);
-		}
+		} 
 	}
 
 	public static void main(String[] args) {
