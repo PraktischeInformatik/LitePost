@@ -23,7 +23,7 @@ public class Model implements AutoCloseable{
 	private DatabaseConnector dbConnector;
 	private DatabaseQueryManager dbQueryManager;
 
-	public Model() throws DatabaseCriticalErrorException {
+	public Model() {
 		sessionManager = new SessionManager();
 		sessionManager.setModel(this);
 		userManager = new UserManager();
@@ -38,12 +38,6 @@ public class Model implements AutoCloseable{
 		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
 		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
-		
-		try {
-			dbConnector.connect();
-		} finally {
-			dbConnector.close();
-		}
 	}
 
 	public SessionManager getSessionManager() {
@@ -72,6 +66,10 @@ public class Model implements AutoCloseable{
 
 	public DatabaseQueryManager getQueryManager() {
 		return dbQueryManager;
+	}
+	
+	public void init() throws DatabaseCriticalErrorException {
+		dbConnector.connect();
 	}
 	
 	public void close() throws DatabaseCriticalErrorException {
