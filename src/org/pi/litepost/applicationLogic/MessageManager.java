@@ -40,54 +40,6 @@ public class MessageManager extends Manager {
 	}
 
 	/**
-	 * returns an ArrayList containing all Messages of the given User
-	 * 
-	 * @param userId
-	 * @return
-	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
-	 */
-	@SuppressWarnings("null")
-	public ArrayList<Message> getByUser(int userId) throws SQLException,
-			DatabaseCriticalErrorException {
-		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getMessagesByUser", userId);
-
-		ArrayList<Message> messages = null;
-		int messageId;
-		Timestamp ldate;
-		LocalDateTime date;
-		int sender;
-		int receiver;
-		String subject;
-		String content;
-		boolean hidden;
-		boolean read;
-		Message lmessage;
-		while (result.next()) {
-			messageId = result.getInt("message_id");
-			ldate = result.getTimestamp("date");
-			date = ldate.toLocalDateTime();
-			;
-			sender = result.getInt("sender");
-			receiver = result.getInt("receiver");
-			subject = result.getString("subject");
-			content = result.getString("content");
-			hidden = result.getBoolean("hidden");
-			read = result.getBoolean("read");
-			lmessage = new Message(messageId, date, sender, receiver, subject,
-					content);
-			if (hidden)
-				lmessage.isHidden();
-			if (read)
-				lmessage.isRead();
-
-			messages.add(lmessage);
-		}
-		return messages;
-	}
-
-	/**
 	 * returns an ArrayList containing all Messages of the actual User
 	 * 
 	 * @return

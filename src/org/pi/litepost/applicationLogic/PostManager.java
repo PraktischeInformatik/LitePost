@@ -29,13 +29,13 @@ public class PostManager extends Manager {
 	 * @param contact
 	 * @param userId
 	 * @throws DatabaseCriticalErrorException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public void insert(String title, String content, String contact)
 			throws DatabaseCriticalErrorException, SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
-		if(this.model.getSessionManager().exists("username")){
+		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getActual().getUserId();
 		}
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
@@ -156,7 +156,30 @@ public class PostManager extends Manager {
 	public ArrayList<Post> getByUser(int userId)
 			throws DatabaseCriticalErrorException, SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getPostsByUser");
+				"getPostsByUser", userId);
+		ArrayList<Post> posts = this.createPosts(result);
+		return posts;
+	}
+
+	/**
+	 * returns an ArrayList containing all Post of the actual User without their
+	 * Comments
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	public ArrayList<Post> getByUser() throws DatabaseCriticalErrorException,
+			SQLException {
+		int userId = 0;
+		if (this.model.getSessionManager().exists("username")) {
+			userId = model.getUserManager().getActual().getUserId();
+		}
+
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getPostsByUser", userId);
+
 		ArrayList<Post> posts = this.createPosts(result);
 		return posts;
 	}

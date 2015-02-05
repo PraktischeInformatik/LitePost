@@ -82,10 +82,9 @@ public class UserManager extends Manager {
 	/**
 	 * logout of User with given userId
 	 * 
-	 * @param userId
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void logout(int userId) throws DatabaseCriticalErrorException {
+	public void logout() throws DatabaseCriticalErrorException {
 		model.getSessionManager().endSession();
 	}
 
