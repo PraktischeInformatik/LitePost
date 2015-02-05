@@ -25,8 +25,7 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Comments WHERE post_id = ?"
 		));
 		databaseQueries.put("insertComment", new DatabaseQuery(false, 
-			"INSERT INTO Comments VALUES(user_id = ?,"
-			+ " content = ?, date = ?, parent_id = ?, post_id = ?)"
+			"INSERT INTO Comments VALUES(?, ?, ?, ?, ?)"
 		));
 		databaseQueries.put("updateComment", new DatabaseQuery(false, 
 			"UPDATE Comments SET text = ? WHERE comment_id = ?"
@@ -52,8 +51,7 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Messages WHERE userId = ?"
 		));
 		databaseQueries.put("insertMessage",new DatabaseQuery(false, 
-			"INSERT INTO Messages VALUES(date = ?,sender = ?, receiver = ?,"
-			+ " subject = ?, content = ?, hidden = 0, read = 0 )"
+			"INSERT INTO Messages VALUES(?, ?, ?, ?, ?, 0, 0)"
 		));
 		databaseQueries.put("getMessagesById", new DatabaseQuery(true, 
 			"SELECT * FROM Messages WHERE message_id = ?"
@@ -70,8 +68,7 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Posts WHERE reported = 1"
 		));
 		databaseQueries.put("insertPost", new DatabaseQuery(false, 
-			"INSERT INTO Posts VALUES(title = ?, content = ?,"
-			+ " date = ?, contact = ?, user_id= ?)"
+			"INSERT INTO Posts VALUES(?, ?, ?, ?, ?)"
 		));
 		// TODO funktioniert das so?
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false, 
@@ -116,8 +113,7 @@ public class DatabaseQueryManager {
 			"SELECT * FROM Users WHERE username = ?"
 		));
 		databaseQueries.put("insertUser", new DatabaseQuery(false, 
-			"INSERT INTO Users VALUES(username = ?, password = ?,"
-			+ " fistname= ?, lastname = ?, email = ?, admin = 0 )"
+			"INSERT INTO Users VALUES(?, ?, ?, ?, ?, 0)"
 		));
 		databaseQueries.put("checkUser", new DatabaseQuery(true, 
 			"SELECT * FROM Users WHERE username = ?, password = ?"
