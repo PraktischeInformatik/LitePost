@@ -92,10 +92,10 @@ CREATE TABLE Post_has_Images
   FOREIGN KEY(image_id) REFERENCES Images(image_id)
 );
 
-INSERT INTO Ids(table_name, next_id) VALUES("Users", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Messages", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Posts", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Events ", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Comments", 0);
-INSERT INTO Ids(table_name, next_id) VALUES("Images", 0);
+INSERT INTO Ids(table_name, next_id) VALUES("Users", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Messages", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Posts", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Events ", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Comments", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Images", 1);
 
