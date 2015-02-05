@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
@@ -263,6 +264,26 @@ public class DatabaseConnector {
 				throw new SQLException();
 			if(!databaseMetaData.getColumns(null, null, "Ids", "next_id").next())
 				throw new SQLException();
+			
+			ResultSet idResultSet = connection.createStatement().executeQuery("SELECT * FROM Ids");
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Users") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Messages") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Posts") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Events") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Comments") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
+			idResultSet.next();
+			if(!idResultSet.getString(1).equals("Images") || idResultSet.getInt(2) < 1)
+				throw new SQLException();
 		}catch(SQLException e){
 			try {
 				connection.createStatement().execute(
@@ -274,22 +295,22 @@ public class DatabaseConnector {
 					+ "next_id INT NOT NULL DEFAULT 0);"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Users, 1)"
+					"INSERT INTO Ids VALUES('Users', 1)"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Messages, 1)"
+					"INSERT INTO Ids VALUES('Messages', 1)"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Posts, 1)"
+					"INSERT INTO Ids VALUES('Posts', 1)"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Events, 1)"
+					"INSERT INTO Ids VALUES('Events', 1)"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Comments, 1)"
+					"INSERT INTO Ids VALUES('Comments', 1)"
 				);
 				connection.createStatement().execute(
-					"INSERT INTO Ids VALUES(Images, 1)"
+					"INSERT INTO Ids VALUES('Images', 1)"
 				);
 			}catch (SQLException e1) {
 				e1.printStackTrace();
