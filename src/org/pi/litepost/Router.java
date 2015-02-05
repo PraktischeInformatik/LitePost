@@ -67,9 +67,7 @@ public class Router {
 		if(route != null) {
 			return redirectTo(route, args);
 		}
-		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
-		resp.addHeader("location", location);
-		return resp;
+		return redirectToUrl(location);
 	}
 	
 	public static Response redirectTo(String location, Map<String, String> args) {
@@ -83,18 +81,20 @@ public class Router {
 			}
 			return redirectTo(route, argsList);
 		}
-		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
-		resp.addHeader("location", location);
-		return resp;
+		return redirectToUrl(location);
 	}
 	
 	private static Response redirectTo(Route route, Object[] args) {
-		Response resp = new Response(Status.REDIRECT, "text/plain", "you are being redirected");
 		String uri = route.getRoute();
 		for(int i = 0; i < args.length; i++) {
 			uri = uri.replace("{" + route.argNames.get(i) + "}", args[i].toString());
 		}
-		resp.addHeader("location", uri);
+		return redirectToUrl(uri);
+	}
+	
+	private static Response redirectToUrl(String url) {
+		Response resp = new Response(Status.SEE_OTHER, "text/plain", "you are being redirected");
+		resp.addHeader("location", url);
 		return resp;
 	}
 	
