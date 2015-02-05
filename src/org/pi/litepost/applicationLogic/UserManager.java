@@ -31,11 +31,12 @@ public class UserManager extends Manager {
 	 * @throws UseranameExistsException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
+	 * @throws SQLException
 	 */
 	public void insert(String username, String password, String firstname,
 			String lastname, String email)
 			throws DatabaseCriticalErrorException, UseranameExistsException,
-			NoSuchAlgorithmException, InvalidKeySpecException {
+			NoSuchAlgorithmException, InvalidKeySpecException, SQLException {
 		// check if username is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"checkUsername", username);
@@ -63,9 +64,10 @@ public class UserManager extends Manager {
 	public void login(String username, String password)
 			throws DatabaseCriticalErrorException, LoginFailedException,
 			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+		// TODO check if user has validate his/her email
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPasswordHash", username);
-		if(result == null){
+		if (result == null) {
 			throw new LoginFailedException();
 		}
 		String hpassword = result.getString("password");
@@ -73,35 +75,35 @@ public class UserManager extends Manager {
 		if (!PasswordHash.validatePassword(password, hpassword)) {
 			throw new LoginFailedException();
 		}
-
+		this.model.getSessionManager().startSession();
+		this.model.getSessionManager().set("username", username);
 	}
 
 	/**
 	 * logout of User with given userId
 	 * 
 	 * @param userId
+	 * @throws DatabaseCriticalErrorException
 	 */
-	public void logout(int userId) {
-		// TODO close Session
+	public void logout(int userId) throws DatabaseCriticalErrorException {
+		model.getSessionManager().endSession();
 	}
 
 	/**
-	 * updates all parameters of the User with given id; method is called every
-	 * time a User edits his profile
+	 * updates parameters of actual User
 	 * 
-	 * @param UserId
-	 * @param username
-	 * @param password
 	 * @param firstname
 	 * @param lastname
-	 * @param email
+	 * @param password
 	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void update(int id, String username, String password,
-			String firstname, String lastname, String email)
-			throws DatabaseCriticalErrorException {
-		this.model.getQueryManager().executeQuery("updateUser", username,
-				password, firstname, lastname, email, id);
+	public void update(String firstname, String lastname, String password)
+			throws DatabaseCriticalErrorException, SQLException {
+		User user = this.getActual();
+		int id = user.getUserId();
+		this.model.getQueryManager().executeQuery("updateUser", firstname,
+				lastname, password, id);
 	}
 
 	/**
@@ -112,6 +114,23 @@ public class UserManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 */
 	public void delete(int id) throws DatabaseCriticalErrorException {
+		this.model.getQueryManager().executeQuery("deleteUser", id);
+		this.model.getQueryManager().executeQuery("deletePostByUser", id);
+		this.model.getQueryManager().executeQuery("deleteCommentByUser", id);
+		this.model.getQueryManager().executeQuery("deleteMessageByUser", id);
+	}
+
+	/**
+	 * deletes actual User, all his Posts, Comments and Messages are deleted as
+	 * well
+	 * 
+	 * @param userId
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	public void delete() throws DatabaseCriticalErrorException, SQLException {
+		User user = this.getActual();
+		int id = user.getUserId();
 		this.model.getQueryManager().executeQuery("deleteUser", id);
 		this.model.getQueryManager().executeQuery("deletePostByUser", id);
 		this.model.getQueryManager().executeQuery("deleteCommentByUser", id);
@@ -156,6 +175,18 @@ public class UserManager extends Manager {
 	 */
 	public void setAdmin(int id) throws DatabaseCriticalErrorException {
 		this.model.getQueryManager().executeQuery("setAdmin", id);
+	}
+
+	/**
+	 * returns the actual User
+	 * 
+	 * @return
+	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
+	 */
+	public User getActual() throws DatabaseCriticalErrorException, SQLException {
+		String username = this.model.getSessionManager().get("username");
+		return this.getByName(username);
 	}
 
 	/**

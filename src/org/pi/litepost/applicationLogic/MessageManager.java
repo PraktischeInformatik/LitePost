@@ -28,9 +28,13 @@ public class MessageManager extends Manager {
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String sender, String receiver, String subject,
-			String content) throws SQLException, DatabaseCriticalErrorException {
+	public void insert(String receiver, String subject, String content)
+			throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
+		String sender = "Anonym";
+		if (this.model.getSessionManager().exists("username")) {
+			sender = model.getUserManager().getActual().getUsername();
+		}
 		this.model.getQueryManager().executeQuery("insertMessage", date,
 				sender, receiver, subject, content);
 	}
@@ -46,6 +50,57 @@ public class MessageManager extends Manager {
 	@SuppressWarnings("null")
 	public ArrayList<Message> getByUser(int userId) throws SQLException,
 			DatabaseCriticalErrorException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getMessagesByUser", userId);
+
+		ArrayList<Message> messages = null;
+		int messageId;
+		Timestamp ldate;
+		LocalDateTime date;
+		int sender;
+		int receiver;
+		String subject;
+		String content;
+		boolean hidden;
+		boolean read;
+		Message lmessage;
+		while (result.next()) {
+			messageId = result.getInt("message_id");
+			ldate = result.getTimestamp("date");
+			date = ldate.toLocalDateTime();
+			;
+			sender = result.getInt("sender");
+			receiver = result.getInt("receiver");
+			subject = result.getString("subject");
+			content = result.getString("content");
+			hidden = result.getBoolean("hidden");
+			read = result.getBoolean("read");
+			lmessage = new Message(messageId, date, sender, receiver, subject,
+					content);
+			if (hidden)
+				lmessage.isHidden();
+			if (read)
+				lmessage.isRead();
+
+			messages.add(lmessage);
+		}
+		return messages;
+	}
+
+	/**
+	 * returns an ArrayList containing all Messages of the actual User
+	 * 
+	 * @return
+	 * @throws SQLException
+	 * @throws DatabaseCriticalErrorException
+	 */
+	@SuppressWarnings("null")
+	public ArrayList<Message> getByUser() throws SQLException,
+			DatabaseCriticalErrorException {
+		int userId = 0;
+		if (this.model.getSessionManager().exists("username")) {
+			userId = model.getUserManager().getActual().getUserId();
+		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesByUser", userId);
 

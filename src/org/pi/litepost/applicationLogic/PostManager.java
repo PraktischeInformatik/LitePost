@@ -29,11 +29,15 @@ public class PostManager extends Manager {
 	 * @param contact
 	 * @param userId
 	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException 
 	 */
-	public void insert(String title, String content, String contact, int userId)
-			throws DatabaseCriticalErrorException {
+	public void insert(String title, String content, String contact)
+			throws DatabaseCriticalErrorException, SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
-
+		int userId = 0;
+		if(this.model.getSessionManager().exists("username")){
+			userId = model.getUserManager().getActual().getUserId();
+		}
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
 	}
