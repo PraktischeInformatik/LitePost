@@ -10,20 +10,20 @@ public class DatabaseQuery{
 	private final boolean returnsResultSet;
 	private final String preparationSQL;
 	private PreparedStatement preparedStatement;
-	private final String tableName;
+	private final String tableNameOfId;
 	
 	public DatabaseQuery(boolean returnsResultSet, String preparationSQL){
 		this.returnsResultSet = returnsResultSet;
 		this.preparationSQL = preparationSQL;
 		preparedStatement = null;
-		tableName = null;
+		tableNameOfId = null;
 	}
 	
-	public DatabaseQuery(boolean returnsResultSet, String preparationSQL, String tableName){
+	public DatabaseQuery(boolean returnsResultSet, String preparationSQL, String tableNameOfId){
 		this.returnsResultSet = returnsResultSet;
 		this.preparationSQL = preparationSQL;
 		preparedStatement = null;
-		this.tableName = tableName;
+		this.tableNameOfId = tableNameOfId;
 	}
 	
 	public ResultSet execute(DatabaseQueryManager databaseQueryManager, DatabaseConnector databaseConnector, Object...values) throws DatabaseCriticalErrorException{
@@ -31,18 +31,18 @@ public class DatabaseQuery{
 			try{
 				this.preparedStatement = databaseConnector.createPreparedStatement(preparationSQL);
 			}catch(SQLException e){
-				throw new DatabaseCriticalErrorException("Could not create prepared statement: " + this.preparationSQL, e);
+				throw new DatabaseCriticalErrorException("Could not create prepared statement: " + this.preparationSQL);
 			}
 		}
 		else{
 			try {
 				preparedStatement.clearParameters();
 			}catch (SQLException e) {
-				throw new DatabaseCriticalErrorException("Unexpected error occured while clearing preparedStatement values!", e);
+				throw new DatabaseCriticalErrorException("Unexpected error occured while clearing preparedStatement values!");
 			}
 		}
 		
-		if(tableName == null){
+		if(tableNameOfId == null){
 			if(values != null){
 				try{
 					for(int i = 0; i < values.length; i++){
@@ -72,25 +72,19 @@ public class DatabaseQuery{
 						}
 					}
 				}catch(ArrayIndexOutOfBoundsException e1){
-					throw new DatabaseCriticalErrorException("Too many parameters for this type of request!", e1);		
+					throw new DatabaseCriticalErrorException("Too many parameters for this type of request!");		
 				}catch(SQLException e2){
-					throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!", e2);
+					throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!");
 				}
 			}
 		}
 		else{
 			try{
 				databaseConnector.beginTransaction();
-				
-				ResultSet resultSet = databaseQueryManager.executeQuery("getIdByTableName", tableName);
-				int idValue;
-				if(resultSet.next()){
-					idValue = resultSet.getInt(1);
-				}else{
-					idValue = 1;
-					databaseQueryManager.executeQuery("initializeIdByTableName", tableName);
-				}
-				databaseQueryManager.executeQuery("incrementId", tableName);
+				ResultSet resultSet = databaseQueryManager.executeQuery("getIdByTableName", tableNameOfId);
+				resultSet.next();
+				int idValue = resultSet.getInt(1);
+				databaseQueryManager.executeQuery("incrementId", tableNameOfId);
 				
 				preparedStatement.setInt(1, idValue);
 				
@@ -121,16 +115,21 @@ public class DatabaseQuery{
 					}
 				}
 			}catch(ArrayIndexOutOfBoundsException e1){
-				throw new DatabaseCriticalErrorException("Too many parameters for this type of request!", e1);		
+				throw new DatabaseCriticalErrorException("Too many parameters for this type of request!");		
 			}catch(SQLException e2){
-				throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!", e2);
+				throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!");
 			}
 			finally{
 				try{
 					databaseConnector.commitTransaction();
 				}
 				catch(SQLException e){
-					throw new DatabaseCriticalErrorException("Could not commit transactions and activate auto commit!", e);
+					try {
+						databaseConnector.rollbackTransaction();
+					} catch (SQLException e1) {
+						throw new DatabaseCriticalErrorException("Could not rollback transactions");
+					}
+					throw new DatabaseCriticalErrorException("Could not commit transactions and activate auto commit!");
 				}
 			}
 		}
@@ -144,7 +143,7 @@ public class DatabaseQuery{
 			}
 		}catch(SQLException e){
 			throw new DatabaseCriticalErrorException(
-				"An error occured in the database or there are not enough parameteres for this type of request!", e
+				"An error occured in the database or there are not enough parameteres for this type of request!"
 			);
 		}
 	}
