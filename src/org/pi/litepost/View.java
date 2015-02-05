@@ -3,7 +3,6 @@ package org.pi.litepost;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.velocity.Template;
@@ -36,9 +35,9 @@ public class View {
 			context.put(key, data.get(key));
 		}
 		context.put("Router", Router.class);
-		context.put("Resources", new Resources());
+		context.put("Resources", new HtmlResources());
 		StringWriter writer = new StringWriter();
-		 getTemplate(template).merge(context, writer);
+		getTemplate(template).merge(context, writer);
 		return writer.toString();
 	}
 	
@@ -77,43 +76,4 @@ public class View {
 		return sb.toString();
 	}
 	
-}
-
-class Resources {
-	private ArrayList<String> scriptsHeader = new ArrayList<>();
-	private ArrayList<String> scriptsFooter = new ArrayList<>();
-	private ArrayList<String> styles = new ArrayList<>();
-	
-	public Resources() {
-		addStyle("/public/css/style.css");
-	}
-	
-	public void addStyle(String uri) {	
-		styles.add(uri);
-	}
-	
-	@SuppressWarnings("unused")
-	public void addScriptHeader(String uri) {	
-		scriptsHeader.add(uri);
-	}
-	
-	@SuppressWarnings("unused")
-	public void addScriptFooter(String uri) {	
-		scriptsFooter.add(uri);
-	}
-	
-	@SuppressWarnings("unused")
-	public ArrayList<String> getStyles() {
-		return styles;
-	}
-	
-	@SuppressWarnings("unused")
-	public ArrayList<String> getScriptsHeader() {
-		return scriptsHeader;
-	}
-	
-	@SuppressWarnings("unused")
-	public ArrayList<String> getScriptsFooter() {
-		return scriptsFooter;
-	}
 }
