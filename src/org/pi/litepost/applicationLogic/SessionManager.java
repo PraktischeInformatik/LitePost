@@ -45,11 +45,15 @@ public class SessionManager extends Manager {
 	public void startSession() throws DatabaseCriticalErrorException {
 		String newSessionId = createSessionid();
 		extendSession(newSessionId);
+		Cookie cookie = new Cookie("sessionId", sessionId, 30);
+		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
+		model.getQueryManager().executeQuery("startSession", sessionId, expiration);
+		cookies.set(cookie);
 	}
 	public void extendSession(String sessionId) throws DatabaseCriticalErrorException {
 		Cookie cookie = new Cookie("sessionId", sessionId, 30);
 		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
-		model.getQueryManager().executeQuery("startSession", sessionId, "expiration", expiration);
+		model.getQueryManager().executeQuery("updateSessionVar", sessionId, "expiration", expiration);
 		cookies.set(cookie);
 	}
 	
