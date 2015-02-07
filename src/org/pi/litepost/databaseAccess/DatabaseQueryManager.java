@@ -6,7 +6,6 @@ import java.util.HashMap;
 public class DatabaseQueryManager {
 	DatabaseConnector databaseConnector;
 	HashMap<String, DatabaseQuery> databaseQueries;
-	private DatabaseQuery lastQuery;
 
 	public DatabaseQueryManager(DatabaseConnector databaseConnector) {
 		this.databaseConnector = databaseConnector;
@@ -82,7 +81,7 @@ public class DatabaseQueryManager {
 		));
 		databaseQueries.put("insertImage",new DatabaseQuery(false,
 				"INSERT INTO Images(image_id, source) VALUES(?, ?)",
-				"images"
+				"Images"
 		));
 		databaseQueries.put("addImageToPost",new DatabaseQuery(false,
 				"INSERT INTO Post_has_Images(post_id, image_id) VALUES(?, ?)"
@@ -136,15 +135,13 @@ public class DatabaseQueryManager {
 				"SELECT next_id FROM Ids WHERE table_name = ?"));
 		databaseQueries.put("incrementId", new DatabaseQuery(false,
 				"UPDATE Ids SET next_Id = next_Id + 1 WHERE table_name = ?"));
+		databaseQueries.put("getLastId", new DatabaseQuery(true,
+				"SELECT next_id - 1 FROM Ids WHERE table_name = ?"));
 	}
 
 	public ResultSet executeQuery(String queryName, Object... values)
 			throws DatabaseCriticalErrorException {
-		lastQuery = databaseQueries.get(queryName);
-		return lastQuery.execute(this, databaseConnector, values);
-	}
-	
-	public int getLastInsertId() {
-		return lastQuery.getLastInsertId();
+		DatabaseQuery query = databaseQueries.get(queryName);
+		return query.execute(this, databaseConnector, values);
 	}
 }

@@ -11,7 +11,6 @@ public class DatabaseQuery{
 	private final String preparationSQL;
 	private PreparedStatement preparedStatement;
 	private final String tableNameOfId;
-	private int lastId;
 	
 	public DatabaseQuery(boolean returnsResultSet, String preparationSQL){
 		this.returnsResultSet = returnsResultSet;
@@ -83,11 +82,10 @@ public class DatabaseQuery{
 			try{
 				databaseConnector.beginTransaction();
 				ResultSet resultSet = databaseQueryManager.executeQuery("getIdByTableName", tableNameOfId);
-				resultSet.next();
-				lastId = resultSet.getInt(1);
+				int next_id = resultSet.getInt(1);
 				databaseQueryManager.executeQuery("incrementId", tableNameOfId);
 				
-				preparedStatement.setInt(1, lastId);
+				preparedStatement.setInt(1, next_id);
 				
 				for(int i = 0; i < values.length; i++){
 					if(values[i] instanceof String){
@@ -147,9 +145,5 @@ public class DatabaseQuery{
 				"An error occured in the database or there are not enough parameteres for this type of request!", e
 			);
 		}
-	}
-	
-	public int getLastInsertId() {
-		return lastId;
 	}
 }
