@@ -14,7 +14,8 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class FileController {
-	private static final File homeDir = new File((String) App.config.getOrDefault("publicfolder", "public"));
+	private static final File PUBLIC_DIR = new File((String) App.config.getOrDefault("publicfolder", "public"));
+	private static final File UPLOAD_DIR = new File((String) App.config.getOrDefault("uploadfolder", "public/upload"));
 	public static final String MIME_DEFAULT_BINARY = "application/octet-stream";
     /**
      * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE
@@ -50,11 +51,8 @@ public class FileController {
         put("class", "application/octet-stream");
     }};
     
-	public static Response getFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		//remove first '/'
-		String uri = session.getUri().trim().substring(1);
-		//remove root folder
-        uri = uri.substring(uri.indexOf('/') + 1);
+    public static Response getUploadedFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+    	String uri = args.get("filename");
 		// Remove URL arguments
         if (uri.indexOf('?') >= 0) {
             uri = uri.substring(0, uri.indexOf('?'));
@@ -64,7 +62,28 @@ public class FileController {
         if (uri.startsWith("src/main") || uri.endsWith("src/main") || uri.contains("../")) {
         	return new Response(Response.Status.FORBIDDEN, NanoHTTPD.MIME_PLAINTEXT, "FORBIDDEN: Won't serve ../ for security reasons.");
         }
-    	File f = new File(homeDir, uri);
+    	File f = new File(UPLOAD_DIR, uri);
+        if (!f.exists() || f.isDirectory()) {
+        	return new Response(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "404 - Resource not found");
+        }
+
+        String mimeTypeForFile = getMimeTypeForFile(uri);
+        Response response = serveFile(uri, session.getHeaders(), f, mimeTypeForFile);
+        return response != null ? response : new Response(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "404 - Resource not found");
+    }
+    
+	public static Response getFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		String uri = args.get("filename");
+		// Remove URL arguments
+        if (uri.indexOf('?') >= 0) {
+            uri = uri.substring(0, uri.indexOf('?'));
+        }
+
+        // Prohibit getting out of current directory
+        if (uri.startsWith("src/main") || uri.endsWith("src/main") || uri.contains("../")) {
+        	return new Response(Response.Status.FORBIDDEN, NanoHTTPD.MIME_PLAINTEXT, "FORBIDDEN: Won't serve ../ for security reasons.");
+        }
+    	File f = new File(PUBLIC_DIR, uri);
         if (!f.exists() || f.isDirectory()) {
         	return new Response(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "404 - Resource not found");
         }
