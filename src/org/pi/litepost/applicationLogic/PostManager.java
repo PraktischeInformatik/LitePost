@@ -31,7 +31,7 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public int insert(String title, String content, String contact)
+	public void insert(String title, String content, String contact)
 			throws DatabaseCriticalErrorException, SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
@@ -40,9 +40,21 @@ public class PostManager extends Manager {
 		}
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
-		return this.model.getQueryManager().getLastInsertId();
 	}
 	
+	/**
+	 * adds an image to a post
+	 * @param source the uri of the image
+	 * @param post_id the post to which the image belongs
+	 * @throws DatabaseCriticalErrorException when the image cannot be inserted into the database
+	 * @throws SQLException 
+	 */
+	public void addImage(String source, int post_id) throws DatabaseCriticalErrorException, SQLException {
+		model.getQueryManager().executeQuery("insertImage", source);
+		ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Images");
+		model.getQueryManager().executeQuery("addImageToPost", rs.getInt(1), post_id);
+	}	
+
 	/**
 	 * deletes Comment with given id
 	 * 
