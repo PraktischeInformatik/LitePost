@@ -19,7 +19,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getComment", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE comment_id = ?"));
 		databaseQueries.put("getCommentsByPost", new DatabaseQuery(true,
-				"SELECT * FROM Comments WHERE post_id = ?"));
+				"SELECT * FROM Comments WHERE post_id = ? and parent_id = 0"));
 		databaseQueries.put("insertComment", new DatabaseQuery(false,
 				"INSERT INTO Comments(comment_id, user_id, content, date, parent_id, post_id) VALUES(?, ?, ?, ?, ?, ?)",
 				"Comments"));
@@ -28,7 +28,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("reportComment", new DatabaseQuery(false,
 				"UPDATE comments SET reported = 1"));
 		databaseQueries.put("getCommentsByParentId", new DatabaseQuery(true,
-				"SELECT * FROM Comments WHERE parentId = ?"));
+				"SELECT * FROM Comments WHERE parent_id = ?"));
 		databaseQueries.put("getReportedComments", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE reported = 1"));
 
