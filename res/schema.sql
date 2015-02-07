@@ -38,7 +38,7 @@ CREATE TABLE Posts
 );
 
 DROP TABLE IF EXISTS Events;
-CREATE TABLE Events 
+CREATE TABLE Events
 (
   event_id INT PRIMARY KEY NOT NULL,
   post_id INT NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE Post_has_Images
 INSERT INTO Ids(table_name, next_id) VALUES("Users", 1);
 INSERT INTO Ids(table_name, next_id) VALUES("Messages", 1);
 INSERT INTO Ids(table_name, next_id) VALUES("Posts", 1);
-INSERT INTO Ids(table_name, next_id) VALUES("Events ", 1);
+INSERT INTO Ids(table_name, next_id) VALUES("Events", 1);
 INSERT INTO Ids(table_name, next_id) VALUES("Comments", 1);
 INSERT INTO Ids(table_name, next_id) VALUES("Images", 1);
 
