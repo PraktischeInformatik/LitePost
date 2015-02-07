@@ -75,4 +75,25 @@ public class PostController {
 		return Router.redirectTo("allPosts");
 	}
 	
+	public static Response commentPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		Map<String, String> params = session.getParms();
+		
+		String string_post_id = params.get("post_id");
+		String string_parent_id = params.getOrDefault("parent_id", "0");
+		String content = View.sanitizeStrict(params.getOrDefault("content", ""));
+		if(content.equals("")) {
+			return Router.redirectTo("singlePost", string_post_id);
+		}
+		
+		int post_id = Integer.parseInt(string_post_id);
+		int parent_id = Integer.parseInt(string_parent_id);
+		
+		try {
+			model.getCommentManager().insert(content, parent_id, post_id);
+		} catch (SQLException | DatabaseCriticalErrorException e) {
+			return Router.error(e);
+		}
+		
+		return Router.redirectTo("singlePost", string_post_id);
+	}
 }
