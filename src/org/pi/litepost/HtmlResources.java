@@ -8,19 +8,19 @@ public class HtmlResources {
 	private ArrayList<String> styles = new ArrayList<>();
 	
 	public HtmlResources() {
-		addStyle("/public/css/style.css");
+		addStyle("css/style.css");
 	}
 	
 	public void addStyle(String uri) {	
-		styles.add(uri);
+		styles.add(Router.linkTo("public", uri));
 	}
 	
 	public void addScriptHeader(String uri) {	
-		scriptsHeader.add(uri);
+		scriptsHeader.add(Router.linkTo("public", uri));
 	}
 	
 	public void addScriptFooter(String uri) {	
-		scriptsFooter.add(uri);
+		scriptsFooter.add(Router.linkTo("public", uri));
 	}
 	
 	public ArrayList<String> getStyles() {
