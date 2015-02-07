@@ -3,6 +3,7 @@ $Resources.addStyle("/public/css/medium-editor.css")
 $Resources.addStyle("/public/css/themes/bootstrap.css")
 $Resources.addScriptFooter("/public/js/pikaday.js")
 $Resources.addScriptFooter("/public/js/medium-editor.min.js")
+$Resources.addScriptFooter("/public/js/newpost.js")
 
 #parse("header.vm")
 
@@ -38,30 +39,6 @@ $Resources.addScriptFooter("/public/js/medium-editor.min.js")
 
   </div>
 </div>
-
-<script>
-var picker = new Pikaday({
-  field: document.getElementById("input-date")
-});
-function toggle_event(checkbox) {
-  var input = document.getElementById("date-div");
-  if(checkbox.checked) {
-    input.className = "show"
-  }else {
-    input.className = ""
-  }
-}
-</script>
-<script>
-  function serialize_text() {
-  var content = document.getElementById("input-content");
-  content.value = editor.serialize()["input-editor"].value;
-}
-var editor = new MediumEditor('#input-editor', {
-   placeholder: 'Inhalt',
-   buttons: ['bold', 'italic', 'underline', 'anchor', 'header2']
-});
-</script>
 
 #parse("footer.vm")
 </body>
