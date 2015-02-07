@@ -29,7 +29,7 @@ public class CommentManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void insert(String content, int parentId, int postId)
+	public int insert(String content, int parentId, int postId)
 			throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
@@ -38,6 +38,7 @@ public class CommentManager extends Manager {
 		}
 		this.model.getQueryManager().executeQuery("insertComment", userId,
 				content, date, parentId, postId);
+		return model.getQueryManager().getLastInsertId();
 	}
 
 	/**

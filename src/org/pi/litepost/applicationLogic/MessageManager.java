@@ -28,7 +28,7 @@ public class MessageManager extends Manager {
 	 * @throws SQLException
 	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String receiver, String subject, String content)
+	public int insert(String receiver, String subject, String content)
 			throws SQLException, DatabaseCriticalErrorException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		String sender = "Anonym";
@@ -37,6 +37,7 @@ public class MessageManager extends Manager {
 		}
 		this.model.getQueryManager().executeQuery("insertMessage", date,
 				sender, receiver, subject, content);
+		return model.getQueryManager().getLastInsertId();
 	}
 
 	/**

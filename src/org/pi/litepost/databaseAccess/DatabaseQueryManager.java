@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class DatabaseQueryManager {
 	DatabaseConnector databaseConnector;
 	HashMap<String, DatabaseQuery> databaseQueries;
+	private DatabaseQuery lastQuery;
 
 	public DatabaseQueryManager(DatabaseConnector databaseConnector) {
 		this.databaseConnector = databaseConnector;
@@ -139,7 +140,11 @@ public class DatabaseQueryManager {
 
 	public ResultSet executeQuery(String queryName, Object... values)
 			throws DatabaseCriticalErrorException {
-		DatabaseQuery databaseQuery = databaseQueries.get(queryName);
-		return databaseQuery.execute(this, databaseConnector, values);
+		lastQuery = databaseQueries.get(queryName);
+		return lastQuery.execute(this, databaseConnector, values);
+	}
+	
+	public int getLastInsertId() {
+		return lastQuery.getLastInsertId();
 	}
 }

@@ -33,7 +33,7 @@ public class UserManager extends Manager {
 	 * @throws NoSuchAlgorithmException
 	 * @throws SQLException
 	 */
-	public void insert(String username, String password, String firstname,
+	public int insert(String username, String password, String firstname,
 			String lastname, String email)
 			throws DatabaseCriticalErrorException, UseranameExistsException,
 			NoSuchAlgorithmException, InvalidKeySpecException, SQLException {
@@ -47,6 +47,7 @@ public class UserManager extends Manager {
 		} else {
 			throw new UseranameExistsException();
 		}
+		return model.getQueryManager().getLastInsertId();
 	}
 
 	/**

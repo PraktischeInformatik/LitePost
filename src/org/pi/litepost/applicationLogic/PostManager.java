@@ -31,7 +31,7 @@ public class PostManager extends Manager {
 	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public void insert(String title, String content, String contact)
+	public int insert(String title, String content, String contact)
 			throws DatabaseCriticalErrorException, SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
@@ -40,8 +40,9 @@ public class PostManager extends Manager {
 		}
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
+		return this.model.getQueryManager().getLastInsertId();
 	}
-
+	
 	/**
 	 * deletes Comment with given id
 	 * 
