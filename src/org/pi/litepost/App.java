@@ -27,7 +27,8 @@ public class App extends NanoHTTPD{
 	public App(int port) {
 		super(port);
 		
-		Router.add("files", Method.GET, "/public/.*", FileController::getFile);
+		Router.add("upload", Method.GET, "/public/upload/{filename}", FileController::getUploadedFile);
+		Router.add("public", Method.GET, "/public/{filename}", FileController::getFile);
 		Router.add("home", Method.GET, "/", HomeController::getHome);
 		Router.add("calendar", Method.GET, "/calendar", HomeController::getCalendar);
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
