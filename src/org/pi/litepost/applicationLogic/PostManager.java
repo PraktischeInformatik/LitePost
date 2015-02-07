@@ -144,12 +144,10 @@ public class PostManager extends Manager {
 		ResultSet imResult = this.model.getQueryManager().executeQuery(
 				"getImagesByPost", id);
 
-		int imageId;
-		String source;
 		while (imResult.next()) {
-			imageId = result.getInt("image_id");
-			source = result.getString("source");
-			lPost.setImages(new Image(imageId, source));
+			int imageId = imResult.getInt("image_id");
+			String source = imResult.getString("source");
+			lPost.addImage(new Image(imageId, source));
 		}
 		ArrayList<Comment> comments = this.model.getCommentManager().getByPost(
 				id);
@@ -268,15 +266,12 @@ public class PostManager extends Manager {
 		Timestamp ldate;
 		LocalDateTime date;
 		String contact;
-		int imageId;
-		String source;
 		int userId;
 		LocalDateTime eventDate;
 		Event lEvent;
 
 		ResultSet result = this.model.getQueryManager()
 				.executeQuery("getEvens");
-		ResultSet imResult;
 
 		while (result.next()) {
 			ldate = result.getTimestamp("date");
@@ -291,12 +286,12 @@ public class PostManager extends Manager {
 				userId = result.getInt("user_id");
 				lEvent = new Event(postId, title, content, contact, date,
 						userId, eventDate);
-				imResult = this.model.getQueryManager().executeQuery(
+				ResultSet imResult = this.model.getQueryManager().executeQuery(
 						"getImagesByPost", postId);
 				while (imResult.next()) {
-					imageId = result.getInt("image_id");
-					source = result.getString("source");
-					lEvent.setImages(new Image(imageId, source));
+					int imageId = imResult.getInt("image_id");
+					String source = imResult.getString("source");
+					lEvent.addImage(new Image(imageId, source));
 				}
 				events.add(lEvent);
 			}
@@ -327,7 +322,7 @@ public class PostManager extends Manager {
 		Post lPost;
 
 		ArrayList<Post> posts = new ArrayList<>();
-		ResultSet imResult;
+		
 
 		while (result.next()) {
 			postId = result.getInt("post_id");
@@ -340,12 +335,12 @@ public class PostManager extends Manager {
 
 			lPost = new Post(postId, title, content, contact, date, userId);
 
-			imResult = this.model.getQueryManager().executeQuery(
+			ResultSet imResult = this.model.getQueryManager().executeQuery(
 					"getImagesByPost", postId);
 			while (imResult.next()) {
-				imageId = result.getInt("image_id");
-				source = result.getString("source");
-				lPost.setImages(new Image(imageId, source));
+				imageId = imResult.getInt("image_id");
+				source = imResult.getString("source");
+				lPost.addImage(new Image(imageId, source));
 			}
 			posts.add(lPost);
 		}

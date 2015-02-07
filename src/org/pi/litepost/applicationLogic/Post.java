@@ -13,7 +13,7 @@ public class Post {
 	private String text;
 	private LocalDateTime date;
 	private String contact;
-	private ArrayList<Image> images = null;
+	private ArrayList<Image> images;
 	private int userId;
 	private ArrayList<Comment> comments;
 	private boolean reported = false;
@@ -25,6 +25,8 @@ public class Post {
 		this.text = text;
 		this.contact = contact;
 		this.userId = userId;
+		this.images = new ArrayList<>();
+		this.comments = new ArrayList<>();
 	}
 
 	public int getPostId() {
@@ -83,7 +85,7 @@ public class Post {
 		return images;
 	}
 
-	public void setImages(Image image) {
+	public void addImage(Image image) {
 		images.add(image);
 	}
 
