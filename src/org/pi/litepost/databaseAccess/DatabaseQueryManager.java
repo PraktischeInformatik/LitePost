@@ -74,10 +74,19 @@ public class DatabaseQueryManager {
 		// Events:
 		databaseQueries.put("getEvents", new DatabaseQuery(true,
 				"SELECT * FROM Posts NATURAL JOIN Events"));
+		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,
 				"SELECT * FROM Images WHERE image_id = (SELECT image_id FROM Post_has_Images WHERE post_id = ?)"
 		));
+		databaseQueries.put("insertImage",new DatabaseQuery(false,
+				"INSERT INTO Images(image_id, source) VALUES(?, ?)",
+				"images"
+		));
+		databaseQueries.put("addImageToPost",new DatabaseQuery(false,
+				"INSERT INTO Post_has_Images(post_id, image_id) VALUES(?, ?)"
+		));
+		
 
 		// User:
 		databaseQueries.put("deleteUser", new DatabaseQuery(false,
