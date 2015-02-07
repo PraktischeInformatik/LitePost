@@ -16,6 +16,11 @@
   	<div id="main"> 
       <h2>$post.getTitle()</h2>
       <p>$post.getText()</p>
+      <ul>
+        #foreach($image in $post.getImages())
+          <li><img width="30%" src="$image.getSource()"></li>
+        #end
+      </ul>
       <small>$post.getContact()</small>
       <h3>Kommentare</h3>
       <form method="POST" action="${Router.linkTo("commentPost")}">

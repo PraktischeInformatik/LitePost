@@ -1,9 +1,9 @@
-$Resources.addStyle("/public/css/pikaday.css")
-$Resources.addStyle("/public/css/medium-editor.css")
-$Resources.addStyle("/public/css/themes/bootstrap.css")
-$Resources.addScriptFooter("/public/js/pikaday.js")
-$Resources.addScriptFooter("/public/js/medium-editor.min.js")
-$Resources.addScriptFooter("/public/js/newpost.js")
+$Resources.addStyle("css/pikaday.css")
+$Resources.addStyle("css/medium-editor.css")
+$Resources.addStyle("css/themes/bootstrap.css")
+$Resources.addScriptFooter("js/pikaday.js")
+$Resources.addScriptFooter("js/medium-editor.min.js")
+$Resources.addScriptFooter("js/newpost.js")
 
 #parse("header.vm")
 
@@ -12,7 +12,7 @@ $Resources.addScriptFooter("/public/js/newpost.js")
     #if($error)
       <p>Bitte füllen sie alle benötigten Felder aus</p>
     #end
-    <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}">
+    <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}" enctype="multipart/form-data">
       <div class="block">
         <input id="input-title" type="text" name="title" placeholder="Titel" value="$title">
       </div>
@@ -30,10 +30,12 @@ $Resources.addScriptFooter("/public/js/newpost.js")
       <div id="date-div" class="block">
         <input id="input-date" type="text" name="date" placeholder="Datum">
       </div>
+      <div id="image-div" class="block">
+        <input id="input-image" type="file" name="image" accept="image/*">
+      </div>
       <div class="block">
         <button type="submit" class="general" id="post-submit">Post</button>
       </div>
-
     </form>
 
 
