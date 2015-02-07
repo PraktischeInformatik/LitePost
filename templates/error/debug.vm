@@ -12,6 +12,19 @@
 				#end
 			#end
 		</ul>
+    #if($has_cause)
+      <h3>cause:</h3>  
+      <p>in $cause_classname: $cause_message</p>
+      <ul>
+        #foreach($frame in $cause_trace)
+          #if($frame.getFileName())
+            <li>in $frame.getClassName()#$frame.getMethodName()() line $frame.getLineNumber()</li>
+          #else
+            <li>in $frame.getClassName()#$frame.getMethodName()()</li>
+          #end
+        #end
+      </ul>
+    #end
     </div>
   </div>
   #parse("sidebar.vm")
