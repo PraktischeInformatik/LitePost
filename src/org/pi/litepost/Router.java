@@ -139,6 +139,15 @@ public class Router {
 			data.put("classname", e.getClass().getName());
 			data.put("message", e.getMessage());
 			data.put("trace",  e.getStackTrace());
+			if(e.getCause() != null) {
+				data.put("has_cause", true);
+				data.put("cause_classname", e.getCause().getClass().getName());
+				data.put("cause_message", e.getCause().getMessage());
+				data.put("cause_trace", e.getCause().getStackTrace());
+			} else {
+				data.put("has_cause", false);
+			}
+			
 			return new Response(View.make("error.debug", data));
 		}else {
 			data.put("message", e.getMessage());
