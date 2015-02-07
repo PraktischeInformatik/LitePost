@@ -1,13 +1,42 @@
+#macro(comments $comments)
+  <ul> 
+    #foreach($comment in $comments)
+      <li>
+        <p>$comment.getText()</p>
+        <a href="javascript:answerComment($comment.getCommentId())">Antworten</a>
+        #set($subComments = $comment.getSubComments())
+        #comments($subComments)
+      </li>
+    #end
+  </ul>  
+#end
+
 #parse("header.vm")
 <div id="wrapper">
   	<div id="main"> 
-  	   <h2>$post.getTitle()</h2>
-      $post.getText()
-    	
+      <h2>$post.getTitle()</h2>
+      <p>$post.getText()</p>
       <small>$post.getContact()</small>
-      </ul>
+      <h3>Kommentare</h3>
+      <form method="POST" action="${Router.linkTo("commentPost")}">
+        <input type="hidden" name="post_id" value="$post.getPostId()">
+        <input type="hidden" name="parent_id" value="0" id="parentId">
+        <textarea name="content"></textarea>
+        <button type="submit">Kommentieren</button>
+      </form>
+      #comments($post.getComments())
     </div>
   </div>
   #parse("sidebar.vm")
 </div>
+
+<script type="text/javascript">
+
+function answerComment(comment_id) {
+  var parentId = document.getElementById("parentId");
+  parentId.value = comment_id;
+}
+
+</script>
+
 #parse("footer.vm")
