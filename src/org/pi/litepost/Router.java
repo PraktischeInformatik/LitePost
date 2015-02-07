@@ -21,7 +21,7 @@ public class Router {
 		while (matcher.find()) {
 			argNames.add(route.substring(matcher.start() + 1, matcher.end() - 1));
 		}
-		Pattern pattern = Pattern.compile(matcher.replaceAll("(\\\\w+)"));
+		Pattern pattern = Pattern.compile(matcher.replaceAll("(.+)"));
 		routes.add(new Route(name, method, route, pattern, argNames, handler));
 		return true;
 	}
