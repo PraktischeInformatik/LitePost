@@ -69,7 +69,7 @@ public class Comment {
 		return subComments;
 	}
 
-	public void setSubComments(Comment comment) {
+	public void addSubComment(Comment comment) {
 		this.subComments.add(comment);
 	}
 

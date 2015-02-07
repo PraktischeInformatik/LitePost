@@ -80,9 +80,36 @@ public class CommentManager extends Manager {
 			DatabaseCriticalErrorException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getCommentsByPost", postId);
-		ArrayList<Comment> comments = this.createComments(result);
+		ArrayList<Comment> comments = new ArrayList<>();
+		while(result.next()) {
+			comments.add(this.commentFromResultSet(result));
+		}
 		return comments;
 	}
+	
+	/**
+	 * assembles a comment and its sub comments form a result set recusively
+	 * @param rs the result set from with the comments data
+	 * @return a comment 
+	 * @throws SQLException when fetching data from result set fails
+	 * @throws DatabaseCriticalErrorException when fetchin sub comments fails
+	 */
+	private Comment commentFromResultSet(ResultSet rs) throws SQLException, DatabaseCriticalErrorException {
+		int commentId = rs.getInt("comment_id");
+		int userId = rs.getInt("user_id");
+		String content = rs.getString("content");
+		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
+		int parentId = rs.getInt("parent_id");
+		int postId = rs.getInt("post_id");
+		Comment comment = new Comment(commentId, userId, content, date, parentId, postId);
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getCommentsByParentId", commentId);
+		while(result.next()) {
+			comment.addSubComment(commentFromResultSet(result));
+		}
+		return comment;
+	}
+	
 
 	/**
 	 * set the Comment to reported
@@ -105,80 +132,10 @@ public class CommentManager extends Manager {
 			throws DatabaseCriticalErrorException, SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getReportedComments");
-		ArrayList<Comment> comments = this.createComments(result);
-		return comments;
-	}
-
-	/**
-	 * method creates all Comments of given ResultSet and calls method to create
-	 * the subcomments
-	 * 
-	 * @param result
-	 * @return
-	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
-	 */
-	@SuppressWarnings("null")
-	private ArrayList<Comment> createComments(ResultSet result)
-			throws SQLException, DatabaseCriticalErrorException {
-		ArrayList<Comment> comments = null;
-		int commentId;
-		int userId;
-		String content;
-		Timestamp ldate;
-		LocalDateTime date;
-		int parentId;
-		int postId;
-		while (result.next()) {
-			commentId = result.getInt("comment_id");
-			userId = result.getInt("user_id");
-			content = result.getString("content");
-			ldate = result.getTimestamp("date");
-			date = ldate.toLocalDateTime();
-			parentId = result.getInt("parent_id");
-			postId = result.getInt("post_id");
-			Comment lComment = new Comment(commentId, userId, content, date,
-					parentId, postId);
-			comments.add(lComment);
-			result = this.model.getQueryManager().executeQuery(
-					"getCommentsByParentId", commentId);
-			this.setSubComments(lComment);
+		ArrayList<Comment> comments = new ArrayList<>();
+		while(result.next()) {
+			comments.add(this.commentFromResultSet(result));
 		}
 		return comments;
-	}
-
-	/**
-	 * method adds all Subcomments to a given Comment (and the Subcomments to
-	 * the Subcomments and so on)
-	 * 
-	 * @param comment
-	 * @throws DatabaseCriticalErrorException
-	 * @throws SQLException
-	 */
-	private void setSubComments(Comment comment)
-			throws DatabaseCriticalErrorException, SQLException {
-		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getCommentsByParentId", comment.getCommentId());
-		int commentId;
-		int userId;
-		String content;
-		Timestamp ldate;
-		LocalDateTime date;
-		int parentId;
-		int postId;
-		while (result.next()) {
-			commentId = result.getInt("comment_id");
-			userId = result.getInt("user_id");
-			content = result.getString("content");
-			ldate = result.getTimestamp("date");
-			date = ldate.toLocalDateTime();
-			parentId = result.getInt("parent_id");
-			postId = result.getInt("post_id");
-			Comment lComment = new Comment(commentId, userId, content, date,
-					parentId, postId);
-			comment.setSubComments(lComment);
-			this.setSubComments(lComment);
-		}
-
 	}
 }
