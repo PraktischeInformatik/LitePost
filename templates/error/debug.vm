@@ -1,15 +1,24 @@
+#macro(source $frame)
+  #if($frame.getFileName())
+    <li>in $frame.getClassName()#$frame.getMethodName()() line $frame.getLineNumber() <label for="open$frame.getFileName()$frame.getLineNumber()" style="color: blue; text-decoration: underline">toggle source</label></lic>
+    <input style="display: none" id="open$frame.getFileName()$frame.getLineNumber()" type="checkbox" onclick="openSource(this, 'code$frame.getFileName()$frame.getLineNumber()')" ></input>
+    <pre id="code$frame.getFileName()$frame.getLineNumber()" data-line="$frame.getLineNumber()" class="prism language-java line-numbers" style="font-size: 0.5em;"><code>$error.getSource($frame)</code></pre>
+  #else
+    <li>in $frame.getClassName()#$frame.getMethodName()()</li>
+  #end
+#end
+
+$Resources.addStyle("css/prism.css")
+$Resources.addScriptFooter("js/prism.js")
+
 #parse("header.vm")
 <div id="wrapper">
   	<div id="main"> 
 		<h2>Oops an error occured!</h2>
-		<p>in $classname: $message</p>
+		<p>in $error.getClassName(): $error.getMessage()</p>
 		<ul>
-			#foreach($frame in $trace)
-				#if($frame.getFileName())
-					<li>in $frame.getClassName()#$frame.getMethodName()() line $frame.getLineNumber()</li>
-				#else
-					<li>in $frame.getClassName()#$frame.getMethodName()()</li>
-				#end
+			#foreach($frame in $error.getStackTrace())
+				#source($frame)
 			#end
 		</ul>
     #if($has_cause)
@@ -17,11 +26,7 @@
       <p>in $cause_classname: $cause_message</p>
       <ul>
         #foreach($frame in $cause_trace)
-          #if($frame.getFileName())
-            <li>in $frame.getClassName()#$frame.getMethodName()() line $frame.getLineNumber()</li>
-          #else
-            <li>in $frame.getClassName()#$frame.getMethodName()()</li>
-          #end
+          #source($frame)
         #end
       </ul>
     #end
@@ -29,4 +34,24 @@
   </div>
   #parse("sidebar.vm")
 </div>
+<style type="text/css">
+  pre.prism {
+    display: none;
+  }
+
+  pre.prism[data-show] {
+    display: block;
+  }
+
+</style>
+<script type="text/javascript">
+  function openSource(checkbox, id) {
+    if(checkbox.checked) {
+      document.getElementById(id).setAttribute("data-show", "");
+    }else {
+      document.getElementById(id).removeAttribute("data-show");
+    }
+    
+  }
+</script>
 #parse("footer.vm")
