@@ -86,8 +86,7 @@ public class App extends NanoHTTPD{
 			}else {
 				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", new HashMap<>()));
 			}
-			return Router.error(new Exception());
-			//return resp;
+			return resp;
 		} catch (DatabaseCriticalErrorException | SQLException e) {
 			return Router.error(e);
 		} 
