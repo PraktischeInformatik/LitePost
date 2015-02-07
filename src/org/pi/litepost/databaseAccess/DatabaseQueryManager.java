@@ -27,7 +27,7 @@ public class DatabaseQueryManager {
 				"UPDATE Comments SET text = ? WHERE comment_id = ?"));
 		databaseQueries.put("reportComment", new DatabaseQuery(false,
 				"UPDATE comments SET reported = 1"));
-		databaseQueries.put("getCommentByParentId", new DatabaseQuery(true,
+		databaseQueries.put("getCommentsByParentId", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE parentId = ?"));
 		databaseQueries.put("getReportedComments", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE reported = 1"));
