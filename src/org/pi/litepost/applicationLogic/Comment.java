@@ -26,6 +26,7 @@ public class Comment {
 		this.date = date;
 		this.parentId = parentId;
 		this.postId = postId;
+		this.subComments = new ArrayList<>();
 	}
 
 	public int getCommentId() {
