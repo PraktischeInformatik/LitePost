@@ -1,15 +1,21 @@
 package org.pi.litepost.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pi.litepost.App;
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
+
+import com.google.common.io.Files;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -67,10 +73,27 @@ public class PostController {
 			return new Response(View.make("post.new", data));
 		}
 		
+		String filename = params.get("image");
+		if(filename != null) {
+			String filepath = files.get("image");
+			File input = new File(filepath);
+			String uploadfolder = (String) App.config.get("uploadfolder");
+			File output = new File(uploadfolder + File.separatorChar + filename);
+			if(input.exists()) {
+				try {
+					Files.copy(input, output);
+				} catch (IOException e) {
+					return Router.error(e);
+				}
+			}
+		}
+		
 		try {
 			model.getPostManager().insert(title, content, contact);
+			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
+			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
 		} catch (DatabaseCriticalErrorException | SQLException e) {
-			Router.error(e);
+			return Router.error(e);
 		}
 		return Router.redirectTo("allPosts");
 	}
