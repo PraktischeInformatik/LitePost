@@ -143,7 +143,7 @@ public class DatabaseQuery{
 			}
 		}catch(SQLException e){
 			throw new DatabaseCriticalErrorException(
-				"An error occured in the database or there are not enough parameteres for this type of request!"
+				"An error occured in the database or there are not enough parameteres for this type of request!", e
 			);
 		}
 	}

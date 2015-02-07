@@ -109,7 +109,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getSessionVar", new DatabaseQuery(true,
 				"SELECT value FROM Sessions WHERE session_id = ? and key = ?"));
 
-		databaseQueries.put("updateSessionVar", new DatabaseQuery(true,
+		databaseQueries.put("updateSessionVar", new DatabaseQuery(false,
 				"UPDATE Sessions SET value = ? where session_id = ? and key = ?"));
 
 		databaseQueries.put("sessionKeyExists",new DatabaseQuery(true,

@@ -269,24 +269,8 @@ public class DatabaseConnector implements AutoCloseable{
 			if(!databaseMetaData.getColumns(null, null, "Ids", "next_id").next())
 				throw new SQLException();
 			
-			ResultSet idResultSet = connection.createStatement().executeQuery("SELECT * FROM Ids");
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Users") || idResultSet.getInt(2) < 1)
-				throw new SQLException();
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Messages") || idResultSet.getInt(2) < 1)
-				throw new SQLException();
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Posts") || idResultSet.getInt(2) < 1)
-				throw new SQLException();
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Events") || idResultSet.getInt(2) < 1)
-				throw new SQLException();
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Comments") || idResultSet.getInt(2) < 1)
-				throw new SQLException();
-			idResultSet.next();
-			if(!idResultSet.getString(1).equals("Images") || idResultSet.getInt(2) < 1)
+			ResultSet rs = connection.createStatement().executeQuery("select count(*) from Ids where next_id > 0 and table_name in (\"Users\", \"Messages\", \"Posts\", \"Events\", \"Comments\", \"Images\");");
+			if(rs.getInt(1) != 6) 
 				throw new SQLException();
 		}catch(SQLException e){
 			try {
