@@ -1,6 +1,7 @@
 package org.pi.litepost.applicationLogic;
 
 import java.io.File;
+import java.sql.SQLException;
 
 import org.pi.litepost.App;
 import org.pi.litepost.databaseAccess.DatabaseConnector;
@@ -68,7 +69,7 @@ public class Model implements AutoCloseable{
 		return dbQueryManager;
 	}
 	
-	public void init() throws DatabaseCriticalErrorException {
+	public void init() throws ClassNotFoundException, SQLException {
 		dbConnector.connect();
 	}
 	
