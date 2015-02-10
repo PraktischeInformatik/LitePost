@@ -16,7 +16,6 @@ import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
 import org.pi.litepost.controllers.PostController;
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -87,7 +86,7 @@ public class App extends NanoHTTPD{
 				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", new HashMap<>()));
 			}
 			return resp;
-		} catch (DatabaseCriticalErrorException | SQLException | ClassNotFoundException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			return Router.error(e);
 		} 
 	}

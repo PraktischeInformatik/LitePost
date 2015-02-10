@@ -26,20 +26,12 @@ public class DatabaseQuery{
 		this.tableNameOfId = tableNameOfId;
 	}
 	
-	public ResultSet execute(DatabaseQueryManager databaseQueryManager, DatabaseConnector databaseConnector, Object...values) throws DatabaseCriticalErrorException{
+	public ResultSet execute(DatabaseQueryManager databaseQueryManager, DatabaseConnector databaseConnector, Object...values) throws SQLException{
 		if(this.preparedStatement == null){
-			try{
-				this.preparedStatement = databaseConnector.createPreparedStatement(preparationSQL);
-			}catch(SQLException e){
-				throw new DatabaseCriticalErrorException("Could not create prepared statement: " + this.preparationSQL);
-			}
+			this.preparedStatement = databaseConnector.createPreparedStatement(preparationSQL);
 		}
 		else{
-			try {
-				preparedStatement.clearParameters();
-			}catch (SQLException e) {
-				throw new DatabaseCriticalErrorException("Unexpected error occured while clearing preparedStatement values!");
-			}
+			preparedStatement.clearParameters();
 		}
 		
 		if(tableNameOfId == null){
@@ -68,13 +60,11 @@ public class DatabaseQuery{
 							preparedStatement.setTimestamp(i+1, Timestamp.valueOf((LocalDateTime)values[i]));
 						}
 						else{
-							throw new DatabaseCriticalErrorException("Type of request parameters must be primitive!");
+							throw new SQLException("Type of request parameters must be primitive!");
 						}
 					}
 				}catch(ArrayIndexOutOfBoundsException e1){
-					throw new DatabaseCriticalErrorException("Too many parameters for this type of request!");		
-				}catch(SQLException e2){
-					throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!");
+					throw new SQLException("Too many parameters for this type of request!");
 				}
 			}
 		}
@@ -111,41 +101,28 @@ public class DatabaseQuery{
 						preparedStatement.setTimestamp(i+2, Timestamp.valueOf((LocalDateTime)values[i]));
 					}
 					else{
-						throw new DatabaseCriticalErrorException("Type of request parameters must be primitive!");
+						throw new SQLException("Type of request parameters must be primitive!");
 					}
 				}
 			}catch(ArrayIndexOutOfBoundsException e1){
-				throw new DatabaseCriticalErrorException("Too many parameters for this type of request!");		
-			}catch(SQLException e2){
-				throw new DatabaseCriticalErrorException("Unexpected error occured executing the prepared statement!");
+				throw new SQLException("Too many parameters for this type of request!");
 			}
 			finally{
 				try{
 					databaseConnector.commitTransaction();
 				}
 				catch(SQLException e){
-					try {
-						databaseConnector.rollbackTransaction();
-					} catch (SQLException e1) {
-						throw new DatabaseCriticalErrorException("Could not rollback transactions");
-					}
-					throw new DatabaseCriticalErrorException("Could not commit transactions and activate auto commit!");
+					databaseConnector.rollbackTransaction();
+					throw e;
 				}
 			}
 		}
 		
-		try{
-			if(returnsResultSet){
-				return preparedStatement.executeQuery();
-			}else{
-				preparedStatement.executeUpdate();
-				return null;
-			}
-		}catch(SQLException e){
-			e.printStackTrace();
-			throw new DatabaseCriticalErrorException(
-				"An error occured in the database or there are not enough parameteres for this type of request!", e
-			);
+		if(returnsResultSet){
+			return preparedStatement.executeQuery();
+		}else{
+			preparedStatement.executeUpdate();
+			return null;
 		}
 	}
 }

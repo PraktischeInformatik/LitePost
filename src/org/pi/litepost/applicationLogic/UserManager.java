@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.pi.litepost.PasswordHash;
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
 
@@ -27,7 +26,6 @@ public class UserManager extends Manager {
 	 * @param firstname
 	 * @param lastname
 	 * @param email
-	 * @throws DatabaseCriticalErrorException
 	 * @throws UseranameExistsException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
@@ -35,7 +33,7 @@ public class UserManager extends Manager {
 	 */
 	public void insert(String username, String password, String firstname,
 			String lastname, String email)
-			throws DatabaseCriticalErrorException, UseranameExistsException,
+			throws UseranameExistsException,
 			NoSuchAlgorithmException, InvalidKeySpecException, SQLException {
 		// check if username is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
@@ -55,14 +53,13 @@ public class UserManager extends Manager {
 	 * 
 	 * @param username
 	 * @param password
-	 * @throws DatabaseCriticalErrorException
 	 * @throws LoginFailedException
 	 * @throws SQLException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
 	 */
 	public void login(String username, String password)
-			throws DatabaseCriticalErrorException, LoginFailedException,
+			throws SQLException, LoginFailedException,
 			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
 		// TODO check if user has validate his/her email
 		ResultSet result = this.model.getQueryManager().executeQuery(
@@ -82,9 +79,9 @@ public class UserManager extends Manager {
 	/**
 	 * logout of User with given userId
 	 * 
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void logout() throws DatabaseCriticalErrorException {
+	public void logout() throws SQLException {
 		model.getSessionManager().endSession();
 	}
 
@@ -94,11 +91,10 @@ public class UserManager extends Manager {
 	 * @param firstname
 	 * @param lastname
 	 * @param password
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
 	public void update(String firstname, String lastname, String password)
-			throws DatabaseCriticalErrorException, SQLException {
+			throws SQLException {
 		User user = this.getActual();
 		int id = user.getUserId();
 		this.model.getQueryManager().executeQuery("updateUser", firstname,
@@ -110,9 +106,9 @@ public class UserManager extends Manager {
 	 * deleted as well
 	 * 
 	 * @param userId
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void delete(int id) throws DatabaseCriticalErrorException {
+	public void delete(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("deleteUser", id);
 		this.model.getQueryManager().executeQuery("deletePostByUser", id);
 		this.model.getQueryManager().executeQuery("deleteCommentByUser", id);
@@ -124,10 +120,9 @@ public class UserManager extends Manager {
 	 * well
 	 * 
 	 * @param userId
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public void delete() throws DatabaseCriticalErrorException, SQLException {
+	public void delete() throws SQLException {
 		User user = this.getActual();
 		int id = user.getUserId();
 		this.model.getQueryManager().executeQuery("deleteUser", id);
@@ -141,11 +136,9 @@ public class UserManager extends Manager {
 	 * 
 	 * @param username
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public User getByName(String username)
-			throws DatabaseCriticalErrorException, SQLException {
+	public User getByName(String username) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getUserByUsername", username);
 		return this.createUser(result);
@@ -156,11 +149,9 @@ public class UserManager extends Manager {
 	 * 
 	 * @param id
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public User getById(int id) throws DatabaseCriticalErrorException,
-			SQLException {
+	public User getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getUserById", id);
 		return this.createUser(result);
@@ -170,9 +161,9 @@ public class UserManager extends Manager {
 	 * sets the User with given id as administrator
 	 * 
 	 * @param id
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void setAdmin(int id) throws DatabaseCriticalErrorException {
+	public void setAdmin(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("setAdmin", id);
 	}
 
@@ -180,10 +171,9 @@ public class UserManager extends Manager {
 	 * returns the actual User
 	 * 
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public User getActual() throws DatabaseCriticalErrorException, SQLException {
+	public User getActual() throws SQLException {
 		String username = this.model.getSessionManager().get("username");
 		return this.getByName(username);
 	}

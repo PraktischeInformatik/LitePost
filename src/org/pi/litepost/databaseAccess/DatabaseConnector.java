@@ -59,11 +59,7 @@ public class DatabaseConnector implements AutoCloseable{
 		connection.rollback();
 	}
 	
-	public void close() throws DatabaseCriticalErrorException{
-		try{
-			connection.close();
-		}catch(SQLException e){
-			throw new DatabaseCriticalErrorException("Connection to database could not be closed!");
-		}
+	public void close() throws SQLException{
+		connection.close();
 	}
 }

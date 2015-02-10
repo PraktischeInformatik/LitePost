@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
-
 import fi.iki.elonen.NanoHTTPD.Cookie;
 import fi.iki.elonen.NanoHTTPD.CookieHandler;
 
@@ -19,7 +17,7 @@ public class SessionManager extends Manager {
 	private CookieHandler cookies;
 	private String sessionId;
 	
-	public void resumeSession(CookieHandler cookieHandler) throws DatabaseCriticalErrorException {
+	public void resumeSession(CookieHandler cookieHandler) throws SQLException {
 		this.cookies = cookieHandler;
 		this.sessionId = cookies.read("sessionId"); 
 		if(sessionId != null) {
@@ -28,7 +26,7 @@ public class SessionManager extends Manager {
 		
 	}
 	
-	public void cleanSessions() throws DatabaseCriticalErrorException, SQLException {
+	public void cleanSessions() throws SQLException {
 		ArrayList<String> expiredSessions = new ArrayList<>();
 		ResultSet rs = model.getQueryManager().executeQuery("getAllSessions");
 		while(rs.next()) {
@@ -42,7 +40,7 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	public void startSession() throws DatabaseCriticalErrorException {
+	public void startSession() throws SQLException {
 		String newSessionId = createSessionid();
 		extendSession(newSessionId);
 		Cookie cookie = new Cookie("sessionId", sessionId, 30);
@@ -50,7 +48,7 @@ public class SessionManager extends Manager {
 		model.getQueryManager().executeQuery("startSession", sessionId, expiration);
 		cookies.set(cookie);
 	}
-	public void extendSession(String sessionId) throws DatabaseCriticalErrorException {
+	public void extendSession(String sessionId) throws SQLException {
 		Cookie cookie = new Cookie("sessionId", sessionId, 30);
 		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
 		model.getQueryManager().executeQuery("updateSessionVar", expiration, sessionId, "expiration");
@@ -62,13 +60,13 @@ public class SessionManager extends Manager {
 		return new BigInteger(130, random).toString(32);
 	}
 
-	public void endSession() throws DatabaseCriticalErrorException {
+	public void endSession() throws SQLException {
 		if (sessionId != null) {
 			model.getQueryManager().executeQuery("endSession", sessionId);
 		}
 	}
 	
-	public String get(String key) throws DatabaseCriticalErrorException, SQLException {
+	public String get(String key) throws SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("getSessionVar", sessionId, key);
 			if(rs.next()) {
@@ -78,7 +76,7 @@ public class SessionManager extends Manager {
 		return null;
 	}
 	
-	public void set(String key, String value) throws SQLException, DatabaseCriticalErrorException {
+	public void set(String key, String value) throws SQLException {
 		if(exists(key)) {
 			model.getQueryManager().executeQuery("updateSessionVar", value, sessionId, key);
 		} else {
@@ -86,7 +84,7 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	public boolean exists(String key) throws DatabaseCriticalErrorException, SQLException {
+	public boolean exists(String key) throws SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("sessionKeyExists", sessionId, key);
 			return rs.next() && rs.getInt(1) != 0;

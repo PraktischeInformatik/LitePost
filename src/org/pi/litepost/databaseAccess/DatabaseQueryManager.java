@@ -1,6 +1,7 @@
 package org.pi.litepost.databaseAccess;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class DatabaseQueryManager {
@@ -140,7 +141,7 @@ public class DatabaseQueryManager {
 	}
 
 	public ResultSet executeQuery(String queryName, Object... values)
-			throws DatabaseCriticalErrorException {
+			throws SQLException {
 		DatabaseQuery query = databaseQueries.get(queryName);
 		return query.execute(this, databaseConnector, values);
 	}
