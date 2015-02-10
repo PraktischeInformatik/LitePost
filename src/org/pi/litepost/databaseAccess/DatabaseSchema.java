@@ -34,6 +34,8 @@ public class DatabaseSchema {
 			    .column("date", "DATE").notNull()
 			    .column("contact", "TEXT").notNull()
 			    .column("user_id", "INT").notNull().foreignKey("Users", "user_id")
+			    .column("reported", "INT(1)").notNull()
+			    .column("presentation", "INT(1)").notNull()
 			.table("Events")
 			    .column("event_id", "INT").notNull().primaryKey()
 			    .column("post_id", "INT").notNull().foreignKey("Posts", "post_id")

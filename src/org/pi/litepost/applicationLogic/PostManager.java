@@ -41,19 +41,26 @@ public class PostManager extends Manager {
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
 	}
-	
+
 	/**
 	 * adds an image to a post
-	 * @param source the uri of the image
-	 * @param post_id the post to which the image belongs
-	 * @throws DatabaseCriticalErrorException when the image cannot be inserted into the database
-	 * @throws SQLException 
+	 * 
+	 * @param source
+	 *            the uri of the image
+	 * @param post_id
+	 *            the post to which the image belongs
+	 * @throws DatabaseCriticalErrorException
+	 *             when the image cannot be inserted into the database
+	 * @throws SQLException
 	 */
-	public void addImage(String source, int post_id) throws DatabaseCriticalErrorException, SQLException {
+	public void addImage(String source, int post_id)
+			throws DatabaseCriticalErrorException, SQLException {
 		model.getQueryManager().executeQuery("insertImage", source);
-		ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Images");
-		model.getQueryManager().executeQuery("addImageToPost", rs.getInt(1), post_id);
-	}	
+		ResultSet rs = model.getQueryManager().executeQuery("getLastId",
+				"Images");
+		model.getQueryManager().executeQuery("addImageToPost", rs.getInt(1),
+				post_id);
+	}
 
 	/**
 	 * deletes Comment with given id
@@ -300,6 +307,14 @@ public class PostManager extends Manager {
 		return events;
 	}
 
+	public ArrayList<Post> getPresentations()
+			throws DatabaseCriticalErrorException, SQLException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getPresentations");
+		ArrayList<Post> posts = this.createPosts(result);
+		return posts;
+	}
+
 	/**
 	 * method creates all Posts of given ResultSet
 	 * 
@@ -322,7 +337,6 @@ public class PostManager extends Manager {
 		Post lPost;
 
 		ArrayList<Post> posts = new ArrayList<>();
-		
 
 		while (result.next()) {
 			postId = result.getInt("post_id");
