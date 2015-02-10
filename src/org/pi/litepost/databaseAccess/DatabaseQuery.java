@@ -82,6 +82,7 @@ public class DatabaseQuery{
 			try{
 				databaseConnector.beginTransaction();
 				ResultSet resultSet = databaseQueryManager.executeQuery("getIdByTableName", tableNameOfId);
+				resultSet.next();
 				int next_id = resultSet.getInt(1);
 				databaseQueryManager.executeQuery("incrementId", tableNameOfId);
 				
@@ -141,6 +142,7 @@ public class DatabaseQuery{
 				return null;
 			}
 		}catch(SQLException e){
+			e.printStackTrace();
 			throw new DatabaseCriticalErrorException(
 				"An error occured in the database or there are not enough parameteres for this type of request!", e
 			);
