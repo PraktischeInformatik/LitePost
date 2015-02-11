@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import org.pi.litepost.App;
 import org.pi.litepost.databaseAccess.DatabaseConnector;
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 
 /**
@@ -73,7 +72,7 @@ public class Model implements AutoCloseable{
 		dbConnector.connect();
 	}
 	
-	public void close() throws DatabaseCriticalErrorException {
+	public void close() throws SQLException {
 		dbConnector.close();
 	}
 

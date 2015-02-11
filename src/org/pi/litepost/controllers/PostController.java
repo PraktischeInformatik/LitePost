@@ -13,7 +13,6 @@ import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import com.google.common.io.Files;
 
@@ -26,7 +25,7 @@ public class PostController {
 		ArrayList<Post> posts = new ArrayList<>();
 		try {
 			posts = model.getPostManager().getAll();
-		} catch (DatabaseCriticalErrorException | SQLException e) {
+		} catch (SQLException e) {
 			return Router.error(e, data);
 		}
 		data.put("posts", posts);
@@ -44,7 +43,7 @@ public class PostController {
 		Post post = null;
 		try {
 			post = model.getPostManager().getById(postId);
-		} catch (DatabaseCriticalErrorException | SQLException e) {
+		} catch (SQLException e) {
 			return Router.error(e, data);
 		}
 		data.put("post", post);
@@ -92,7 +91,7 @@ public class PostController {
 			model.getPostManager().insert(title, content, contact);
 			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
 			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
-		} catch (DatabaseCriticalErrorException | SQLException e) {
+		} catch (SQLException e) {
 			return Router.error(e, data);
 		}
 		return Router.redirectTo("allPosts");
@@ -113,7 +112,7 @@ public class PostController {
 		
 		try {
 			model.getCommentManager().insert(content, parent_id, post_id);
-		} catch (SQLException | DatabaseCriticalErrorException e) {
+		} catch (SQLException  e) {
 			return Router.error(e, data);
 		}
 		

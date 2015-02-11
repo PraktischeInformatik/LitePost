@@ -17,6 +17,7 @@ public class Post {
 	private int userId;
 	private ArrayList<Comment> comments;
 	private boolean reported = false;
+	private boolean presentation = false;
 
 	public Post(int postId, String title, String text, String contact,
 			LocalDateTime date, int userId) {
@@ -97,4 +98,11 @@ public class Post {
 		this.reported = true;
 	}
 
+	public boolean isPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation() {
+		this.presentation = true;
+	}
 }
