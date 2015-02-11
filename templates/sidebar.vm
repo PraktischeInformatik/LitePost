@@ -9,4 +9,4 @@
       <button class="general">Erweitert</button>
     </a>
     <button class="general" id="submit">Posten</button>
-  </div>
+</div>
