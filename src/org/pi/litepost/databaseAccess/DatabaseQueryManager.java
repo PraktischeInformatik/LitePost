@@ -111,7 +111,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("startSession", new DatabaseQuery(false,
 				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 		databaseQueries.put("endSession", new DatabaseQuery(false,
-				"DELETE FROM Sessions WHERE token = ?"));
+				"DELETE FROM Sessions WHERE session_id = ?"));
 		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
 				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 import org.pi.litepost.exceptions.LoginFailedException;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -33,5 +34,14 @@ public class LoginController {
 			return Router.error(e, data);
 		}
 		return Router.redirectTo("profile");
+	}
+	
+	public static Response logout(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		try {
+			model.getUserManager().logout();
+		} catch (DatabaseCriticalErrorException e) {
+			return Router.error(e, data);
+		}
+		return Router.redirectTo("posts");
 	}
 }

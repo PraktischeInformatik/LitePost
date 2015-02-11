@@ -28,7 +28,8 @@ public class HtmlResources {
 	}
 	
 	public String csrfToken() {
-		return sessionManager.csrfToken();
+		String format = "<input type=\"hidden\" class=\"csrf-token\" name=\"csrf_token\" value=\"%s\">";
+		return String.format(format, sessionManager.csrfToken());
 	}
 	
 	public ArrayList<String> getStyles() {

@@ -24,7 +24,13 @@ public class SessionManager extends Manager {
 
 	public void resumeSession(CookieHandler cookieHandler) throws DatabaseCriticalErrorException, SQLException {
 		this.cookies = cookieHandler;
-		this.sessionId = cookies.read("sessionId");
+		String s = cookies.read("sessionId");
+		if(s != null && !s.equals("")) {
+			this.sessionId = s;	
+		}else {
+			this.sessionId = null;
+		}
+		
 		initSession();
 	}
 	
@@ -50,8 +56,8 @@ public class SessionManager extends Manager {
 		Cookie cookie;
 		String expiration;
 		String sessionOnly;
-		boolean newSession = this.sessionId == null;
-		this.sessionId = this.sessionId == null ? createToken(): this.sessionId;
+		boolean newSession = this.sessionId == null || !exists("expiration");
+		this.sessionId = newSession ? createToken(): this.sessionId;
 		if(duration == null){
 			sessionOnly = "true";
 			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
@@ -61,16 +67,10 @@ public class SessionManager extends Manager {
 			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(duration));
 			cookie = new Cookie("sessionId", sessionId, expiration);
 		}
-		if(newSession) {
-			model.getQueryManager().executeQuery("setSessionVar", sessionId, "expiration", expiration);
-			model.getQueryManager().executeQuery("setSessionVar", sessionId, "session_only", sessionOnly);
+		if(newSession || duration != null || isSessionOnly()) {
+			set("expiration", expiration);
+			set("session_only", sessionOnly);
 			cookies.set(cookie);
-		} else {
-			if(duration != null || isSessionOnly()) {
-				model.getQueryManager().executeQuery("updateSessionVar", sessionId, "expiration", expiration);
-				model.getQueryManager().executeQuery("updateSessionVar", sessionId, "session_only", sessionOnly);
-				cookies.set(cookie);
-			}
 		}
 	}
 	
@@ -82,6 +82,7 @@ public class SessionManager extends Manager {
 	public void endSession() throws DatabaseCriticalErrorException {
 		if (sessionId != null) {
 			model.getQueryManager().executeQuery("endSession", sessionId);
+			cookies.set("sessionId", "", -30);
 		}
 	}
 	

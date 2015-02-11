@@ -136,10 +136,10 @@ public class Router {
 	public static Response error(Exception e, HashMap<String, Object> data) {
 		if(App.config.getProperty("Debug").equalsIgnoreCase("true")) {
 			data.put("error", new Error(e));
-			return new Response(View.make("error.debug", data));
+			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.debug", data));
 		}else {
 			data.put("message", e.getMessage());
-			return new Response(View.make("error.production", data));
+			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.production", data));
 		}
 	}
 

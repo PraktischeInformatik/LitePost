@@ -38,6 +38,7 @@ public class App extends NanoHTTPD{
 		//user
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
+		Router.add("logout", Method.GET, "/logout", LoginController::logout);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
@@ -85,7 +86,7 @@ public class App extends NanoHTTPD{
 				}
 				resp = route.getHandler().handle(session, args, files, viewContext, model);
 			}else {
-				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", viewContext));
+				resp = new Response(Response.Status.NOT_FOUND, "text/html", View.make("404", viewContext));
 			}
 			return resp;
 		} catch (DatabaseCriticalErrorException | SQLException | ClassNotFoundException e) {
