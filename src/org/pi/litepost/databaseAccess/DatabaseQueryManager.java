@@ -142,6 +142,9 @@ public class DatabaseQueryManager {
 	public ResultSet executeQuery(String queryName, Object... values)
 			throws DatabaseCriticalErrorException {
 		DatabaseQuery query = databaseQueries.get(queryName);
+		if(query == null) {
+			throw new DatabaseCriticalErrorException(String.format("no query with name %s found!", queryName));
+		}
 		return query.execute(this, databaseConnector, values);
 	}
 }

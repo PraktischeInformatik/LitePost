@@ -41,7 +41,7 @@ public class UserManager extends Manager {
 		// check if username is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"checkUsername", username);
-		if (result == null) {
+		if (!result.next()) {
 			String hpassword = PasswordHash.createHash(password);
 			this.model.getQueryManager().executeQuery("insertUser", username,
 					hpassword, firstname, lastname, email);
@@ -67,8 +67,8 @@ public class UserManager extends Manager {
 			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
 		// TODO check if user has validate his/her email
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getPasswordHash", username);
-		if (result == null) {
+				"getUserByUsername", username);
+		if (!result.next()) {
 			throw new LoginFailedException();
 		}
 		String hpassword = result.getString("password");
