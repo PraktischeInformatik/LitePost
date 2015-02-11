@@ -2,7 +2,6 @@ package org.pi.litepost.applicationLogic;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -11,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
@@ -53,7 +51,7 @@ public class SessionManager extends Manager {
 		String expiration;
 		String sessionOnly;
 		boolean newSession = this.sessionId == null;
-		this.sessionId = this.sessionId == null ? createSessionid(): this.sessionId;
+		this.sessionId = this.sessionId == null ? createToken(): this.sessionId;
 		if(duration == null){
 			sessionOnly = "true";
 			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
@@ -76,7 +74,7 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	private String createSessionid() {
+	private String createToken() {
 		SecureRandom random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
@@ -141,7 +139,22 @@ public class SessionManager extends Manager {
 		String sessionOnly = get(sessionid, "session_only");
 		return sessionOnly != null && sessionOnly.equals("true");
 	}
-	
-	
 
+	public String csrfToken() {
+		String token = createToken();
+		try {
+			set("csrf_token", token);
+		} catch (SQLException | DatabaseCriticalErrorException e) {
+			return "";
+		}
+		return token;
+	}
+	
+	public boolean validateToken(String token) {
+		try {
+			return token != null && !token.equals("") && exists("csrf_token") && get("csrf_token").equals(token);
+		} catch (DatabaseCriticalErrorException | SQLException e) {
+			return false;
+		}
+	}
 }
