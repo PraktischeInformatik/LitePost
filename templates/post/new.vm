@@ -42,6 +42,20 @@ $Resources.addScriptFooter("js/newpost.js")
   </div>
 </div>
 
+<script>
+var picker = new Pikaday({
+  field: document.getElementById("input-date")
+});
+function toggle_event(checkbox) {
+  var input = document.getElementById("date-div");
+  if(checkbox.checked) {
+    input.className = "show"
+  }else {
+    input.className = ""
+  }
+}
+</script>
+
 #parse("footer.vm")
 </body>
 </html>

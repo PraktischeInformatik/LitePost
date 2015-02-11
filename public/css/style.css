@@ -65,6 +65,11 @@ q:before, q:after {
 blockquote, q {
     quotes: "" "";
 }
+
+a{
+  text-decoration: none;
+}
+
 a:focus {
     outline: thin dotted;
 }
@@ -96,7 +101,13 @@ textarea {
    font-family: Lato;
    font-size: 1.8em;
    line-height: 1.5;
+
 }
+
+form, div {
+  display: inline;
+}
+
 
 textarea,
 p {
@@ -220,6 +231,10 @@ a:visited {
    Elements
 ----------------------------------------------------*/
 
+body {
+  background-color: #EEE;
+}
+
 #wrapper {
   margin:auto;
   max-width: 1250px;
@@ -230,19 +245,31 @@ a:visited {
 }
 
 #main{
-  width: calc(100% - 240px);
+  width: calc(100% - 370px);
+  font-size: 0.7em;
   float: left;
+  display: inline;
+  background-color: white;
+  margin: 1em;
 }
 
 
-button.general {
+.general {
   border-style: none;
   background: #65E080;
   border-radius: 5px;
+  display: inline;
+  font-size: 1.2em;
 }
 
-button.general:hover{
+.general:hover {
   background: #27D04C;
+}
+
+#input-title {
+  border-style: solid;
+  border-bottom: 2px;
+  border-color: #CCC;
 }
 
 /*----------------------------------------------------
@@ -293,8 +320,11 @@ button.general:hover{
 
 #sidebar {
   float: right;
-  width:240px;/*150px*/
+  width: 280px;/*280px*/
   font-size: 0.7em;
+  background-color: white;
+  padding: 1em;
+  margin: 1em;
 }
 
 #sidebar button {
@@ -303,15 +333,20 @@ button.general:hover{
 
 #sidebar input, 
 #sidebar textarea {
-  width: 230px;
+  width: 250px;
   margin-bottom: 4px;
   border-width: 1px;
-  border-style: solid;
-  border-color: #CCC;
+  border-style: none;
+}
+
+#sidebar #input-title {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #CCC
 }
 
 #sidebar form {
-  width: 230px;
+  /*width: 230px;*/
 }
 
 #sidebar textarea {
@@ -337,10 +372,7 @@ button.general:hover{
 
 #post-form input{
   width: 60%;
-  border: solid;
-  border-width: 1px;
-  border-color: #DDD;
-  padding: 0;
+  border: none;
 }
 
 #post-form #input-event {
@@ -361,18 +393,13 @@ button.general:hover{
 
 #input-date {
   height: 1.5em;
-  border: solid;
-  border-width: 1px;
-  border-color: #CCC;
+  border: none;
 }
 
 #input-editor {
   height: 500px;
   width: 60%;
-  border: solid;
-  border-width: 1px;
-  border-color: #CCC;
-  font-size: ;
+  background-color: white;
 }
 
 /*----------------------------------------------------
@@ -380,9 +407,9 @@ button.general:hover{
 ----------------------------------------------------*/
 
 #login-container {
+  margin: 3em 4em;
+  display: block;
   width: 250px;
-  margin-top: 4em;
-  margin-left: 3em;
   /*float: left;*/
 }
 
@@ -390,13 +417,18 @@ button.general:hover{
   font-size: 1.8em;
 }
 
-#login-container button {
+#login-container .general {
   font-size: 1.2em;
   margin-top: 4px;
 }
 
 #register {
   float: right;
+  padding: 1px 6px;
+}
+
+#login-form {
+  display: inline;
 }
 
 #login-form input {
@@ -404,13 +436,31 @@ button.general:hover{
   font-size: 1.2em;
   height: 2em;
   width: 250px;
+  border: none;
+  display: block;
 }
 
 /*----------------------------------------------------
    Register
 ----------------------------------------------------*/
 
+#registration-container {
+  margin-top: 4em;
+  margin-left: 3em;
+}
+ 
+      
+#registration {
+  margin-left: 4px;
+}
 
+#registration-container input{
+  display: block;
+  margin: 4px;
+  font-size: 1.2em;
+  height: 2em;
+  width: 250px;
+} 
 
 /*----------------------------------------------------
    Content
