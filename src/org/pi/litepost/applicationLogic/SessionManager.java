@@ -5,7 +5,11 @@ import java.security.SecureRandom;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,22 +22,20 @@ public class SessionManager extends Manager {
 
 	private CookieHandler cookies;
 	private String sessionId;
-	
-	public void resumeSession(CookieHandler cookieHandler) throws DatabaseCriticalErrorException {
+	private static final DateTimeFormatter COOKIE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, dd-MMM-yyyy HH:mm:ss 'GMT'");
+
+	public void resumeSession(CookieHandler cookieHandler) throws DatabaseCriticalErrorException, SQLException {
 		this.cookies = cookieHandler;
-		this.sessionId = cookies.read("sessionId"); 
-		if(sessionId != null) {
-			extendSession(sessionId);
-		}
-		
+		this.sessionId = cookies.read("sessionId");
+		initSession();
 	}
 	
 	public void cleanSessions() throws DatabaseCriticalErrorException, SQLException {
 		ArrayList<String> expiredSessions = new ArrayList<>();
 		ResultSet rs = model.getQueryManager().executeQuery("getAllSessions");
 		while(rs.next()) {
-			Date d = rs.getDate("expiration");
-			if(d.before(Calendar.getInstance().getTime())) {
+			TemporalAccessor ta = COOKIE_TIME_FORMAT.parse(rs.getString("value"));
+			if(LocalDateTime.from(ta).isBefore(LocalDateTime.now())) {
 				expiredSessions.add(rs.getString("session_id"));
 			}
 		}
@@ -42,19 +44,36 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	public void startSession() throws DatabaseCriticalErrorException {
-		String newSessionId = createSessionid();
-		extendSession(newSessionId);
-		Cookie cookie = new Cookie("sessionId", sessionId, 30);
-		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
-		model.getQueryManager().executeQuery("startSession", sessionId, expiration);
-		cookies.set(cookie);
+	public void initSession() throws DatabaseCriticalErrorException, SQLException {
+		initSession(null);
 	}
-	public void extendSession(String sessionId) throws DatabaseCriticalErrorException {
-		Cookie cookie = new Cookie("sessionId", sessionId, 30);
-		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
-		model.getQueryManager().executeQuery("updateSessionVar", expiration, sessionId, "expiration");
-		cookies.set(cookie);
+
+	public void initSession(TemporalAmount duration) throws DatabaseCriticalErrorException, SQLException {
+		Cookie cookie;
+		String expiration;
+		String sessionOnly;
+		boolean newSession = this.sessionId == null;
+		this.sessionId = this.sessionId == null ? createSessionid(): this.sessionId;
+		if(duration == null){
+			sessionOnly = "true";
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
+			cookie = Cookie.sessionCookie("sessionId", sessionId);
+		} else {
+			sessionOnly = "false";
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(duration));
+			cookie = new Cookie("sessionId", sessionId, expiration);
+		}
+		if(newSession) {
+			model.getQueryManager().executeQuery("setSessionVar", sessionId, "expiration", expiration);
+			model.getQueryManager().executeQuery("setSessionVar", sessionId, "session_only", sessionOnly);
+			cookies.set(cookie);
+		} else {
+			if(duration != null || isSessionOnly()) {
+				model.getQueryManager().executeQuery("updateSessionVar", sessionId, "expiration", expiration);
+				model.getQueryManager().executeQuery("updateSessionVar", sessionId, "session_only", sessionOnly);
+				cookies.set(cookie);
+			}
+		}
 	}
 	
 	private String createSessionid() {
@@ -69,6 +88,26 @@ public class SessionManager extends Manager {
 	}
 	
 	public String get(String key) throws DatabaseCriticalErrorException, SQLException {
+		return get(sessionId, key);
+	}
+	
+	public void set(String key, String value) throws SQLException, DatabaseCriticalErrorException {
+		set(sessionId, key, value);
+	}
+	
+	public boolean exists(String key) throws DatabaseCriticalErrorException, SQLException {
+		return exists(sessionId, key);
+	}
+	
+	public TemporalAccessor getExpiration() throws DatabaseCriticalErrorException, SQLException {
+		return getExpiration(sessionId);
+	}
+	
+	public boolean isSessionOnly() throws DatabaseCriticalErrorException, SQLException {
+		return isSessionOnly(sessionId);
+	}
+	
+	private String get(String sessionid, String key) throws DatabaseCriticalErrorException, SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("getSessionVar", sessionId, key);
 			if(rs.next()) {
@@ -78,7 +117,7 @@ public class SessionManager extends Manager {
 		return null;
 	}
 	
-	public void set(String key, String value) throws SQLException, DatabaseCriticalErrorException {
+	private void set(String sessionid, String key, String value) throws SQLException, DatabaseCriticalErrorException {
 		if(exists(key)) {
 			model.getQueryManager().executeQuery("updateSessionVar", value, sessionId, key);
 		} else {
@@ -86,12 +125,23 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	public boolean exists(String key) throws DatabaseCriticalErrorException, SQLException {
+	private boolean exists(String sessionid, String key) throws DatabaseCriticalErrorException, SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("sessionKeyExists", sessionId, key);
 			return rs.next() && rs.getInt(1) != 0;
 		}
 		return false;
 	}
+	
+	private TemporalAccessor getExpiration(String sessionid) throws DatabaseCriticalErrorException, SQLException {
+		return COOKIE_TIME_FORMAT.parse(get(sessionid, "expiration"));
+	}
+	
+	private boolean isSessionOnly(String sessionid) throws DatabaseCriticalErrorException, SQLException {
+		String sessionOnly = get(sessionid, "session_only");
+		return sessionOnly != null && sessionOnly.equals("true");
+	}
+	
+	
 
 }

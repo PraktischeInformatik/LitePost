@@ -64,11 +64,8 @@ public class App extends NanoHTTPD{
 		// standard setup & route handling
 		try (Model model = new Model()){
 			model.init();
-			model.getSessionManager().cleanSessions();
 			model.getSessionManager().resumeSession(session.getCookies());
-			if(session.getCookies().read("sessionId") == null) {
-				model.getSessionManager().startSession();
-			}
+			model.getSessionManager().cleanSessions();
 			
 			Route route = Router.getHandler(session);
 			Response resp = null;

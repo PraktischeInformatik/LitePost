@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 
 import org.pi.litepost.PasswordHash;
 import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
@@ -61,7 +62,7 @@ public class UserManager extends Manager {
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public void login(String username, String password)
+	public void login(String username, String password, boolean remember)
 			throws DatabaseCriticalErrorException, LoginFailedException,
 			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
 		// TODO check if user has validate his/her email
@@ -75,7 +76,13 @@ public class UserManager extends Manager {
 		if (!PasswordHash.validatePassword(password, hpassword)) {
 			throw new LoginFailedException();
 		}
-		this.model.getSessionManager().startSession();
+		
+		if(remember) {
+			this.model.getSessionManager().initSession(Duration.ofDays(30));
+		}else {
+			this.model.getSessionManager().initSession();
+		}
+		
 		this.model.getSessionManager().set("username", username);
 	}
 
