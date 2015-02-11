@@ -18,7 +18,8 @@ public class LoginController {
 	public static Response postLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		Map<String, String> params = session.getParms();
 		try {
-			model.getUserManager().login(params.get("username"), params.get("password"));
+			boolean remember = params.containsKey("remember");
+			model.getUserManager().login(params.get("username"), params.get("password"), remember);
 		} catch (Exception e) {
 			data.put("loginFailed", true);
 			return new Response(View.make("user.login", data));
