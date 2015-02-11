@@ -62,6 +62,9 @@ public class App extends NanoHTTPD{
 		}
 		
 		// standard setup & route handling
+		HashMap<String, Object> viewContext = new HashMap<>();
+		// Router is always available to Views
+		viewContext.put("Router", Router.class);
 		try (Model model = new Model()){
 			model.init();
 			model.getSessionManager().resumeSession(session.getCookies());
@@ -69,6 +72,7 @@ public class App extends NanoHTTPD{
 			
 			Route route = Router.getHandler(session);
 			Response resp = null;
+			viewContext.put("Resources", new HtmlResources(model.getSessionManager()));
 			if (route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
@@ -76,16 +80,16 @@ public class App extends NanoHTTPD{
 					try {
 						session.parseBody(files);
 					} catch (Exception e) {
-						return Router.error(e);
+						return Router.error(e,viewContext);
 					}
 				}
-				resp = route.getHandler().handle(session, args, files, new HashMap<>(), model);
+				resp = route.getHandler().handle(session, args, files, viewContext, model);
 			}else {
-				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", new HashMap<>()));
+				resp = new Response(Response.Status.NOT_FOUND, "text/plain", View.make("404", viewContext));
 			}
 			return resp;
 		} catch (DatabaseCriticalErrorException | SQLException | ClassNotFoundException e) {
-			return Router.error(e);
+			return Router.error(e, viewContext);
 		} 
 	}
 

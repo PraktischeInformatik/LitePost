@@ -133,8 +133,7 @@ public class Router {
 		return uri;
 	}
 	
-	public static Response error(Exception e) {
-		HashMap<String, Object> data = new HashMap<>();
+	public static Response error(Exception e, HashMap<String, Object> data) {
 		if(App.config.getProperty("Debug").equalsIgnoreCase("true")) {
 			data.put("error", new Error(e));
 			return new Response(View.make("error.debug", data));

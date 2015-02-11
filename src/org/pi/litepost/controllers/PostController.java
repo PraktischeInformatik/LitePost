@@ -27,7 +27,7 @@ public class PostController {
 		try {
 			posts = model.getPostManager().getAll();
 		} catch (DatabaseCriticalErrorException | SQLException e) {
-			return Router.error(e);
+			return Router.error(e, data);
 		}
 		data.put("posts", posts);
 		return new Response(View.make("post.all", data));
@@ -45,7 +45,7 @@ public class PostController {
 		try {
 			post = model.getPostManager().getById(postId);
 		} catch (DatabaseCriticalErrorException | SQLException e) {
-			return Router.error(e);
+			return Router.error(e, data);
 		}
 		data.put("post", post);
 		return new Response(View.make("post.single", data));
@@ -83,7 +83,7 @@ public class PostController {
 				try {
 					Files.copy(input, output);
 				} catch (IOException e) {
-					return Router.error(e);
+					return Router.error(e, data);
 				}
 			}
 		}
@@ -93,7 +93,7 @@ public class PostController {
 			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
 			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
 		} catch (DatabaseCriticalErrorException | SQLException e) {
-			return Router.error(e);
+			return Router.error(e, data);
 		}
 		return Router.redirectTo("allPosts");
 	}
@@ -114,7 +114,7 @@ public class PostController {
 		try {
 			model.getCommentManager().insert(content, parent_id, post_id);
 		} catch (SQLException | DatabaseCriticalErrorException e) {
-			return Router.error(e);
+			return Router.error(e, data);
 		}
 		
 		return Router.redirectTo("singlePost", string_post_id);
