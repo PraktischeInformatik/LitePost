@@ -1313,6 +1313,10 @@ public abstract class NanoHTTPD {
         public Cookie(String name, String value) {
             this(name, value, 30);
         }
+        
+        public static Cookie sessionCookie(String name, String value) {
+        	return new Cookie(name, value, null);
+        }
 
         public Cookie(String name, String value, int numDays) {
             n = name;
@@ -1321,8 +1325,14 @@ public abstract class NanoHTTPD {
         }
 
         public String getHTTPHeader() {
-            String fmt = "%s=%s; expires=%s";
-            return String.format(fmt, n, v, e);
+        	if(e != null) {
+        		String fmt = "%s=%s; expires=%s";
+                return String.format(fmt, n, v, e);	
+        	}else {
+        		String fmt = "%s=%s";
+        		return String.format(fmt, n, v);
+        	}
+            
         }
 
         public static String getHTTPTime(int days) {
