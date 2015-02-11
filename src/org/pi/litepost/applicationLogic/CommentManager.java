@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
-
 /**
  * the CommentManager
  * 
@@ -25,11 +23,10 @@ public class CommentManager extends Manager {
 	 * @param parentId
 	 * @param postId
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
 	public void insert(String content, int parentId, int postId)
-			throws SQLException, DatabaseCriticalErrorException {
+			throws SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
@@ -43,11 +40,9 @@ public class CommentManager extends Manager {
 	 * 
 	 * @param id
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void delete(int id) throws SQLException,
-			DatabaseCriticalErrorException {
+	public void delete(int id) throws SQLException{
 		this.model.getQueryManager().executeQuery("DeleteComment", id);
 
 	}
@@ -58,11 +53,9 @@ public class CommentManager extends Manager {
 	 * @param id
 	 * @param content
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void update(int id, String content) throws SQLException,
-			DatabaseCriticalErrorException {
+	public void update(int id, String content) throws SQLException{
 		this.model.getQueryManager().executeQuery("UpdateComment", content, id);
 	}
 
@@ -72,11 +65,9 @@ public class CommentManager extends Manager {
 	 * @param postId
 	 * @return
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 * @throws IllegalParameterLengthException
 	 */
-	public ArrayList<Comment> getByPost(int postId) throws SQLException,
-			DatabaseCriticalErrorException {
+	public ArrayList<Comment> getByPost(int postId) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getCommentsByPost", postId);
 		ArrayList<Comment> comments = new ArrayList<>();
@@ -91,9 +82,8 @@ public class CommentManager extends Manager {
 	 * @param rs the result set from with the comments data
 	 * @return a comment 
 	 * @throws SQLException when fetching data from result set fails
-	 * @throws DatabaseCriticalErrorException when fetchin sub comments fails
 	 */
-	private Comment commentFromResultSet(ResultSet rs) throws SQLException, DatabaseCriticalErrorException {
+	private Comment commentFromResultSet(ResultSet rs) throws SQLException {
 		int commentId = rs.getInt("comment_id");
 		int userId = rs.getInt("user_id");
 		String content = rs.getString("content");
@@ -114,9 +104,9 @@ public class CommentManager extends Manager {
 	 * set the Comment to reported
 	 * 
 	 * @param id
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void report(int id) throws DatabaseCriticalErrorException {
+	public void report(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("reportComment", id);
 	}
 
@@ -124,11 +114,9 @@ public class CommentManager extends Manager {
 	 * returns an ArrayList containing all reported Comments
 	 * 
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public ArrayList<Comment> getReports()
-			throws DatabaseCriticalErrorException, SQLException {
+	public ArrayList<Comment> getReports() throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getReportedComments");
 		ArrayList<Comment> comments = new ArrayList<>();

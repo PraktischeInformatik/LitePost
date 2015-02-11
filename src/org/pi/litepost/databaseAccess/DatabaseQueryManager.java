@@ -1,6 +1,7 @@
 package org.pi.litepost.databaseAccess;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class DatabaseQueryManager {
@@ -53,7 +54,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getReportPost", new DatabaseQuery(true,
 				"SELECT * FROM Posts WHERE reported = 1"));
 		databaseQueries.put("insertPost", new DatabaseQuery(false,
-				"INSERT INTO Posts(post_id, title, content, date, contact, user_id) VALUES(?, ?, ?, ?, ?, ?)",
+				"INSERT INTO Posts(post_id, title, content, date, contact, user_id, reported, presentation) VALUES(?, ?, ?, ?, ?, ?, 0, 0)",
 				"Posts"));
 		// TODO funktioniert das so?
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false,
@@ -111,7 +112,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("startSession", new DatabaseQuery(false,
 				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 		databaseQueries.put("endSession", new DatabaseQuery(false,
-				"DELETE FROM Sessions WHERE token = ?"));
+				"DELETE FROM Sessions WHERE session_id = ?"));
 		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
 				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 
@@ -140,8 +141,11 @@ public class DatabaseQueryManager {
 	}
 
 	public ResultSet executeQuery(String queryName, Object... values)
-			throws DatabaseCriticalErrorException {
+			throws SQLException {
 		DatabaseQuery query = databaseQueries.get(queryName);
+		if(query == null) {
+			throw new SQLException(String.format("no query with name %s found!", queryName));
+		}
 		return query.execute(this, databaseConnector, values);
 	}
 }

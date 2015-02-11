@@ -2,15 +2,20 @@
 <div id="wrapper">
   <div id="main">
     <div id="login-container">
-      #if($loginFailed)
-		<p>Login Failed</p>
+    #if($loginFailed)
+		  <p>Login Failed</p>
 	  #end
+    #if($csrfValidationFailed)
+      <p>Validation Failed</p>
+    #end
       <form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
         <h2>Login</h2>
         <input id="login-username" type="text" name="username" placeholder="Nutzername">
         <input id="login-password" type="password" name="password" placeholder="Passwort">
-      	<button type="submit" class="general">Login</button>
-      	<button class="general" id="register">Registrieren</button>
+        <input id="login-remember" type="checkbox" name="remember">
+        $Resources.csrfToken()
+   	  <button type="submit" class="general">Login</button>
+   	  <button class="general" id="register">Registrieren</button>
       </form>
     </div>
   </div>

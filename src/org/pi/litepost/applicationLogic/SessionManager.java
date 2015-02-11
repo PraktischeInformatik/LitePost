@@ -2,14 +2,14 @@ package org.pi.litepost.applicationLogic;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 import fi.iki.elonen.NanoHTTPD.Cookie;
 import fi.iki.elonen.NanoHTTPD.CookieHandler;
@@ -18,22 +18,26 @@ public class SessionManager extends Manager {
 
 	private CookieHandler cookies;
 	private String sessionId;
+	private static final DateTimeFormatter COOKIE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, dd-MMM-yyyy HH:mm:ss 'GMT'");
 	
-	public void resumeSession(CookieHandler cookieHandler) throws DatabaseCriticalErrorException {
+	public void resumeSession(CookieHandler cookieHandler) throws SQLException {
 		this.cookies = cookieHandler;
-		this.sessionId = cookies.read("sessionId"); 
-		if(sessionId != null) {
-			extendSession(sessionId);
+		String s = cookies.read("sessionId");
+		if(s != null && !s.equals("")) {
+			this.sessionId = s;	
+		}else {
+			this.sessionId = null;
 		}
 		
+		initSession();
 	}
 	
-	public void cleanSessions() throws DatabaseCriticalErrorException, SQLException {
+	public void cleanSessions() throws SQLException {
 		ArrayList<String> expiredSessions = new ArrayList<>();
 		ResultSet rs = model.getQueryManager().executeQuery("getAllSessions");
 		while(rs.next()) {
-			Date d = rs.getDate("expiration");
-			if(d.before(Calendar.getInstance().getTime())) {
+			TemporalAccessor ta = COOKIE_TIME_FORMAT.parse(rs.getString("value"));
+			if(LocalDateTime.from(ta).isBefore(LocalDateTime.now())) {
 				expiredSessions.add(rs.getString("session_id"));
 			}
 		}
@@ -42,33 +46,65 @@ public class SessionManager extends Manager {
 		}
 	}
 	
-	public void startSession() throws DatabaseCriticalErrorException {
-		String newSessionId = createSessionid();
-		extendSession(newSessionId);
-		Cookie cookie = new Cookie("sessionId", sessionId, 30);
-		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
-		model.getQueryManager().executeQuery("startSession", sessionId, expiration);
-		cookies.set(cookie);
+	public void initSession() throws SQLException {
+		initSession(null);
 	}
-	public void extendSession(String sessionId) throws DatabaseCriticalErrorException {
-		Cookie cookie = new Cookie("sessionId", sessionId, 30);
-		LocalDateTime expiration = LocalDateTime.now().plusDays(30);
-		model.getQueryManager().executeQuery("updateSessionVar", expiration, sessionId, "expiration");
-		cookies.set(cookie);
+
+	public void initSession(TemporalAmount duration) throws SQLException {
+		Cookie cookie;
+		String expiration;
+		String sessionOnly;
+		boolean newSession = this.sessionId == null || !exists("expiration");
+		this.sessionId = newSession ? createToken(): this.sessionId;
+		if(duration == null){
+			sessionOnly = "true";
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
+			cookie = Cookie.sessionCookie("sessionId", sessionId);
+		} else {
+			sessionOnly = "false";
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(duration));
+			cookie = new Cookie("sessionId", sessionId, expiration);
+		}
+		if(newSession || duration != null || isSessionOnly()) {
+			set("expiration", expiration);
+			set("session_only", sessionOnly);
+			cookies.set(cookie);
+		}
 	}
 	
-	private String createSessionid() {
+	private String createToken() {
 		SecureRandom random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
 
-	public void endSession() throws DatabaseCriticalErrorException {
+	public void endSession() throws SQLException {
 		if (sessionId != null) {
 			model.getQueryManager().executeQuery("endSession", sessionId);
+			cookies.set("sessionId", "", -30);
 		}
 	}
 	
-	public String get(String key) throws DatabaseCriticalErrorException, SQLException {
+	public String get(String key) throws SQLException {
+		return get(sessionId, key);
+	}
+	
+	public void set(String key, String value) throws SQLException {
+		set(sessionId, key, value);
+	}
+	
+	public boolean exists(String key) throws SQLException {
+		return exists(sessionId, key);
+	}
+	
+	public TemporalAccessor getExpiration() throws SQLException {
+		return getExpiration(sessionId);
+	}
+	
+	public boolean isSessionOnly() throws  SQLException {
+		return isSessionOnly(sessionId);
+	}
+	
+	private String get(String sessionid, String key) throws SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("getSessionVar", sessionId, key);
 			if(rs.next()) {
@@ -78,20 +114,45 @@ public class SessionManager extends Manager {
 		return null;
 	}
 	
-	public void set(String key, String value) throws SQLException, DatabaseCriticalErrorException {
+	private void set(String sessionid, String key, String value) throws SQLException {
 		if(exists(key)) {
 			model.getQueryManager().executeQuery("updateSessionVar", value, sessionId, key);
 		} else {
 			model.getQueryManager().executeQuery("setSessionVar", sessionId, key, value);
 		}
 	}
-	
-	public boolean exists(String key) throws DatabaseCriticalErrorException, SQLException {
+	private boolean exists(String sessionid, String key) throws SQLException {
 		if(sessionId != null) {
 			ResultSet rs = model.getQueryManager().executeQuery("sessionKeyExists", sessionId, key);
 			return rs.next() && rs.getInt(1) != 0;
 		}
 		return false;
 	}
+	
+	private TemporalAccessor getExpiration(String sessionid) throws SQLException {
+		return COOKIE_TIME_FORMAT.parse(get(sessionid, "expiration"));
+	}
+	
+	private boolean isSessionOnly(String sessionid) throws SQLException {
+		String sessionOnly = get(sessionid, "session_only");
+		return sessionOnly != null && sessionOnly.equals("true");
+	}
 
+	public String csrfToken() {
+		String token = createToken();
+		try {
+			set("csrf_token", token);
+		} catch (SQLException e) {
+			return "";
+		}
+		return token;
+	}
+	
+	public boolean validateToken(String token) {
+		try {
+			return token != null && !token.equals("") && exists("csrf_token") && get("csrf_token").equals(token);
+		} catch (SQLException e) {
+			return false;
+		}
+	}
 }

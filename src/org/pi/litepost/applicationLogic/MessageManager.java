@@ -6,8 +6,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
-
 /**
  * the MessageManager
  * 
@@ -26,10 +24,8 @@ public class MessageManager extends Manager {
 	 * @param subject
 	 * @param content
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
-	public void insert(String receiver, String subject, String content)
-			throws SQLException, DatabaseCriticalErrorException {
+	public void insert(String receiver, String subject, String content) throws SQLException{
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		String sender = "Anonym";
 		if (this.model.getSessionManager().exists("username")) {
@@ -44,11 +40,9 @@ public class MessageManager extends Manager {
 	 * 
 	 * @return
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
 	@SuppressWarnings("null")
-	public ArrayList<Message> getByUser() throws SQLException,
-			DatabaseCriticalErrorException {
+	public ArrayList<Message> getByUser() throws SQLException{
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getActual().getUserId();
@@ -96,10 +90,8 @@ public class MessageManager extends Manager {
 	 * @param id
 	 * @return
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
-	public Message getById(int id) throws SQLException,
-			DatabaseCriticalErrorException {
+	public Message getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesById", id);
 
@@ -135,10 +127,8 @@ public class MessageManager extends Manager {
 	 * 
 	 * @param id
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
-	public void delete(String id) throws SQLException,
-			DatabaseCriticalErrorException {
+	public void delete(String id) throws SQLException{
 		this.model.getQueryManager().executeQuery("deleteMessage", id);
 	}
 }

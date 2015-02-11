@@ -9,7 +9,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.pi.litepost.databaseAccess.DatabaseCriticalErrorException;
 
 /**
  * the PostManager
@@ -28,11 +27,10 @@ public class PostManager extends Manager {
 	 * @param content
 	 * @param contact
 	 * @param userId
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
 	public void insert(String title, String content, String contact)
-			throws DatabaseCriticalErrorException, SQLException {
+			throws SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
@@ -41,36 +39,41 @@ public class PostManager extends Manager {
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
 	}
-	
+
 	/**
 	 * adds an image to a post
-	 * @param source the uri of the image
-	 * @param post_id the post to which the image belongs
-	 * @throws DatabaseCriticalErrorException when the image cannot be inserted into the database
-	 * @throws SQLException 
+	 * 
+	 * @param source
+	 *            the uri of the image
+	 * @param post_id
+	 *            the post to which the image belongs
+	 * @throws SQLException
 	 */
-	public void addImage(String source, int post_id) throws DatabaseCriticalErrorException, SQLException {
+	public void addImage(String source, int post_id)
+			throws SQLException {
 		model.getQueryManager().executeQuery("insertImage", source);
-		ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Images");
-		model.getQueryManager().executeQuery("addImageToPost", rs.getInt(1), post_id);
-	}	
+		ResultSet rs = model.getQueryManager().executeQuery("getLastId",
+				"Images");
+		model.getQueryManager().executeQuery("addImageToPost", rs.getInt(1),
+				post_id);
+	}
 
 	/**
 	 * deletes Comment with given id
 	 * 
 	 * @param id
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void delete(int id) throws DatabaseCriticalErrorException {
+	public void delete(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("deletePost", id);
 	}
 
 	/**
 	 * deletes all Posts which are older than 30 days
 	 * 
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
-	public void deleteOld() throws DatabaseCriticalErrorException {
+	public void deleteOld() throws SQLException {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		date.minusDays(30);
 		this.model.getQueryManager().executeQuery("deleteOldPost", date);
@@ -85,10 +88,10 @@ public class PostManager extends Manager {
 	 * @param content
 	 * @param contact
 	 * @param userId
-	 * @throws DatabaseCriticalErrorException
+	 * @throws SQLException
 	 */
 	public void update(int id, String title, String content, String contact)
-			throws DatabaseCriticalErrorException {
+			throws SQLException {
 		this.model.getQueryManager().executeQuery("updatePost", title, content,
 				contact, id);
 	}
@@ -107,11 +110,9 @@ public class PostManager extends Manager {
 	 * returns an ArrayList containing all Post without their Comments
 	 * 
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public ArrayList<Post> getAll() throws DatabaseCriticalErrorException,
-			SQLException {
+	public ArrayList<Post> getAll() throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getAllPosts");
 		ArrayList<Post> posts = this.createPosts(result);
@@ -123,11 +124,9 @@ public class PostManager extends Manager {
 	 * 
 	 * @param id
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public Post getById(int id) throws DatabaseCriticalErrorException,
-			SQLException {
+	public Post getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostById", id);
 
@@ -161,11 +160,10 @@ public class PostManager extends Manager {
 	 * 
 	 * @param userId
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
 	public ArrayList<Post> getByUser(int userId)
-			throws DatabaseCriticalErrorException, SQLException {
+			throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser", userId);
 		ArrayList<Post> posts = this.createPosts(result);
@@ -178,11 +176,9 @@ public class PostManager extends Manager {
 	 * 
 	 * @param userId
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public ArrayList<Post> getByUser() throws DatabaseCriticalErrorException,
-			SQLException {
+	public ArrayList<Post> getByUser() throws SQLException{
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getActual().getUserId();
@@ -200,10 +196,8 @@ public class PostManager extends Manager {
 	 * 
 	 * @param id
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
-	public void report(int id) throws DatabaseCriticalErrorException,
-			SQLException {
+	public void report(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("reportPost", id);
 	}
 
@@ -211,11 +205,9 @@ public class PostManager extends Manager {
 	 * returns an ArrayList containing all reported Post without their Comments
 	 * 
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
-	public ArrayList<Post> getReports() throws DatabaseCriticalErrorException,
-			SQLException {
+	public ArrayList<Post> getReports() throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getRreportPost");
 		ArrayList<Post> posts = this.createPosts(result);
@@ -228,11 +220,10 @@ public class PostManager extends Manager {
 	 * @param month
 	 * @return
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
 	@SuppressWarnings("null")
 	public ArrayList<Event> getEvents(int month)
-			throws DatabaseCriticalErrorException, SQLException {
+			throws SQLException {
 		ArrayList<Event> events = null;
 		ArrayList<Event> all = this.getEvents();
 		Iterator<Event> iter = all.iterator();
@@ -254,11 +245,9 @@ public class PostManager extends Manager {
 	 * 
 	 * @return
 	 * @throws SQLException
-	 * @throws DatabaseCriticalErrorException
 	 */
 	@SuppressWarnings("null")
-	public ArrayList<Event> getEvents() throws DatabaseCriticalErrorException,
-			SQLException {
+	public ArrayList<Event> getEvents() throws SQLException{
 		ArrayList<Event> events = null;
 		int postId;
 		String title;
@@ -300,16 +289,23 @@ public class PostManager extends Manager {
 		return events;
 	}
 
+	public ArrayList<Post> getPresentations()
+			throws SQLException, SQLException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getPresentations");
+		ArrayList<Post> posts = this.createPosts(result);
+		return posts;
+	}
+
 	/**
 	 * method creates all Posts of given ResultSet
 	 * 
 	 * @param result
 	 * @return
-	 * @throws DatabaseCriticalErrorException
 	 * @throws SQLException
 	 */
 	private ArrayList<Post> createPosts(ResultSet result)
-			throws DatabaseCriticalErrorException, SQLException {
+			throws SQLException {
 		int postId;
 		String title;
 		String content;
@@ -322,7 +318,6 @@ public class PostManager extends Manager {
 		Post lPost;
 
 		ArrayList<Post> posts = new ArrayList<>();
-		
 
 		while (result.next()) {
 			postId = result.getInt("post_id");
