@@ -2,9 +2,9 @@ package org.pi.litepost;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -95,7 +95,44 @@ public class App extends NanoHTTPD{
 			return Router.error(e, viewContext);
 		} 
 	}
-
+	
+	public static void loadConfig() {
+		config = new Properties();
+		Properties defaultProps = new Properties();
+		Properties generalProps = new Properties();
+		Properties machineProps = new Properties();
+		
+		defaultProps.put("litepost.serverport", "8080");
+		defaultProps.put("litepost.public.folder", "public");
+		defaultProps.put("litepost.public.uploadfolder", "public/upload");
+		defaultProps.put("litepost.debug", "false");
+		
+		String generalFilePath = "res" + File.separatorChar + "config.properties";
+		try {
+			InputStream inStream = new FileInputStream(generalFilePath);
+			generalProps.load(inStream);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
+		try {
+			String computername = InetAddress.getLocalHost().getHostName();
+			String machineFilePath = "res" + 
+					File.separatorChar + 
+					"machine" + 
+					File.separatorChar +
+					computername + 
+					".properties";
+			InputStream inStream = new FileInputStream(machineFilePath);
+			machineProps.load(inStream);
+		} catch (Exception e1) {}
+		
+		config.putAll(defaultProps);
+		config.putAll(generalProps);
+		config.putAll(machineProps);
+	}
+	
 	public static void main(String[] args) {
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
@@ -103,28 +140,11 @@ public class App extends NanoHTTPD{
         File f = new File("templates");
         p.setProperty("file.resource.loader.path", f.getAbsolutePath());
         
-        
 		Velocity.init(p);
 		
-		InputStream inStream = null;
-		try {
-			inStream = new FileInputStream("res" + File.separatorChar + "config.properties");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		config = new Properties();
-		try {
-			config.load(inStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
+		loadConfig();
 		
-		config.put("litepost.public.folder", config.getOrDefault("litepost.public.folder", "public"));
-		config.put("litepost.public.uploadfolder", config.getOrDefault("litepost.public.uploadfolder", "public/upload"));
-		
-		String serverport = (String) config.getOrDefault("litepost.serverport", "8080");
+		String serverport = (String) config.get("litepost.serverport");
 		int port = 8080;
 		try {
 			port = Integer.parseInt(serverport);
