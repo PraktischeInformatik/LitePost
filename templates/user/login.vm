@@ -1,3 +1,7 @@
+#macro(prepopulate $value)
+  #if($value != "") value="$value" #end
+#end
+
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
@@ -13,7 +17,7 @@
     #end
       <form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
         <h2>Login</h2>
-        <input id="login-username" type="text" value="$username" name="username" placeholder="Nutzername">
+        <input id="login-username" type="text" #perpopulate($username) name="username" placeholder="Nutzername">
         <input id="login-password" type="password" name="password" placeholder="Passwort">
         <input id="login-remember" type="checkbox" name="remember" #if($remember) checked #end>
         $Resources.csrfToken()
