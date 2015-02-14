@@ -14,8 +14,8 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class FileController {
-	private static final File PUBLIC_DIR = new File((String) App.config.getOrDefault("publicfolder", "public"));
-	private static final File UPLOAD_DIR = new File((String) App.config.getOrDefault("uploadfolder", "public/upload"));
+	private static final File PUBLIC_DIR = new File((String) App.config.get("litepost.public.folder"));
+	private static final File UPLOAD_DIR = new File((String) App.config.get("litepost.public.uploadfolder"));
 	public static final String MIME_DEFAULT_BINARY = "application/octet-stream";
     /**
      * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE

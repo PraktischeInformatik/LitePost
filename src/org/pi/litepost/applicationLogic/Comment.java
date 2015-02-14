@@ -8,18 +8,17 @@ import java.util.ArrayList;
  *
  */
 public class Comment {
-	private int commentId;
-	private int userId;
-
-	private String text;
-	private LocalDateTime date;
-	private int parentId;
-	private int postId;
-	private ArrayList<Comment> subComments;
-	private boolean reported = false;
+	private final int commentId;
+	private final int userId;
+	private final String text;
+	private final LocalDateTime date;
+	private final int parentId;
+	private final int postId;
+	private final ArrayList<Comment> subComments;
+	private final boolean reported;
 
 	public Comment(int commentId, int userId, String text, LocalDateTime date,
-			int parentId, int postId) {
+			int parentId, int postId, boolean reported) {
 		this.commentId = commentId;
 		this.userId = userId;
 		this.text = text;
@@ -27,30 +26,18 @@ public class Comment {
 		this.parentId = parentId;
 		this.postId = postId;
 		this.subComments = new ArrayList<>();
+		this.reported = reported;
 	}
 
 	public int getCommentId() {
 		return commentId;
 	}
-
-	public void setCommentId(int commentId) {
-		this.commentId = commentId;
-	}
-
 	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
 	public String getText() {
 		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
 	}
 
 	public LocalDateTime getDate() {
@@ -76,9 +63,4 @@ public class Comment {
 	public boolean isReported() {
 		return reported;
 	}
-
-	public void setReported() {
-		this.reported = true;
-	}
-
 }

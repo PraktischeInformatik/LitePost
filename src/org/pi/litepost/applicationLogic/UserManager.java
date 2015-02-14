@@ -1,13 +1,19 @@
 package org.pi.litepost.applicationLogic;
 
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.HashMap;
+
+import javax.mail.MessagingException;
 
 import org.pi.litepost.PasswordHash;
 import org.pi.litepost.exceptions.LoginFailedException;
+import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
 
 /**
@@ -19,7 +25,7 @@ import org.pi.litepost.exceptions.UseranameExistsException;
 public class UserManager extends Manager {
 
 	/**
-	 * inserts a new User (creates a User-Object) and saves it in the Database;
+	 * registers a new User (creates a User-Object) and saves it in the Database;
 	 * the userId is taken from the corresponding id-table
 	 * 
 	 * @param username
@@ -31,21 +37,30 @@ public class UserManager extends Manager {
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
 	 * @throws SQLException
+	 * @throws MessagingException when the verification mail send fails
 	 */
-	public void insert(String username, String password, String firstname,
+	public void register(String username, String password, String firstname,
 			String lastname, String email)
 			throws UseranameExistsException,
-			NoSuchAlgorithmException, InvalidKeySpecException, SQLException {
+			NoSuchAlgorithmException, InvalidKeySpecException, SQLException, MessagingException {
 		// check if username is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"checkUsername", username);
-		if (!result.next()) {
-			String hpassword = PasswordHash.createHash(password);
-			this.model.getQueryManager().executeQuery("insertUser", username,
-					hpassword, firstname, lastname, email);
-		} else {
+		if (result.next()) {
 			throw new UseranameExistsException();
+			
 		}
+		String hpassword = PasswordHash.createHash(password);
+		this.model.getQueryManager().executeQuery("insertUser", username,
+				hpassword, firstname, lastname, email);
+		User user = createUser(
+				this.model.getQueryManager().executeQuery("getUserByUsername", username));
+		String token = createToken();
+		this.model.getQueryManager().executeQuery("setEmailVerificationToken", user.getUserId(), token);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("verificationToken", token);
+		data.put("user", user);
+		model.getMailManager().sendSystemMail(user.getEmail(), "Wilkommen bei litepost", "mail.welcome", data);
 	}
 
 	/**
@@ -58,21 +73,26 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
+	 * @throws UserEmailNotVerifiedException 
 	 */
 
 	public void login(String username, String password, boolean remember)
 			throws SQLException, LoginFailedException,
-			SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+			SQLException, NoSuchAlgorithmException, InvalidKeySpecException, UserEmailNotVerifiedException {
 		// TODO check if user has validate his/her email
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getUserByUsername", username);
 		if (!result.next()) {
 			throw new LoginFailedException();
 		}
-		String hpassword = result.getString("password");
+		User user = createUser(result);
+		String hpassword = user.getPassword();
 
 		if (!PasswordHash.validatePassword(password, hpassword)) {
 			throw new LoginFailedException();
+		}
+		if(!user.isVerifiedEmail()) {
+			throw new UserEmailNotVerifiedException();
 		}
 		
 		if(remember) {
@@ -82,6 +102,21 @@ public class UserManager extends Manager {
 		}
 		
 		this.model.getSessionManager().set("username", username);
+	}
+	
+	/**
+	 * Verify a users email;
+	 * @param token
+	 * @throws SQLException 
+	 */
+	public boolean verifyEmail(String token) throws SQLException {
+		ResultSet rs = model.getQueryManager().executeQuery("getEmailVerificationToken", token);
+		if(!rs.next()) {
+			return false;
+		}
+		int userId = rs.getInt("user_id");
+		model.getQueryManager().executeQuery("verifyEmail", userId);
+		return true;
 	}
 
 	/**
@@ -194,23 +229,25 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 */
 	private User createUser(ResultSet result) throws SQLException {
-		int userId;
-		String username;
-		String password;
-		String firstname;
-		String lastname;
-		String email;
-		userId = result.getInt("user_id");
-		username = result.getString("username");
-		password = result.getString("password");
-		firstname = result.getString("firstname");
-		lastname = result.getString("lastname");
-		email = result.getString("email");
+		int userId = result.getInt("user_id");
+		String username = result.getString("username");
+		String password = result.getString("password");
+		String firstname = result.getString("firstname");
+		String lastname = result.getString("lastname");
+		String email = result.getString("email");
+		boolean verified = result.getBoolean("verified_email");
+		boolean admin = result.getBoolean("admin");
 		User luser = new User(userId, username, password, firstname, lastname,
-				email);
-		if (result.getBoolean("admin")) {
-			luser.setAdmin();
-		}
+				email, admin, verified);
 		return luser;
+	}
+	
+	/**
+	 * Creates a random string for verification purposes
+	 * @return a random string
+	 */
+	private String createToken() {
+		SecureRandom random = new SecureRandom();
+		return new BigInteger(130, random).toString(32);
 	}
 }

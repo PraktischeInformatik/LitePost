@@ -8,58 +8,45 @@ import java.util.ArrayList;
  *
  */
 public class Post {
-	private int postId;
-	private String title;
-	private String text;
-	private LocalDateTime date;
-	private String contact;
-	private ArrayList<Image> images;
-	private int userId;
-	private ArrayList<Comment> comments;
-	private boolean reported = false;
-	private boolean presentation = false;
+	private final int postId;
+	private final String title;
+	private final String text;
+	private final LocalDateTime date;
+	private final String contact;
+	private final ArrayList<Image> images;
+	private final int userId;
+	private final ArrayList<Comment> comments;
+	private final boolean reported;
+	private final boolean presentation;
 
 	public Post(int postId, String title, String text, String contact,
-			LocalDateTime date, int userId) {
+			LocalDateTime date, int userId, boolean reported, boolean presentation) {
 		this.postId = postId;
 		this.title = title;
 		this.text = text;
 		this.contact = contact;
+		this.date = date;
 		this.userId = userId;
 		this.images = new ArrayList<>();
 		this.comments = new ArrayList<>();
+		this.reported = reported;
+		this.presentation = presentation;
 	}
 
 	public int getPostId() {
 		return postId;
 	}
 
-	public void setPostId(int postId) {
-		this.postId = postId;
-	}
-
 	public String getTitle() {
 		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getText() {
 		return text;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public String getContact() {
 		return contact;
-	}
-
-	public void setContact(String contact) {
-		this.contact = contact;
 	}
 
 	public LocalDateTime getDate() {
@@ -73,9 +60,9 @@ public class Post {
 	public ArrayList<Comment> getComments() {
 		return comments;
 	}
-
-	public void setComments(ArrayList<Comment> comments) {
-		this.comments = comments;
+	
+	public void addComment(Comment comment) {
+		comments.add(comment);
 	}
 
 	public boolean isEvent() {
@@ -94,15 +81,7 @@ public class Post {
 		return reported;
 	}
 
-	public void setReported() {
-		this.reported = true;
-	}
-
 	public boolean isPresentation() {
 		return presentation;
-	}
-
-	public void setPresentation() {
-		this.presentation = true;
 	}
 }

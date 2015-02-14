@@ -2,6 +2,9 @@
 <div id="wrapper">
   <div id="main">
     <div id="login-container">
+    #if($userEmailNotVerified)
+      <p>not verified</p>
+    #end
     #if($loginFailed)
 		  <p>Login Failed</p>
 	  #end
@@ -10,12 +13,12 @@
     #end
       <form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
         <h2>Login</h2>
-        <input id="login-username" type="text" name="username" placeholder="Nutzername">
+        <input id="login-username" type="text" value="$username" name="username" placeholder="Nutzername">
         <input id="login-password" type="password" name="password" placeholder="Passwort">
-        <input id="login-remember" type="checkbox" name="remember">
+        <input id="login-remember" type="checkbox" name="remember" #if($remember) checked #end>
         $Resources.csrfToken()
    	  <button type="submit" class="general">Login</button>
-   	  <button class="general" id="register">Registrieren</button>
+      <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
       </form>
     </div>
   </div>

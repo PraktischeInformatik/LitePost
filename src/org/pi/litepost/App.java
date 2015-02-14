@@ -38,6 +38,9 @@ public class App extends NanoHTTPD{
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
 		Router.add("logout", Method.GET, "/logout", LoginController::logout);
+		Router.add("registrationPage", Method.GET, "/register", LoginController::getRegistration);
+		Router.add("registrationPost", Method.POST, "/register", LoginController::postRegistration);
+		Router.add("emailVerification", Method.GET, "/verify/{verification_token}", LoginController::verifyEmail);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
@@ -117,7 +120,11 @@ public class App extends NanoHTTPD{
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		String serverport = (String) config.getOrDefault("Serverport", "8080");
+		
+		config.put("litepost.public.folder", config.getOrDefault("litepost.public.folder", "public"));
+		config.put("litepost.public.uploadfolder", config.getOrDefault("litepost.public.uploadfolder", "public/upload"));
+		
+		String serverport = (String) config.getOrDefault("litepost.serverport", "8080");
 		int port = 8080;
 		try {
 			port = Integer.parseInt(serverport);

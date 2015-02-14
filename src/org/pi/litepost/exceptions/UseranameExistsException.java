@@ -1,10 +1,10 @@
 package org.pi.litepost.exceptions;
 
+/**
+ * Exception is thrown when username already exists in database
+ */
 public class UseranameExistsException extends Exception {
 
-	/**
-	 * Exception is thrown when username already exists in database
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public UseranameExistsException() {

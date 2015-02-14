@@ -3,8 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="deps/velocity-1.7-dep.jar"/>
-	<classpathentry kind="lib" path="deps/sqlite-jdbc-3.8.7.jar" sourcepath="C:/Users/Felix/.m2/repository/org/xerial/sqlite-jdbc/3.8.7/sqlite-jdbc-3.8.7-sources.jar"/>
+	<classpathentry kind="lib" path="deps/sqlite-jdbc-3.8.7.jar"/>
 	<classpathentry kind="lib" path="deps/guava.jar"/>
 	<classpathentry kind="lib" path="deps/owasp-java-html-sanitizer.jar"/>
+	<classpathentry kind="lib" path="deps/javax.mail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
