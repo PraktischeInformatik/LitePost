@@ -1,20 +1,14 @@
-#macro(prepopulate $value)
-  #if($!{$value})
-    value="$value"
-  #end
-#end
-
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
     <div id="registration-container">
       <form method="POST" action="${Router.linkTo("registrationPost")}" id="registration">
-        <input id="username" type="text" name="username" #prepopulate($username) placeholder="Nutzername">
+        <input id="username" type="text" name="username" value="$!username" placeholder="Nutzername">
         <input id="password" type="password" name="password" placeholder="Passwort">
         <input id="pwconfirm" type="password" name="pwconfirm" placeholder="Passwort best&auml;tigen">
-        <input id="firstname" type="text" name="firstname" #prepopulate($firstname) placeholder="Vorname">
-        <input id="lastname" type="text" name="lastname" #prepopulate($lastname) placeholder="Nachname">
-        <input id="email" type="text" name="email" #prepopulate($email) placeholder="E-Mail Adresse">
+        <input id="firstname" type="text" name="firstname" value="$!firstname" placeholder="Vorname">
+        <input id="lastname" type="text" name="lastname" value="$!lastname" placeholder="Nachname">
+        <input id="email" type="text" name="email" value="$!email" placeholder="E-Mail Adresse">
         $Resources.csrfToken()
         <button type="submit" class="general" id="registration">Registrieren</button>
       </form>
