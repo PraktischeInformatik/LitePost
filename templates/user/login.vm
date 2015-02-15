@@ -1,5 +1,7 @@
 #macro(prepopulate $value)
-  #if($value != "") value="$value" #end
+  #if($!{$value})
+    value="$value"
+  #end
 #end
 
 #parse("header.vm")
@@ -23,6 +25,7 @@
         $Resources.csrfToken()
    	  <button type="submit" class="general">Login</button>
       <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
+      <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
       </form>
     </div>
   </div>

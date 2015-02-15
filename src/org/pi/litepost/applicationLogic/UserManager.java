@@ -11,8 +11,11 @@ import java.util.HashMap;
 
 import javax.mail.MessagingException;
 
+import org.pi.litepost.App;
 import org.pi.litepost.PasswordHash;
+import org.pi.litepost.Router;
 import org.pi.litepost.exceptions.LoginFailedException;
+import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
 
@@ -48,7 +51,6 @@ public class UserManager extends Manager {
 				"checkUsername", username);
 		if (result.next()) {
 			throw new UseranameExistsException();
-			
 		}
 		String hpassword = PasswordHash.createHash(password);
 		this.model.getQueryManager().executeQuery("insertUser", username,
@@ -58,7 +60,10 @@ public class UserManager extends Manager {
 		String token = createToken();
 		this.model.getQueryManager().executeQuery("setEmailVerificationToken", user.getUserId(), token);
 		HashMap<String, Object> data = new HashMap<>();
-		data.put("verificationToken", token);
+		String host = App.config.getProperty("litepost.serverhost");
+		String link = Router.linkTo("emailVerification", token);
+		String uri = String.format("http://%s%s", host, link);
+		data.put("verificationLink", uri);
 		data.put("user", user);
 		model.getMailManager().sendSystemMail(user.getEmail(), "Wilkommen bei litepost", "mail.welcome", data);
 	}
@@ -126,6 +131,40 @@ public class UserManager extends Manager {
 	 */
 	public void logout() throws SQLException {
 		model.getSessionManager().endSession();
+	}
+	
+	/**
+	 * sends a password reset link
+	 * @param email the email address to send the link to
+	 * @throws MessagingException when sending the email fails 
+	 * @throws SQLException 
+	 */
+	public void sendResetPassword(String email) throws MessagingException, SQLException {
+		HashMap<String, Object> data = new HashMap<>();
+		String token = createToken();
+		
+		ResultSet rs = model.getQueryManager().executeQuery("getUserByEmail", email);
+		int userId = rs.getInt("user_id");
+		model.getQueryManager().executeQuery("setPasswordResetToken", userId, token);
+		
+		String host = App.config.getProperty("litepost.serverhost");
+		String link = Router.linkTo("resetPasswordPage", token);
+		String uri = String.format("http://%s%s", host, link);
+		
+		data.put("resetLink", uri);
+		model.getMailManager().sendSystemMail(email, "Passwort zurücksetzen", "mail.passwordreset", data);
+	}
+	
+	public void resetPassword(String newPassword, String token) throws SQLException, PasswordResetException, NoSuchAlgorithmException, InvalidKeySpecException {
+		ResultSet rs_token = model.getQueryManager().executeQuery("getPasswordResetToken", token);
+		if(!rs_token.next()) {
+			throw new PasswordResetException();
+		}
+		
+		ResultSet rs_userid = model.getQueryManager().executeQuery("getUserById", rs_token.getInt("user_id"));
+		User user = createUser(rs_userid);
+		
+		model.getQueryManager().executeQuery("updateUser", PasswordHash.createHash(newPassword), user.getFirstname(), user.getLastname(), user.getUserId());
 	}
 
 	/**

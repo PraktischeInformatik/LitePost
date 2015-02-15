@@ -107,6 +107,8 @@ public class DatabaseQueryManager {
 				"SELECT * FROM Users WHERE username = ?"));
 		databaseQueries.put("getUserById", new DatabaseQuery(true,
 				"SELECT * FROM Users WHERE user_id = ?"));
+		databaseQueries.put("getUserByEmail", new DatabaseQuery(true,
+				"SELECT * FROM Users WHERE email = ?"));
 		databaseQueries.put("setAdmin", new DatabaseQuery(false,
 				"UPDATE Users SET admin = 1"));
 

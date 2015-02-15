@@ -1,5 +1,7 @@
 #macro(prepopulate $value)
-  #if($value != "") value="$value" #end
+  #if($!{$value})
+    value="$value"
+  #end
 #end
 
 #parse("header.vm")

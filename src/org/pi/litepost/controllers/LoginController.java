@@ -4,10 +4,13 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.exceptions.LoginFailedException;
+import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
 
@@ -70,7 +73,7 @@ public class LoginController {
 			registrationFailed = true;
 			data.put("csrfValidationFailed", true);	
 		}
-		if(!password.equals(pwconfirm)) {
+		if(password.equals("") || !password.equals(pwconfirm)) {
 			registrationFailed = true;
 			data.put("passwordMismatch", true);
 		}
@@ -107,6 +110,64 @@ public class LoginController {
 			return new Response(View.make("user.verificationfailed", data));
 		}
 		return Router.redirectTo("allPosts");
+	}
+	
+	public static Response getLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		return new Response(View.make("user.lostpassword", data));
+	}
+	
+	public static Response postLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		Map<String, String> params = session.getParms();
+
+		String csrfToken = params.getOrDefault("csrf_token", "");
+		if(!model.getSessionManager().validateToken(csrfToken)) {
+			//TODO bessere fehlerbehandlung
+			return Router.redirectTo("lostPasswordPage");	
+		}
+		
+		String email = params.getOrDefault("email", "");
+		if(email.equals("")) {
+			return new Response(View.make("user.lostpassword", data));
+		}
+		try {
+			model.getUserManager().sendResetPassword(email);
+		} catch (Exception e) {
+			return Router.error(e, data);
+		}
+		return Router.redirectTo("login");
+	}
+	
+	public static Response getResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		String token = args.get("reset_token");
+		data.put("resetToken", token);
+		return new Response(View.make("user.resetpassword", data));
+	}
+	
+	public static Response postResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		Map<String, String> params = session.getParms();
+		
+		String csrfToken = params.getOrDefault("csrf_token", "");
+		if(!model.getSessionManager().validateToken(csrfToken)) {
+			//TODO bessere fehlerbehandlung
+			return Router.redirectTo("resetPasswordPage");	
+		}
+		
+		String password = params.getOrDefault("password", "");
+		String pwconfirm = params.getOrDefault("pwconfirm", "");
+		String token = args.get("reset_token");
+		if(password.equals("") || !password.equals(pwconfirm)) {
+			data.put("resetToken", token);
+			data.put("passwordMismatch", true);
+			return new Response(View.make("user.resetpassword", data));	
+		}
+		try {
+			model.getUserManager().resetPassword(password, token);
+		}catch(PasswordResetException e){
+			return new Response(View.make("user.resetpasswordfailed", data));
+		} catch (Exception e) {
+			return Router.error(e, data);
+		}
+		return Router.redirectTo("loginPage");
 	}
 	
 	public static Response logout(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {

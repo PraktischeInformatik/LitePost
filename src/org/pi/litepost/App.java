@@ -42,6 +42,10 @@ public class App extends NanoHTTPD{
 		Router.add("registrationPage", Method.GET, "/register", LoginController::getRegistration);
 		Router.add("registrationPost", Method.POST, "/register", LoginController::postRegistration);
 		Router.add("emailVerification", Method.GET, "/verify/{verification_token}", LoginController::verifyEmail);
+		Router.add("lostPasswordPage", Method.GET, "/lostpassword", LoginController::getLostPassword);
+		Router.add("lostPasswordPost", Method.POST, "/lostpassword", LoginController::postLostPassword);
+		Router.add("resetPasswordPage", Method.GET, "/resetpassword/{reset_token}", LoginController::getResetPassword);
+		Router.add("resetPasswordPost", Method.POST, "/resetpassword/{reset_token}", LoginController::postResetPassword);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);

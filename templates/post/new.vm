@@ -1,7 +1,8 @@
 #macro(prepopulate $value)
-  #if($value != "") value="$value" #end
+  #if($!{$value})
+    value="$value"
+  #end
 #end
-
 $Resources.addStyle("css/pikaday.css")
 $Resources.addStyle("css/medium-editor.css")
 $Resources.addStyle("css/themes/bootstrap.css")
