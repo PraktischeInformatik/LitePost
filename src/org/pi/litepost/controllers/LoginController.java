@@ -4,11 +4,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.exceptions.EmailExistsException;
 import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
@@ -68,26 +69,40 @@ public class LoginController {
 		String firstname = params.getOrDefault("firstname", "");
 		String lastname = params.getOrDefault("lastname", "");
 		String email = params.getOrDefault("email", "");
-		boolean registrationFailed = false;
-		if(!model.getSessionManager().validateToken(csrfToken)) {
-			registrationFailed = true;
-			data.put("csrfValidationFailed", true);	
-		}
-		if(password.equals("") || !password.equals(pwconfirm)) {
-			registrationFailed = true;
-			data.put("passwordMismatch", true);
-		}
-		if(!registrationFailed) {
+		
+		boolean validated = model.getSessionManager().validateToken(csrfToken);
+		boolean passNotEmpty = !password.equals("");
+		boolean passMatch = password.equals(pwconfirm);
+		boolean emailValid = model.getMailManager().validEmail(email);
+		boolean usernameAvailable = true;
+		boolean emailAvailable = true;
+		
+		
+		boolean registrationSuccess = validated && passNotEmpty && passMatch;
+		
+		
+		if(registrationSuccess) {
 			try {
 				model.getUserManager().register(username, password, firstname, lastname, email);
 			} catch(UseranameExistsException e) {
-				registrationFailed = true;
+				registrationSuccess = false;
+				usernameAvailable = false;
+			} catch(EmailExistsException e) {
+				registrationSuccess = false;
+				emailAvailable = false;
 			} catch(Exception e) {
 				return Router.error(e, data);
 			}
 		}
-		if(registrationFailed) {
+		if(!registrationSuccess){
 			data.put("registrationFailed", true);
+			data.put("passwordMismatch", !passMatch);
+			data.put("csrfValidationFailed", !validated);
+			data.put("passwordEmpty", !passNotEmpty);
+			data.put("usernameExists", !usernameAvailable);
+			data.put("emailExists", !emailAvailable);
+			data.put("emailInvalid", !emailValid);
+			
 			data.put("username", username);
 			data.put("firstname", firstname);
 			data.put("lastname", lastname);

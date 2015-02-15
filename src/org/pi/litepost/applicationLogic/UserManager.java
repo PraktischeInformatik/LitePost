@@ -14,6 +14,7 @@ import javax.mail.MessagingException;
 import org.pi.litepost.App;
 import org.pi.litepost.PasswordHash;
 import org.pi.litepost.Router;
+import org.pi.litepost.exceptions.EmailExistsException;
 import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
@@ -36,7 +37,8 @@ public class UserManager extends Manager {
 	 * @param firstname
 	 * @param lastname
 	 * @param email
-	 * @throws UseranameExistsException
+	 * @throws UseranameExistsException when the username is already in use
+	 * @throws EmailExistsException when the email address is already in use
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchAlgorithmException
 	 * @throws SQLException
@@ -45,24 +47,35 @@ public class UserManager extends Manager {
 	public void register(String username, String password, String firstname,
 			String lastname, String email)
 			throws UseranameExistsException,
-			NoSuchAlgorithmException, InvalidKeySpecException, SQLException, MessagingException {
-		// check if username is already used
+			NoSuchAlgorithmException, InvalidKeySpecException, SQLException, MessagingException, EmailExistsException {
+		// check if username/email is already used
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"checkUsername", username);
+				"checkUserData", username, email);
 		if (result.next()) {
-			throw new UseranameExistsException();
+			if(result.getString("username").equals(username)) {
+				throw new UseranameExistsException();	
+			}
+			if(result.getString("email").equals(email)) {
+				throw new EmailExistsException();
+			}
 		}
+		
 		String hpassword = PasswordHash.createHash(password);
+		
 		this.model.getQueryManager().executeQuery("insertUser", username,
 				hpassword, firstname, lastname, email);
+		
 		User user = createUser(
 				this.model.getQueryManager().executeQuery("getUserByUsername", username));
+		
 		String token = createToken();
 		this.model.getQueryManager().executeQuery("setEmailVerificationToken", user.getUserId(), token);
-		HashMap<String, Object> data = new HashMap<>();
+		
 		String host = App.config.getProperty("litepost.serverhost");
 		String link = Router.linkTo("emailVerification", token);
 		String uri = String.format("http://%s%s", host, link);
+		
+		HashMap<String, Object> data = new HashMap<>();
 		data.put("verificationLink", uri);
 		data.put("user", user);
 		model.getMailManager().sendSystemMail(user.getEmail(), "Wilkommen bei litepost", "mail.welcome", data);

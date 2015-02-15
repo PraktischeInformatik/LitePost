@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message;
@@ -92,7 +93,9 @@ public class MailManager extends Manager{
 		Message msg = new MimeMessage(session);
 		msg.setFrom(new InternetAddress(from));
 		for(String recipient : to) {
-			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+			InternetAddress addr = new InternetAddress(recipient);
+			addr.validate();
+			msg.addRecipient(Message.RecipientType.TO, addr);
 		}
 		String content = View.make(template, data);
 		msg.setSubject(subject);
@@ -100,5 +103,14 @@ public class MailManager extends Manager{
 		String username = App.config.getProperty("litepost.mail.username");
 		String password = App.config.getProperty("litepost.mail.password");
 		Transport.send(msg, username, password);
+	}
+	
+	public boolean validEmail(String email) {
+		try {
+			new InternetAddress(email, true);
+			return true;
+		} catch (AddressException e) {
+			return false;
+		}
 	}
 }

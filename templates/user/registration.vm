@@ -1,6 +1,27 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
+    #if($registrationFailed)
+      <h2>Registration Failed</h2>
+      #if($passwordMismatch)
+        <p>passwordMismatch</p>
+      #end
+      #if($csrfValidationFailed)
+        <p>csrfValidationFailed</p>
+      #end
+      #if($passwordEmpty)
+        <p>passwordEmpty</p>
+      #end
+      #if($usernameExists)
+        <p>usernameExists</p>
+      #end
+      #if($emailExists)
+        <p>emailExists</p>
+      #end
+      #if($emailInvalid)
+        <p>emailInvalid</p>
+      #end
+    #end
     <div id="registration-container">
       <form method="POST" action="${Router.linkTo("registrationPost")}" id="registration">
         <input id="username" type="text" name="username" value="$!username" placeholder="Nutzername">

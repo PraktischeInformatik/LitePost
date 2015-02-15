@@ -37,6 +37,7 @@ public class DatabaseConnector implements AutoCloseable{
 		}
 		if(!DatabaseSchema.SCHEMA.validate(existingSchema)) {
 			for(String s : DatabaseSchema.SCHEMA.getDropAndCreate()) {
+				System.out.println(s);
 				connection.createStatement().executeUpdate(s);
 			}
 		}

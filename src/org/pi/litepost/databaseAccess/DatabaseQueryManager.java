@@ -92,8 +92,8 @@ public class DatabaseQueryManager {
 		// User:
 		databaseQueries.put("deleteUser", new DatabaseQuery(false,
 				"DELETE FROM Users WHERE user_id = ?"));
-		databaseQueries.put("checkUsername", new DatabaseQuery(true,
-				"SELECT * FROM Users WHERE username = ?"));
+		databaseQueries.put("checkUserData", new DatabaseQuery(true,
+				"SELECT * FROM Users WHERE username = ? or email = ?"));
 		databaseQueries.put("insertUser", new DatabaseQuery(false, 
 				"INSERT INTO Users(user_id, username, password, firstname, lastname, email) VALUES(?, ?, ?, ?, ?, ?)",
 				"Users"));
