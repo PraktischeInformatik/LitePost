@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.apache.velocity.app.Velocity;
 import org.pi.litepost.Router.Route;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.controllers.ConfigController;
 import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
@@ -34,6 +35,9 @@ public class App extends NanoHTTPD{
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
 		Router.add("daysight", Method.GET, "/daysight", HomeController::getDaySight);
 		
+		//configuration
+		Router.add("setupPage", Method.GET, "/setup", ConfigController::getSetup);
+		Router.add("setupPost", Method.POST, "/setup", ConfigController::postSetup);
 		
 		//user
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
@@ -59,6 +63,8 @@ public class App extends NanoHTTPD{
 	@Override public Response serve(IHTTPSession session) {
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		
+		
+		
 		//performance improvement: /public/.* needs no model. bypass everything
 		if(session.getUri().startsWith("/public/")) {
 			Route route = Router.getHandler(session);
@@ -66,6 +72,13 @@ public class App extends NanoHTTPD{
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
 				return route.getHandler().handle(session, args, files, new HashMap<>(), null);
+			}
+		}
+		
+		//first time configuration
+		if(!config.getProperty("litepost.configured").equals("true")) {
+			if(!session.getUri().equals(Router.linkTo("setupPage"))) {
+				return Router.redirectTo("setupPage");
 			}
 		}
 		
@@ -112,14 +125,14 @@ public class App extends NanoHTTPD{
 		defaultProps.put("litepost.public.folder", "public");
 		defaultProps.put("litepost.public.uploadfolder", "public/upload");
 		defaultProps.put("litepost.debug", "false");
+		defaultProps.put("litepost.configured", "false");
 		
 		String generalFilePath = "res" + File.separatorChar + "config.properties";
 		try {
 			InputStream inStream = new FileInputStream(generalFilePath);
 			generalProps.load(inStream);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
+			System.out.println("Could not load config file");
 		}
 		
 		try {

@@ -1,0 +1,48 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main">
+    #if($Validation)
+      #if(not $Validation.valid("validCsrfToken"))
+        <p>CsrfToken not valid</p>
+      #end
+      #if(not $Validation.valid("validServerPort"))
+        <p>ServerPort not valid</p>
+      #end
+      #if(not $Validation.valid("validMailSystemaddress"))
+        <p>MailSystemaddress not valid</p>
+      #end
+      #if(not $Validation.valid("hasPublicFolder"))
+        <p>has no PublicFolder</p>
+      #end
+      #if(not $Validation.valid("hasUploadFolder"))
+        <p>has no UploadFolder</p>
+      #end
+      #if(not $Validation.valid("SSLNeedsUsernameAndPassword"))
+        <p>SSL Needs Username And Password</p>
+      #end
+      #if(not $Validation.valid("hasMailHost"))
+        <p>has no MailHost</p>
+      #end
+      #if(not $Validation.valid("hasMailPort"))
+        <p>has no MailPort</p>
+      #end
+    #end
+     <form method="POST" action="${Router.linkTo("setupPost")}" id="setup-form">
+        <h2>Einrichtung</h2>
+        <input type="text" name="serverport" #if($Validator) $!Validator.prepopulateText("serverport") #else value="8080" #end/>
+        <input type="text" name="serverhost" #if($Validator) $!Validator.prepopulateText("serverhost") #else value="localhost:8080" #end/>
+        <input type="text" name="publicfolder" #if($Validator) $!Validator.prepopulateText("publicfolder") #else value="/public" #end/>
+        <input type="text" name="uploadfolder" #if($Validator) $!Validator.prepopulateText("uploadfolder") #else value="/public/upload" #end/>
+        <input type="checkbox" name="usessl" #if($Validator) $!Validator.prepopulateCheckbox("usessl") #else checked #end/>
+        <input type="text" name="mailusername" $!Validator.prepopulateText("mailusername") />
+        <input type="text" name="mailpassword" $!Validator.prepopulateText("mailpassword") />
+        <input type="text" name="mailhost" $!Validator.prepopulateText("mailhost") />
+        <input type="text" name="mailport" $!Validator.prepopulateText("mailport") />
+        <input type="text" name="systemmail" $!Validator.prepopulateText("systemmail") />
+        $Resources.csrfToken()
+      <button type="submit" class="general">Weiter</button>
+      </form>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
