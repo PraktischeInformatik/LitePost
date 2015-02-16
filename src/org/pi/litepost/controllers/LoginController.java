@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.mail.internet.AddressException;
 
 import org.pi.litepost.Router;
+import org.pi.litepost.Validator;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.exceptions.EmailExistsException;
@@ -25,35 +26,36 @@ public class LoginController {
 	
 	public static Response postLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		Map<String, String> params = session.getParms();
-		String csrfToken = params.getOrDefault("csrf_token", "");
-		String username = params.getOrDefault("username", "");
-		String password = params.getOrDefault("password", "");
-		boolean remember = params.containsKey("remember");
-		boolean loginFailed = false;
-		if(!model.getSessionManager().validateToken(csrfToken)) {
-			loginFailed = true;
-			data.put("csrfValidationFailed", true);	
-		}
-		if(!loginFailed) {
-			try {			
-				model.getUserManager().login(username, password, remember);
-			} catch (LoginFailedException e) {
-				loginFailed = true;
-			} catch (UserEmailNotVerifiedException e) {
-				loginFailed = true;
-				data.put("userEmailNotVerified", true);
-			} catch (Exception e) {
-				return Router.error(e, data);
-			}
-		}
-		if(loginFailed) {
-			data.put("loginFailed", true);
-			data.put("username", username);
-			data.put("remember", remember);
+		
+		Validator validator = new Validator()
+			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
+			.validateSingle("hasUsername", s -> !s.isEmpty() && View.sanitizeStrict(s).equals(s), "username")
+			.validateExists("hasPassword", "password")
+			.validateFlag("rememberPassword", "remember")
+			.manual("emailVerified").manual("loginSuccessful");
+		
+		if(!validator.validate(session.getParms())) {
+			data.put("Validation", validator);
 			return new Response(View.make("user.login", data));
-		}else {
-			return Router.redirectTo("profile");	
 		}
+		
+		
+		try {			
+			boolean remember = validator.flag("remember");
+			String username = validator.value("usernmae");
+			String password = validator.value("password");
+			model.getUserManager().login(username, password, remember);
+		} catch (LoginFailedException | UserEmailNotVerifiedException e) {
+			validator.manual("emailVerified",
+					!(e instanceof UserEmailNotVerifiedException));
+			validator.manual("loginSuccessful",
+					!(e instanceof LoginFailedException));
+			data.put("Validation", validator);
+			return new Response(View.make("user.login", data));
+		} catch (Exception e) {
+			return Router.error(e, data);
+		}
+		return Router.redirectTo("profile");
 	}
 	
 	public static Response getRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
@@ -61,56 +63,40 @@ public class LoginController {
 	}
 	
 	public static Response postRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		Map<String, String> params = session.getParms();
-		String csrfToken = params.getOrDefault("csrf_token", "");
-		String username = params.getOrDefault("username", "");
-		String password = params.getOrDefault("password", "");
-		String pwconfirm = params.getOrDefault("pwconfirm", "");
-		String firstname = params.getOrDefault("firstname", "");
-		String lastname = params.getOrDefault("lastname", "");
-		String email = params.getOrDefault("email", "");
 		
-		boolean validated = model.getSessionManager().validateToken(csrfToken);
-		boolean passNotEmpty = !password.equals("");
-		boolean passMatch = password.equals(pwconfirm);
-		boolean emailValid = model.getMailManager().validEmail(email);
-		boolean usernameAvailable = true;
-		boolean emailAvailable = true;
+		Validator validator = new Validator()
+			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
+			.validateExists("hasUsername", "username")
+			.validateExists("hasFirstname", "firstname")
+			.validateExists("hasLastname", "lastname")
+			.validateSingle("validEmail", model.getMailManager()::validEmail, "email")
+			.validateSingle("passwordMinLength", s -> s.length() > 4, "password")
+			.validateMultiple("passwordsMatch", ss -> ss[0].equals(ss[1]), "password", "pwconfirm")
+			.manual("usernameAvailable").manual("emailAvailable");
 		
-		
-		boolean registrationSuccess = validated && passNotEmpty && passMatch;
-		
-		
-		if(registrationSuccess) {
-			try {
-				model.getUserManager().register(username, password, firstname, lastname, email);
-			} catch(UseranameExistsException e) {
-				registrationSuccess = false;
-				usernameAvailable = false;
-			} catch(EmailExistsException e) {
-				registrationSuccess = false;
-				emailAvailable = false;
-			} catch(Exception e) {
-				return Router.error(e, data);
-			}
-		}
-		if(!registrationSuccess){
-			data.put("registrationFailed", true);
-			data.put("passwordMismatch", !passMatch);
-			data.put("csrfValidationFailed", !validated);
-			data.put("passwordEmpty", !passNotEmpty);
-			data.put("usernameExists", !usernameAvailable);
-			data.put("emailExists", !emailAvailable);
-			data.put("emailInvalid", !emailValid);
-			
-			data.put("username", username);
-			data.put("firstname", firstname);
-			data.put("lastname", lastname);
-			data.put("email", email);
+		if(!validator.validate(session.getParms())) {
+			data.put("Validation", validator);
 			return new Response(View.make("user.registration", data));
-		} else {
-			return Router.redirectTo("loginPage");
 		}
+
+		try {
+			model.getUserManager().register(
+					validator.value("username"),
+					validator.value("password"),
+					validator.value("firstname"),
+					validator.value("lastname"),
+					validator.value("email"));
+		} catch(UseranameExistsException | EmailExistsException e) {
+			validator.manual("usernameAvailable", 
+					!(e instanceof UseranameExistsException));
+			validator.manual("emailAvailable", 
+					!(e instanceof EmailExistsException));
+			data.put("Validation", validator);
+			return new Response(View.make("user.registration", data));
+		} catch(Exception e) {
+			return Router.error(e, data);
+		}
+		return Router.redirectTo("loginPage");
 	}
 	
 	public static Response verifyEmail(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {

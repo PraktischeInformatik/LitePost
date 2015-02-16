@@ -151,7 +151,7 @@ public class Validator
 	
 	/**
 	 * retrieves the parameter value after transformation
-	 * @param key the parameters name
+	 * @param paramName the parameters name
 	 * @return the parameters value. empty string if the value is not present
 	 */
 	public String value(String paramName) 
@@ -159,6 +159,16 @@ public class Validator
 		return values.getOrDefault(paramName, "");
 	}
 	
+
+	/**
+	 * retrieves a flag parameter
+	 * @param paramName the parameters name
+	 * @return true if flag is set
+	 */
+	public boolean flag(String paramName) 
+	{
+		return value(paramName).equals("true");
+	}
 	
 	/**
 	 * checks if a validation was valid or not

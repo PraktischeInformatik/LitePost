@@ -1,35 +1,43 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
-    #if($registrationFailed)
-      <h2>Registration Failed</h2>
-      #if($passwordMismatch)
-        <p>passwordMismatch</p>
+    #if($Validation)
+      #if(not $Validation.valid("validCsrfToken"))
+        <p>csrfToken not valid</p>
       #end
-      #if($csrfValidationFailed)
-        <p>csrfValidationFailed</p>
+      #if(not $Validation.valid("hasUsername"))
+        <p>has no Username</p>
       #end
-      #if($passwordEmpty)
-        <p>passwordEmpty</p>
+      #if(not $Validation.valid("hasFirstname"))
+        <p>has no Firstname</p>
       #end
-      #if($usernameExists)
-        <p>usernameExists</p>
+      #if(not $Validation.valid("hasLastname"))
+        <p>has no Lastname</p>
       #end
-      #if($emailExists)
-        <p>emailExists</p>
+      #if(not $Validation.valid("validEmail"))
+        <p>Email not valid</p>
       #end
-      #if($emailInvalid)
-        <p>emailInvalid</p>
+      #if(not $Validation.valid("passwordMinLength"))
+        <p>password needs at least 5 characters</p>
+      #end
+      #if(not $Validation.valid("passwordsMatch"))
+        <p>passwords dont Match</p>
+      #end
+      #if(not $Validation.valid("usernameAvailable"))
+        <p>username unavailable</p>
+      #end
+      #if(not $Validation.valid("emailAvailable"))
+        <p>email unavailable</p>
       #end
     #end
     <div id="registration-container">
       <form method="POST" action="${Router.linkTo("registrationPost")}" id="registration">
-        <input id="username" type="text" name="username" value="$!username" placeholder="Nutzername">
+        <input id="username" type="text" name="username" $!Validator.prepopulateText("username") placeholder="Nutzername">
         <input id="password" type="password" name="password" placeholder="Passwort">
         <input id="pwconfirm" type="password" name="pwconfirm" placeholder="Passwort best&auml;tigen">
-        <input id="firstname" type="text" name="firstname" value="$!firstname" placeholder="Vorname">
-        <input id="lastname" type="text" name="lastname" value="$!lastname" placeholder="Nachname">
-        <input id="email" type="text" name="email" value="$!email" placeholder="E-Mail Adresse">
+        <input id="firstname" type="text" name="firstname" $!Validator.prepopulateText("firstname") placeholder="Vorname">
+        <input id="lastname" type="text" name="lastname" $!Validator.prepopulateText("lastname") placeholder="Nachname">
+        <input id="email" type="text" name="email" $!Validator.prepopulateText("email") placeholder="E-Mail Adresse">
         $Resources.csrfToken()
         <button type="submit" class="general" id="registration">Registrieren</button>
       </form>
