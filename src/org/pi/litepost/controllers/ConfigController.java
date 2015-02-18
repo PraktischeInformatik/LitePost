@@ -1,7 +1,6 @@
 package org.pi.litepost.controllers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,8 +10,8 @@ import java.util.function.Predicate;
 
 import org.pi.litepost.App;
 import org.pi.litepost.Router;
-import org.pi.litepost.View;
 import org.pi.litepost.Validator;
+import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -21,6 +20,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 public class ConfigController {
 	
 	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+		data.put("serverhost", session.getHeaders().get("host"));
 		return new Response(View.make("setup.firstrun", data));
 	}
 	
@@ -41,7 +41,7 @@ public class ConfigController {
 			.validateExists("hasMailPort", "mailport");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("validation", validator);
+			data.put("Validator", validator);
 			return new Response(View.make("setup.firstrun", data));
 		}
 		App.config.put("litepost.serverport" , validator.value("serverport"));

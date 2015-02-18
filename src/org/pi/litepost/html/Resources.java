@@ -1,16 +1,17 @@
-package org.pi.litepost;
+package org.pi.litepost.html;
 
 import java.util.ArrayList;
 
+import org.pi.litepost.Router;
 import org.pi.litepost.applicationLogic.SessionManager;
 
-public class HtmlResources {
+public class Resources {
 	private ArrayList<String> scriptsHeader = new ArrayList<>();
 	private ArrayList<String> scriptsFooter = new ArrayList<>();
 	private ArrayList<String> styles = new ArrayList<>();
 	private SessionManager sessionManager;
 	
-	public HtmlResources(SessionManager sessionManager) {
+	public Resources(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
 		addStyle("css/style.css");
 	}
