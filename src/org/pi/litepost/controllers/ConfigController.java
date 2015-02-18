@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 
 import org.pi.litepost.App;
 import org.pi.litepost.Router;
-import org.pi.litepost.Validator;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -30,7 +30,7 @@ public class ConfigController {
 				!ss[1].isEmpty() && !ss[2].isEmpty() :
 				true;
 		
-		Validator validator = new Validator()
+		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("validServerPort", s -> s.matches("[0-9]*"), "serverport")
 			.validateSingle("validMailSystemaddress", model.getMailManager()::validEmail, "systemmail")

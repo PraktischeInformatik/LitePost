@@ -13,6 +13,9 @@ import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.HtmlSanitizer;
 import org.owasp.html.HtmlStreamRenderer;
 import org.owasp.html.PolicyFactory;
+import org.pi.litepost.html.FormFactory;
+import org.pi.litepost.html.Resources;
+import org.pi.litepost.html.Validator;
 
 import com.google.common.base.Throwables;
 
@@ -31,9 +34,21 @@ public class View {
 	
 	public static String make(String template, HashMap<String, Object> data) {
 		VelocityContext context = new VelocityContext();
+		
 		for(String key : data.keySet()) {
 			context.put(key, data.get(key));
 		}
+		
+		//load defaults
+		Object validator = data.get("Validator");
+		if(validator != null && validator instanceof Validator) {
+			context.put("Form", new FormFactory((Validator) validator));
+		} else {
+			context.put("Form", new FormFactory(null));
+		}
+		context.put("Resources", new Resources());
+		context.put("Router", Router.class);
+		
 		StringWriter writer = new StringWriter();
 		getTemplate(template).merge(context, writer);
 		return writer.toString();

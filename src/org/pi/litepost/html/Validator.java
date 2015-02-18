@@ -1,4 +1,4 @@
-package org.pi.litepost;
+package org.pi.litepost.html;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,16 +6,34 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.pi.litepost.applicationLogic.SessionManager;
+
 /**
  * @author Felix Breitweiser
  * class used to validate maps of parameters
  */
 public class Validator
 {
-	ArrayList<Validation> validations = new ArrayList<>();
-	Map<String, Boolean> results = new HashMap<>();
-	Map<String, String> values = new HashMap<>();
-
+	private ArrayList<Validation> validations = new ArrayList<>();
+	private Map<String, Boolean> results = new HashMap<>();
+	private Map<String, String> values = new HashMap<>();
+	private SessionManager sessionManager;
+	
+	public Validator(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+	
+	/**
+	 * generates an input with a csrf token
+	 * @return a hidden input woth the csrf token
+	 */
+	public Input csrfToken() {
+		return new Input("hidden", null)
+			._class("csrf-token")
+			.name("csrf_token")
+			.value(sessionManager.csrfToken());
+	}
+	
 	/**
 	 * Adds a validation for a single parameter
 	 * @param name the name of the validation. later used to identify failures/successes

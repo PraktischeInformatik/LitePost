@@ -4,10 +4,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.AddressException;
-
 import org.pi.litepost.Router;
-import org.pi.litepost.Validator;
 import org.pi.litepost.View;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.exceptions.EmailExistsException;
@@ -15,6 +12,7 @@ import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
 import org.pi.litepost.exceptions.UseranameExistsException;
+import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -25,9 +23,7 @@ public class LoginController {
 	}
 	
 	public static Response postLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		Map<String, String> params = session.getParms();
-		
-		Validator validator = new Validator()
+		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasUsername", s -> !s.isEmpty() && View.sanitizeStrict(s).equals(s), "username")
 			.validateExists("hasPassword", "password")
@@ -35,7 +31,7 @@ public class LoginController {
 			.manual("emailVerified").manual("loginSuccessful");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("Validation", validator);
+			data.put("Validator", validator);
 			return new Response(View.make("user.login", data));
 		}
 		
@@ -50,7 +46,7 @@ public class LoginController {
 					!(e instanceof UserEmailNotVerifiedException));
 			validator.manual("loginSuccessful",
 					!(e instanceof LoginFailedException));
-			data.put("Validation", validator);
+			data.put("Validator", validator);
 			return new Response(View.make("user.login", data));
 		} catch (Exception e) {
 			return Router.error(e, data);
@@ -64,7 +60,7 @@ public class LoginController {
 	
 	public static Response postRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
 		
-		Validator validator = new Validator()
+		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateExists("hasUsername", "username")
 			.validateExists("hasFirstname", "firstname")
@@ -75,7 +71,7 @@ public class LoginController {
 			.manual("usernameAvailable").manual("emailAvailable");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("Validation", validator);
+			data.put("Validator", validator);
 			return new Response(View.make("user.registration", data));
 		}
 
@@ -91,7 +87,7 @@ public class LoginController {
 					!(e instanceof UseranameExistsException));
 			validator.manual("emailAvailable", 
 					!(e instanceof EmailExistsException));
-			data.put("Validation", validator);
+			data.put("Validator", validator);
 			return new Response(View.make("user.registration", data));
 		} catch(Exception e) {
 			return Router.error(e, data);

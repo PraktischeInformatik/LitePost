@@ -17,7 +17,7 @@ import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
 import org.pi.litepost.controllers.PostController;
-import org.pi.litepost.html.Resources;
+import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -83,16 +83,14 @@ public class App extends NanoHTTPD{
 		
 		// standard setup & route handling
 		HashMap<String, Object> viewContext = new HashMap<>();
-		// Router is always available to Views
-		viewContext.put("Router", Router.class);
 		try (Model model = new Model()){
 			model.init();
 			model.getSessionManager().resumeSession(session.getCookies());
 			model.getSessionManager().cleanSessions();
 			
 			Route route = Router.getHandler(session);
+			viewContext.put("Validator", new Validator(model.getSessionManager()));
 			Response resp = null;
-			viewContext.put("Resources", new Resources(model.getSessionManager()));
 			if (route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();

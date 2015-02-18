@@ -19,7 +19,17 @@
           <p>login unsuccessful</p>
         #end
       #end
-      <form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
+      $Form.begin("POST", ${Router.linkTo("loginPost")}).id("login-form")
+        <h2>Login</h2>
+        $Form.input("text").id("login-username").name("username").placeholder("Nutzername").prepopulate()
+        $Form.input("password").id("login-password").name("password").placeholder("Passwort")
+        $Form.input("checkbox").id("login-remember").name("remember").prepopulate()
+        $Form.csrfToken()
+        <button type="submit" class="general">Login</button>
+        <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
+        <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
+      $Form.end()
+      <!-- form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
         <h2>Login</h2>
         <input id="login-username" type="text" $!Validation.prepopulateText("username") name="username" placeholder="Nutzername">
         <input id="login-password" type="password" name="password" placeholder="Passwort">
@@ -28,7 +38,7 @@
    	  <button type="submit" class="general">Login</button>
       <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
       <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
-      </form>
+      </form -->
     </div>
   </div>
   #parse("sidebar.vm")
