@@ -10,6 +10,7 @@
         <input id="lastname" type="text" name="lastname" placeholder="Nachname">
         <input id="email" type="text" name="email" placeholder="E-Mail Adresse">
         <button type="submit" class="general" id="registration">Registrieren</button>
+        $Resources.csrfToken()
       </form>
     </div>
   </div>

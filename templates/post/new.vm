@@ -13,48 +13,33 @@ $Resources.addScriptFooter("js/newpost.js")
       <p>Bitte füllen sie alle benötigten Felder aus</p>
     #end
     <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}" enctype="multipart/form-data">
-      <div class="block">
+      
         <input id="input-title" type="text" name="title" placeholder="Titel" value="$title">
-      </div>
-      <div class="block">
+
+      
         <input type="hidden" id="input-content" name="content">
         <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
-      </div>
-      <div class="block">
+
+      
         <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
-      </div>
-      <div class="block">
+
+      
         <input id="input-event" type="checkbox" name="is-event" onclick="toggle_event(this)">
           <label for="input-event">Dieser Post ist ein Event</label>
-      </div>
-      <div id="date-div" class="block">
+      
+     
         <input id="input-date" type="text" name="date" placeholder="Datum">
-      </div>
-      <div id="image-div" class="block">
+      
+      
         <input id="input-image" type="file" name="image" accept="image/*">
-      </div>
-      <div class="block">
+      
+      
         <button type="submit" class="general" id="post-submit">Post</button>
-      </div>
+      
+      $Resources.csrfToken()
     </form>
-
-
   </div>
 </div>
-
-<script>
-var picker = new Pikaday({
-  field: document.getElementById("input-date")
-});
-function toggle_event(checkbox) {
-  var input = document.getElementById("date-div");
-  if(checkbox.checked) {
-    input.className = "show"
-  }else {
-    input.className = ""
-  }
-}
-</script>
 
 #parse("footer.vm")
 </body>
