@@ -31,7 +31,7 @@ public class LoginController {
 			.manual("emailVerified").manual("loginSuccessful");
 		
 		if(!validator.validate(session.getParms())) {
-			context.put("Validator", validator);
+			context.setValidator(validator);
 			return new Response(View.make("user.login", context));
 		}
 		
@@ -46,7 +46,7 @@ public class LoginController {
 					!(e instanceof UserEmailNotVerifiedException));
 			validator.manual("loginSuccessful",
 					!(e instanceof LoginFailedException));
-			context.put("Validator", validator);
+			context.setValidator(validator);
 			return new Response(View.make("user.login", context));
 		} catch (Exception e) {
 			return Router.error(e, context);
