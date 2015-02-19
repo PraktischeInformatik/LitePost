@@ -1,11 +1,11 @@
 package org.pi.litepost.controllers;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
+import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.exceptions.EmailExistsException;
 import org.pi.litepost.exceptions.LoginFailedException;
@@ -18,11 +18,11 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class LoginController {
-	public static Response getLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		return new Response(View.make("user.login", data));
+	public static Response getLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		return new Response(View.make("user.login", context));
 	}
 	
-	public static Response postLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasUsername", s -> !s.isEmpty() && View.sanitizeStrict(s).equals(s), "username")
@@ -31,8 +31,8 @@ public class LoginController {
 			.manual("emailVerified").manual("loginSuccessful");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("Validator", validator);
-			return new Response(View.make("user.login", data));
+			context.put("Validator", validator);
+			return new Response(View.make("user.login", context));
 		}
 		
 		
@@ -46,19 +46,19 @@ public class LoginController {
 					!(e instanceof UserEmailNotVerifiedException));
 			validator.manual("loginSuccessful",
 					!(e instanceof LoginFailedException));
-			data.put("Validator", validator);
-			return new Response(View.make("user.login", data));
+			context.put("Validator", validator);
+			return new Response(View.make("user.login", context));
 		} catch (Exception e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("profile");
 	}
 	
-	public static Response getRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		return new Response(View.make("user.registration", data));
+	public static Response getRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		return new Response(View.make("user.registration", context));
 	}
 	
-	public static Response postRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		
 		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
@@ -71,8 +71,8 @@ public class LoginController {
 			.manual("usernameAvailable").manual("emailAvailable");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("Validator", validator);
-			return new Response(View.make("user.registration", data));
+			context.setValidator(validator);
+			return new Response(View.make("user.registration", context));
 		}
 
 		try {
@@ -87,33 +87,33 @@ public class LoginController {
 					!(e instanceof UseranameExistsException));
 			validator.manual("emailAvailable", 
 					!(e instanceof EmailExistsException));
-			data.put("Validator", validator);
-			return new Response(View.make("user.registration", data));
+			context.setValidator(validator);
+			return new Response(View.make("user.registration", context));
 		} catch(Exception e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("loginPage");
 	}
 	
-	public static Response verifyEmail(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response verifyEmail(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		String token = args.get("verification_token");
 		boolean verified = false;
 		try {
 			verified = model.getUserManager().verifyEmail(token);
 		} catch (SQLException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		if(!verified) {
-			return new Response(View.make("user.verificationfailed", data));
+			return new Response(View.make("user.verificationfailed", context));
 		}
 		return Router.redirectTo("allPosts");
 	}
 	
-	public static Response getLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		return new Response(View.make("user.lostpassword", data));
+	public static Response getLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		return new Response(View.make("user.lostpassword", context));
 	}
 	
-	public static Response postLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postLostPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Map<String, String> params = session.getParms();
 
 		String csrfToken = params.getOrDefault("csrf_token", "");
@@ -124,23 +124,23 @@ public class LoginController {
 		
 		String email = params.getOrDefault("email", "");
 		if(email.equals("")) {
-			return new Response(View.make("user.lostpassword", data));
+			return new Response(View.make("user.lostpassword", context));
 		}
 		try {
 			model.getUserManager().sendResetPassword(email);
 		} catch (Exception e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("login");
 	}
 	
-	public static Response getResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response getResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		String token = args.get("reset_token");
-		data.put("resetToken", token);
-		return new Response(View.make("user.resetpassword", data));
+		context.put("resetToken", token);
+		return new Response(View.make("user.resetpassword", context));
 	}
 	
-	public static Response postResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postResetPassword(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Map<String, String> params = session.getParms();
 		
 		String csrfToken = params.getOrDefault("csrf_token", "");
@@ -153,25 +153,25 @@ public class LoginController {
 		String pwconfirm = params.getOrDefault("pwconfirm", "");
 		String token = args.get("reset_token");
 		if(password.equals("") || !password.equals(pwconfirm)) {
-			data.put("resetToken", token);
-			data.put("passwordMismatch", true);
-			return new Response(View.make("user.resetpassword", data));	
+			context.put("resetToken", token);
+			context.put("passwordMismatch", true);
+			return new Response(View.make("user.resetpassword", context));	
 		}
 		try {
 			model.getUserManager().resetPassword(password, token);
 		}catch(PasswordResetException e){
-			return new Response(View.make("user.resetpasswordfailed", data));
+			return new Response(View.make("user.resetpasswordfailed", context));
 		} catch (Exception e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("loginPage");
 	}
 	
-	public static Response logout(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response logout(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		try {
 			model.getUserManager().logout();
 		} catch (SQLException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("posts");
 	}

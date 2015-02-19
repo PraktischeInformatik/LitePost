@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import org.pi.litepost.App;
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
+import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.html.Validator;
 
@@ -19,12 +19,12 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class ConfigController {
 	
-	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		data.put("serverhost", session.getHeaders().get("host"));
-		return new Response(View.make("setup.firstrun", data));
+	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		context.put("serverhost", session.getHeaders().get("host"));
+		return new Response(View.make("setup.firstrun", context));
 	}
 	
-	public static Response postSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Predicate<String[]> sslValidation = ss -> 
 			ss[0].equalsIgnoreCase("true") ?
 				!ss[1].isEmpty() && !ss[2].isEmpty() :
@@ -41,8 +41,8 @@ public class ConfigController {
 			.validateExists("hasMailPort", "mailport");
 		
 		if(!validator.validate(session.getParms())) {
-			data.put("Validator", validator);
-			return new Response(View.make("setup.firstrun", data));
+			context.setValidator(validator);
+			return new Response(View.make("setup.firstrun", context));
 		}
 		App.config.put("litepost.serverport" , validator.value("serverport"));
 		App.config.put("litepost.serverhost" , validator.value("serverhost"));
@@ -64,7 +64,7 @@ public class ConfigController {
 			out = new FileOutputStream(generalFilePath);
 			App.config.store(out, null);
 		} catch (IOException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("allPosts");
 	}
