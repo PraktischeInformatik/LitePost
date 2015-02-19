@@ -14,8 +14,8 @@ import org.owasp.html.HtmlSanitizer;
 import org.owasp.html.HtmlStreamRenderer;
 import org.owasp.html.PolicyFactory;
 import org.pi.litepost.html.FormFactory;
+import org.pi.litepost.html.InputFactory;
 import org.pi.litepost.html.Resources;
-import org.pi.litepost.html.Validator;
 
 import com.google.common.base.Throwables;
 
@@ -34,24 +34,27 @@ public class View {
 	
 	public static String make(String template, HashMap<String, Object> data) {
 		VelocityContext context = new VelocityContext();
-		
+		importContext(context, data);
+		StringWriter writer = new StringWriter();
+		getTemplate(template).merge(context, writer);
+		return writer.toString();
+	}
+	
+	public static void importContext(VelocityContext context, HashMap<String, Object> data) {
 		for(String key : data.keySet()) {
 			context.put(key, data.get(key));
 		}
 		
 		//load defaults
-		Object validator = data.get("Validator");
-		if(validator != null && validator instanceof Validator) {
-			context.put("Form", new FormFactory((Validator) validator));
+		if(data instanceof ViewContext) {
+			ViewContext viewContext = (ViewContext) data;
+			context.put("Input", new InputFactory(viewContext.validator()));
 		} else {
-			context.put("Form", new FormFactory(null));
+			context.put("Input", new InputFactory(null));
 		}
+		context.put("Form", new FormFactory());
 		context.put("Resources", new Resources());
 		context.put("Router", Router.class);
-		
-		StringWriter writer = new StringWriter();
-		getTemplate(template).merge(context, writer);
-		return writer.toString();
 	}
 	
 	private static Template getTemplate(String templateName) {

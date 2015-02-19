@@ -133,13 +133,13 @@ public class Router {
 		return uri;
 	}
 	
-	public static Response error(Exception e, HashMap<String, Object> data) {
+	public static Response error(Exception e, ViewContext context) {
 		if(App.config.getProperty("litepost.debug").equalsIgnoreCase("true")) {
-			data.put("error", new Error(e));
-			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.debug", data));
+			context.put("error", new Error(e));
+			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.debug", context));
 		}else {
-			data.put("message", e.getMessage());
-			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.production", data));
+			context.put("message", e.getMessage());
+			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.production", context));
 		}
 	}
 

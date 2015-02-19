@@ -70,7 +70,7 @@ public class App extends NanoHTTPD{
 			if(route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
-				return route.getHandler().handle(session, args, files, new HashMap<>(), null);
+				return route.getHandler().handle(session, args, files, new ViewContext(), null);
 			}
 		}
 		
@@ -82,7 +82,7 @@ public class App extends NanoHTTPD{
 		}
 		
 		// standard setup & route handling
-		HashMap<String, Object> viewContext = new HashMap<>();
+		ViewContext viewContext = new ViewContext();
 		try (Model model = new Model()){
 			model.init();
 			model.getSessionManager().resumeSession(session.getCookies());
