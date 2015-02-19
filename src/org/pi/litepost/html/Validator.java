@@ -28,8 +28,8 @@ public class Validator
 	 * @return a hidden input woth the csrf token
 	 */
 	public Input csrfToken() {
-		return new Input("hidden", null)
-			._class("csrf-token")
+		return ((Input) new Input("hidden", null)
+			.class_("csrf-token"))
 			.name("csrf_token")
 			.value(sessionManager.csrfToken());
 	}

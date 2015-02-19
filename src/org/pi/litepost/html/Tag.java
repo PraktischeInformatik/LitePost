@@ -3,12 +3,15 @@ package org.pi.litepost.html;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Tag {
-	private String name;
-	public Map<String, String> attributes = new HashMap<>();;
-
-	Tag(String name) {
-		this.name = name;
+public abstract class Tag<T extends Tag<?>> {
+	protected String name;
+	protected Map<String, String> attributes = new HashMap<>();
+	protected String content;
+	protected boolean closeTag; 
+	
+	Tag(boolean closeTag) {
+		this.name = getClass().getSimpleName().toLowerCase();
+		this.closeTag = closeTag;
 	}
 	
 	@Override
@@ -25,15 +28,48 @@ public class Tag {
 				  .append("\"");
 			}
 		}
+		sb.append(">");
 		
-		return sb.append(">").toString(); 
+		if(content != null) {
+			sb.append(content);
+		}
+		if(closeTag) {
+			sb.append("</")
+			  .append(name)
+			  .append(">");
+		}
+		
+		return sb.toString(); 
 	}
 	
-	public void addAttribute(String name) {
-		addAttribute(name, null);
+
+	public Tag<T> attr(String name) {
+		return attr(name, null);
 	}
 	
-	public void addAttribute(String name, String value) {
+	public Tag<T> attr(String name, String value) {
 		attributes.put(name, value);
+		return this;
+	}
+	
+	public Tag<T> id(String value) {
+		return attr("id", value);
+	}
+	
+	public Tag<T> get(String value) {
+		return class_(value);
+	}
+	
+	public Tag<T> class_(String value) {
+		return attr("class", value);
+	}
+	
+	public Tag<T> data(String name, String value) {
+		return attr("data-" + name, value);
+	}
+	
+	public Tag<T> content(String content) {
+		this.content = content;
+		return this;
 	}
 }
