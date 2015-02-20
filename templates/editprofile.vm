@@ -16,10 +16,31 @@
       </tr>
       <tr>
           <td class="term_edit"><div><h4>Passwort:</h4></div></td>
-          <td class="data_edit"><div><input type="text" name="imypsswd" value="123passwort4"></div></td>
+          <td class="data_edit"><div><input type="password" id="imypsswd"></div></td>
       </tr>
-      <tr> <td></td> <td></td> <td> <button id="save_button">Speichern</button> </td> </tr>
+      <tr>
+          <td class="term_edit"><div><h4>Passwort wiederholen:</h4></div></td>
+          <td class="data_edit"><div><input type="password" id="imypsswd2"></div></td>
+      </tr>
+      <tr> <td></td> <td></td> <td> <button id="save_button" onclick="checkPassword()">Speichern</button> </td> </tr>
     </table>
+
+    <script>
+    function checkPassword() {
+      var pw1=document.getElementById("imypsswd").value;
+      var pw2=document.getElementById("imypsswd2").value;
+      if (pw1 != pw2) {
+        alert("Unterschiedliche Passworteingaben! Bitte wiederholen.");
+        document.getElementById("imypsswd").value="";
+        document.getElementById("imypsswd2").value="";
+      }
+      if (pw1 =="" || pw2=="") {
+        alert("Bitte Passwortfelder ausfuellen!");
+        document.getElementById("imypsswd").value="";
+        document.getElementById("imypsswd2").value="";
+      }
+    }
+    </script>
 
 
 
