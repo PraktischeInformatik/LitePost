@@ -386,10 +386,6 @@ label textarea {
   border-bottom-color: #CCC
 }
 
-#sidebar form {
-  /*width: 230px;*/
-}
-
 #sidebar textarea {
   height: 250px;
 }
