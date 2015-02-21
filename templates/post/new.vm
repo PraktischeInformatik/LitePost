@@ -12,6 +12,28 @@ $Resources.addScriptFooter("js/newpost.js")
     #if($error)
       <p>Bitte füllen sie alle benötigten Felder aus</p>
     #end
+
+      $Form.begin("POST", ${Router.linkTo("insertPost")})
+        $Input.text.name("title").placeholder("Titel").prepopulate()
+        $Input.hidden.name("content").prepopulate()
+        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt"></div>
+        $Input.text.name("contact").placeholder("Kontakt").prepopulate()
+        <label>
+          $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)").prepopulate()
+          <div>Dieser Post ist ein Event</div>
+        </label>
+        $Input.text.name("date").placeholder("Datum").prepopulate()
+        <label>
+          <div>Bilder anfügen</div>
+          $Input.file.name("image").attr("accept", "image/*")
+        </label>
+
+
+
+        $Input.csrfToken
+        $Input.submit.general.value("Posten")        
+      $Form.end()
+<!--
     <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}" enctype="multipart/form-data">
       
         <input id="input-title" type="text" name="title" placeholder="Titel" value="$title">
@@ -41,7 +63,7 @@ $Resources.addScriptFooter("js/newpost.js")
 
     <input id="input-image" type="file" name="image" accept="image/*">
 
-  </div>
+  </div>-->
 
 </div>
 
