@@ -225,7 +225,6 @@ a:visited {
 }
 
 
-
 /*----------------------------------------------------
    Elements
 ----------------------------------------------------*/
@@ -244,7 +243,7 @@ body {
 }
 
 #main{
-  width: calc(100% - 370px);
+  width: calc(100% - 335px);
   font-size: 0.7em;
   float: left;
   display: inline;
@@ -279,11 +278,16 @@ body {
 label {
   display: block;
   margin: 0.5em 0;
+  width: 100%;
 }
 
 label div {
   display: inline-block;
   width: 30%;
+}
+
+label input[type="checkbox"] + div {
+  width: 100%;
 }
 
 textarea:focus,
@@ -383,10 +387,6 @@ label textarea {
   border-bottom-color: #CCC
 }
 
-#sidebar form {
-  /*width: 230px;*/
-}
-
 #sidebar textarea {
   height: 250px;
 }
@@ -408,7 +408,7 @@ label textarea {
   display: block;
 }
 
-#post-form label{
+#isdate{
   width: auto;
 }
 
@@ -443,6 +443,17 @@ label textarea {
   height: 500px;
   font-size: 1.8em;
   background-color: white;
+}
+#side {
+  float: right;
+  width: 280px;
+  font-size: 0.7em;
+  background-color: white;
+  padding: 1em;
+  margin: 1em;
+}
+#side label div {
+  display: inline;
 }
 
 /*----------------------------------------------------
@@ -949,3 +960,16 @@ width:100%;
   width:60%;
   margin-left:0.2em;
 }
+
+
+/*----------------------------------------------------
+   production
+----------------------------------------------------*/
+.production h1{
+  background: #eee;
+  position: absolute;
+  height:5em;
+  margin-top:5em;
+  width: 600px;
+  margin-left: 200px;
+ }

@@ -38,7 +38,7 @@ public class LoginController {
 		
 		try {			
 			boolean remember = validator.flag("remember");
-			String username = validator.value("usernmae");
+			String username = validator.value("username");
 			String password = validator.value("password");
 			model.getUserManager().login(username, password, remember);
 		} catch (LoginFailedException | UserEmailNotVerifiedException e) {

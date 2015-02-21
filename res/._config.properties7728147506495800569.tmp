@@ -1,0 +1,13 @@
+#Wed Feb 18 20:56:23 CET 2015
+litepost.mail.usessl=
+litepost.mail.smtp.host=localhost
+litepost.mail.systemmail=felix@Breitweiser.de
+litepost.public.uploadfolder=public/upload
+litepost.configured=true
+litepost.mail.username=
+litepost.mail.smtp.port=25
+litepost.public.folder=public
+litepost.serverhost=localhost
+litepost.mail.password=
+litepost.serverport=8081
+litepost.debug=true
