@@ -243,7 +243,7 @@ body {
 }
 
 #main{
-  width: calc(100% - 370px);
+  width: calc(100% - 335px);
   font-size: 0.7em;
   float: left;
   display: inline;
@@ -278,6 +278,7 @@ body {
 label {
   display: block;
   margin: 0.5em 0;
+  width: 100%;
 }
 
 label div {
