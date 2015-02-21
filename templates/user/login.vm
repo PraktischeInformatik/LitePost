@@ -17,11 +17,14 @@
       #if($Input.error("loginSuccessful"))
         <p>login unsuccessful</p>
       #end
-      $Form.begin("POST", ${Router.linkTo("loginPost")}).id("login-form")
+      $Form.begin("POST", ${Router.linkTo("loginPost")})
         <h2>Login</h2>
-        $Input.text.id("login-username").name("username").placeholder("Nutzername").prepopulate()
-        $Input.password.id("login-password").name("password").placeholder("Passwort")
-        $Input.checkbox.id("login-remember").name("remember").prepopulate()
+        $Input.text.name("username").placeholder("Nutzername").prepopulate()
+        $Input.password.name("password").placeholder("Passwort")
+        <label>
+          $Input.checkbox.name("remember").prepopulate()
+          <div>An mich Erinnern</div>
+        </label>
         $Input.csrfToken
         $Input.submit.value("Login").general
         <a href="${Router.linkTo("registrationPage")}">Registrieren</a>

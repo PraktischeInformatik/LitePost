@@ -123,10 +123,6 @@ public class App extends NanoHTTPD{
 		defaultProps.put("litepost.public.uploadfolder", "public/upload");
 		defaultProps.put("litepost.debug", "false");
 		defaultProps.put("litepost.configured", "false");
-		defaultProps.put("litepost.mail.smtp.host", "");
-		defaultProps.put("litepost.mail.smtp.port", "25");
-		defaultProps.put("litepost.mail.systemmail", "");
-		defaultProps.put("litepost.mail.usessl", "false");
 		
 		String generalFilePath = "res" + File.separatorChar + "config.properties";
 		try {

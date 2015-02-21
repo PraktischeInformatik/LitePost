@@ -372,7 +372,7 @@ label textarea {
   margin-top: 2px;
 }
 
-#sidebar input, 
+#sidebar input,
 #sidebar textarea {
   width: 250px;
   margin-bottom: 4px;
@@ -501,8 +501,8 @@ label textarea {
   margin-top: 4em;
   margin-left: 3em;
 }
- 
-      
+
+
 #registration {
   margin-left: 4px;
 }
@@ -513,7 +513,7 @@ label textarea {
   font-size: 1.2em;
   height: 2em;
   width: 250px;
-} 
+}
 
 /*----------------------------------------------------
    Content
@@ -576,7 +576,7 @@ font-size:2.5em;
 width:1.6em;
 height:1.6em;
 
-border-spacing:2em; 
+border-spacing:2em;
 }
 
 #dates caption button{
@@ -774,3 +774,201 @@ width:100%;
   margin-top:0.5em;
   margin-left:0.5em;
 }
+<<<<<<< HEAD
+
+
+
+/*----------------------------------------------------s
+   Event
+----------------------------------------------------*/
+
+#singleEvent_information{
+  float:left;
+}
+
+#singleEvent_information table tr td{
+  padding:0.5em;
+}
+
+#singleEvent_image{
+  margin-left:7em;
+}
+
+.singleEvent_text_comment{
+  display:block;
+  width:60%;
+  margin-left:0.5em;
+  margin-top:2em;
+
+}
+
+#singleEvent{
+  margin:0.2em;
+}
+
+#singleEvent h1{
+  margin-bottom:0.5em;
+}
+
+#singleEvent table{
+  width:60%;
+}
+
+#singleEvent_createComments{
+  padding-bottom:4em;
+}
+
+#singleEvent_createComments form{
+  width:100%;
+}
+
+#singleEvent_createComments form input{
+  width:100%;
+  margin:0.1em;
+}
+
+#singleEvent_createComments form textarea{
+  width:100%;
+  height:7em;
+  margin:0.1em;
+}
+
+#singleEvent_createComments form button{
+  float:right;
+}
+
+#singleEvent_comments li{
+  margin-left:0.4em;
+  border-left: 0.25em solid green;
+  padding-left:3px;
+
+}
+
+#singleEvent_comments h5{
+  margin-bottom:1em;
+}
+
+.singleEvent_commentAuthor{
+  font-weight:bold;
+}
+
+.singleEvent_commentContent{
+  padding-left:5px;
+}
+
+
+
+/*----------------------------------------------------s
+   Post
+----------------------------------------------------*/
+
+.singlePost_information{
+  margin-left:0.5em;
+}
+
+
+
+
+
+.singlePost_text_comment{
+  display:block;
+  width:60%;
+  margin-left:0.5em;
+  margin-top:2em;
+
+}
+
+#singlePost{
+  margin:0.2em;
+}
+
+
+
+#singlePost_createComments{
+  padding-bottom:4em;
+}
+
+#singlePost_createComments form{
+  width:100%;
+}
+
+#singlePost_createComments form input{
+  width:100%;
+  margin:0.1em;
+}
+
+#singlePost_createComments form textarea{
+  width:100%;
+  height:7em;
+  margin:0.1em;
+}
+
+#singlePost_createComments form button{
+  float:right;
+}
+
+#singlePost_comments li{
+  margin-left:0.4em;
+  border-left: 0.25em solid green;
+  padding-left:3px;
+
+}
+
+#singlePost_comments h5{
+  margin-bottom:1em;
+}
+
+.singlePost_commentAuthor{
+  font-weight:bold;
+}
+
+.singlePost_commentContent{
+  padding-left:5px;
+}
+
+
+
+
+/*----------------------------------------------------
+   Messages
+----------------------------------------------------*/
+
+#sended{
+  border: 0.1em solid green;
+  width:80%;
+  margin-left:0.2em;
+  height:150px;
+  overflow:auto;
+}
+
+.messages button{
+  vertical-align:bottom;
+
+}
+
+#sended ul li h5{
+  margin-left:0.2em;
+}
+#sended ul li span{
+  margin-left:0.6em;
+}
+
+#toSend{
+  height:5em;
+  margin-top:1em;
+  width:60%;
+  margin-left:0.2em;
+}
+
+
+/*----------------------------------------------------
+   production
+----------------------------------------------------*/
+.production h1{
+  background: #eee;
+  position: absolute;
+  height:5em;
+  margin-top:5em;
+  width: 600px;
+  margin-left: 200px;
+ }
