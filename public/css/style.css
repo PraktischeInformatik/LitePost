@@ -273,6 +273,34 @@ body {
 }
 
 /*----------------------------------------------------
+   Forms
+----------------------------------------------------*/
+
+label {
+  display: block;
+  margin: 0.5em 0;
+}
+
+label div {
+  display: inline-block;
+  width: 30%;
+}
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="password"], {
+  width: 100%;
+}
+label input[type="text"],
+label input[type="email"],
+label input[type="date"],
+label input[type="password"],
+label textarea {
+  /*substract 4px for border*/
+  width: calc(70% - 4px);
+}
+
+/*----------------------------------------------------
    Header
 ----------------------------------------------------*/
 
