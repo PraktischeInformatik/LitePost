@@ -108,7 +108,6 @@ textarea {
   display: inline;
 }*/
 
-
 textarea,
 p {
   font-family: Merriweather;
@@ -271,6 +270,44 @@ body {
   border-style: solid;
   border-bottom: 2px;
   border-color: #CCC;
+}
+
+/*----------------------------------------------------
+   Forms
+----------------------------------------------------*/
+
+label {
+  display: block;
+  margin: 0.5em 0;
+}
+
+label div {
+  display: inline-block;
+  width: 30%;
+}
+
+textarea:focus,
+input:focus {
+  outline:0;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="password"] {
+  width: 100%;
+  margin: 0.5em 0;
+  border: 0;
+
+}
+label input[type="text"],
+label input[type="email"],
+label input[type="date"],
+label input[type="password"],
+label textarea {
+  /*substract 4px for border*/
+  width: calc(70% - 4px);
+  margin: 0;
 }
 
 /*----------------------------------------------------
