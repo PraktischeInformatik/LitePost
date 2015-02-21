@@ -3,31 +3,31 @@
   <div id="main">
 
     #if($Validation)
-      #if(not $Validation.valid("validCsrfToken"))
+      #if($Input.error("validCsrfToken"))
         <p>csrfToken not valid</p>
       #end
-      #if(not $Validation.valid("hasUsername"))
+      #if($Input.error("hasUsername"))
         <p>has no Username</p>
       #end
-      #if(not $Validation.valid("hasFirstname"))
+      #if($Input.error("hasFirstname"))
         <p>has no Firstname</p>
       #end
-      #if(not $Validation.valid("hasLastname"))
+      #if($Input.error("hasLastname"))
         <p>has no Lastname</p>
       #end
-      #if(not $Validation.valid("validEmail"))
+      #if($Input.error("validEmail"))
         <p>Email not valid</p>
       #end
-      #if(not $Validation.valid("passwordMinLength"))
+      #if($Input.error("passwordMinLength"))
         <p>password needs at least 5 characters</p>
       #end
-      #if(not $Validation.valid("passwordsMatch"))
+      #if($Input.error("passwordsMatch"))
         <p>passwords dont Match</p>
       #end
-      #if(not $Validation.valid("usernameAvailable"))
+      #if($Input.error("usernameAvailable"))
         <p>username unavailable</p>
       #end
-      #if(not $Validation.valid("emailAvailable"))
+      #if($Input.error("emailAvailable"))
         <p>email unavailable</p>
       #end
     #end

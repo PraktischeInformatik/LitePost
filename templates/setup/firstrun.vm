@@ -28,33 +28,15 @@
       #end
     #end
     $Form.begin("POST", ${Router.linkTo("setupPost")})
-        <h2>Einrichtung</h2>
-        <label>
-          <div>Email Servername</div>
-          $Input.text.name("mailhost").prepopulate()
-        </label>
-        <label>
-          <div>Email Port</div>
-          $Input.text.name("mailport").prepopulate()
-        </label>
-        <label>
-          <div>Email Nutzername</div>
-          $Input.text.name("mailusername").prepopulate()
-        </label>
-        <label>
-          <div>Email Password</div>
-          $Input.text.name("mailpassword")
-        </label>
-        <label>
-          $Input.checkbox.name("usessl").prepopulate()
-          <div>SSL verwenden</div>
-        </label>
-        <label>
-          <div>System Email Addresse</div>
-          $Input.text.name("systemmail").prepopulate()
-        </label>
-        $Input.csrfToken
-        $Input.submit.general.value("Weiter")
+      <h2>Einrichtung</h2>
+      $Input.text.name("mailhost").placeholder("Email Servername").prepopulate()
+      $Input.text.name("mailport").placeholder("Email Port").prepopulate()
+      $Input.text.name("mailusername").placeholder("Email Nutzername").prepopulate()
+      $Input.text.name("mailpassword").placeholder("Email Password")
+      $Input.checkbox.name("usessl").placeholder("SSL verwenden")prepopulate()
+      $Input.text.name("systemmail").placeholder("System Email Addresse").prepopulate()
+      $Input.csrfToken
+      $Input.submit.general.value("Weiter")
     $Form.end()
   </div>
   #parse("sidebar.vm")
