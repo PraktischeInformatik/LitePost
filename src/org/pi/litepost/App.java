@@ -89,7 +89,7 @@ public class App extends NanoHTTPD{
 			model.getSessionManager().cleanSessions();
 			
 			Route route = Router.getHandler(session);
-			viewContext.put("Validator", new Validator(model.getSessionManager()));
+			viewContext.setValidator(new Validator(model.getSessionManager()));
 			Response resp = null;
 			if (route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
