@@ -191,11 +191,11 @@ public class Validator
 	/**
 	 * checks if a validation was valid or not
 	 * @param name the name of the validation
-	 * @return true if it was valid. false if the validation does not exist
+	 * @return true if it was valid or if the validation does not exist
 	 */
 	public boolean valid(String name)
 	{
-		return results.getOrDefault(name, false);
+		return results.getOrDefault(name, true);
 	}
 	
 	/**
