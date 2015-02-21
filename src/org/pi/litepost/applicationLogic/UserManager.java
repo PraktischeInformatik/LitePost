@@ -190,7 +190,7 @@ public class UserManager extends Manager {
 	 */
 	public void update(String firstname, String lastname, String password)
 			throws SQLException {
-		User user = this.getActual();
+		User user = this.getCurrent();
 		int id = user.getUserId();
 		this.model.getQueryManager().executeQuery("updateUser", firstname,
 				lastname, password, id);
@@ -218,7 +218,7 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 */
 	public void delete() throws SQLException {
-		User user = this.getActual();
+		User user = this.getCurrent();
 		int id = user.getUserId();
 		this.model.getQueryManager().executeQuery("deleteUser", id);
 		this.model.getQueryManager().executeQuery("deletePostByUser", id);
@@ -268,7 +268,7 @@ public class UserManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public User getActual() throws SQLException {
+	public User getCurrent() throws SQLException {
 		String username = this.model.getSessionManager().get("username");
 		return this.getByName(username);
 	}

@@ -1,0 +1,42 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+	<div class="messages">
+
+    <h1>Nachrichten</h1></br>
+    <h3>Empfaenger</h3>
+    <div id="sended">
+
+      <ul>
+        <li>
+          <div>
+            <h5> name </h5>
+            <span> hey whats up? </span>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h5> name </h5>
+            <span> nothing interesting.. </span>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+      <textarea id="toSend"></textarea>
+      <button>Abschicken</button>
+
+  </div>
+
+
+
+
+  
+  
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
