@@ -104,9 +104,9 @@ textarea {
 
 }
 
-form, div {
+/*form, div {
   display: inline;
-}
+}*/
 
 
 textarea,
@@ -251,6 +251,7 @@ body {
   display: inline;
   background-color: white;
   margin: 1em;
+  padding: 0.8em;
 }
 
 
@@ -362,17 +363,22 @@ body {
    new post
 ----------------------------------------------------*/
 
-#post-form {
-  margin-left: 5em;
-}
-
-#post-form .block {
-  margin-top: 0.3em;
-}
-
-#post-form input{
-  width: 60%;
+#post-form input,
+#post-form input-editor{
+  width:100%;
   border: none;
+  margin-top: 0.3em;
+  display: block;
+}
+
+#post-form label{
+  width: auto;
+}
+
+#post-form #input-title {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #CCC
 }
 
 #post-form #input-event {
@@ -398,7 +404,7 @@ body {
 
 #input-editor {
   height: 500px;
-  width: 60%;
+  font-size: 1.8em;
   background-color: white;
 }
 

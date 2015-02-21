@@ -20,20 +20,29 @@ $Resources.addScriptFooter("js/newpost.js")
 
         <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
       
-        <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
-
-        <input id="input-event" type="checkbox" name="is-event" onclick="toggle_event(this)">
-          <label for="input-event">Dieser Post ist ein Event</label>
-     
-        <input id="input-date" type="text" name="date" placeholder="Datum">
-      
-        <input id="input-image" type="file" name="image" accept="image/*">
-      
         <button type="submit" class="general" id="post-submit">Post</button>
       
       $Resources.csrfToken()
     </form>
   </div>
+
+  <div id="sidebar">
+
+    <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
+    
+    <label>
+      <input type="checkbox" name="is-event" onclick="toggle_event(this)">
+      <div>Dieser Post ist ein Event</div>
+    </label>
+
+    <div id="date-div">
+      <input id="input-date" type="text" name="date" placeholder="Datum">
+    </div>
+
+    <input id="input-image" type="file" name="image" accept="image/*">
+
+  </div>
+
 </div>
 
 #parse("footer.vm")
