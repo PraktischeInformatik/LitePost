@@ -1,5 +1,5 @@
 var picker = new Pikaday({
-  field: document.getElementById("input-date")
+  field: document.querySelectorAll("#date-div input")[0]
 });
 
 function toggle_event(checkbox) {
