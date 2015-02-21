@@ -150,12 +150,6 @@ public class App extends NanoHTTPD{
 	}
 	
 	public static void main(String[] args) {
-		try{
-			Seeder.seed();
-		}catch(Exception e){
-			System.out.println(e);
-		}
-		
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
         p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");

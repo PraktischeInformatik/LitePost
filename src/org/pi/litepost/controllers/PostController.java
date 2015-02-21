@@ -52,27 +52,20 @@ public class PostController {
 	}
 	
 	public static Response getNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		context.put("title", "");
-		context.put("content", "");
-		context.put("contact", "");
-		context.put("error", false);
 		return new Response(View.make("post.new", context));
 	}
 	
 	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Map<String, String> params = session.getParms();
 		
-		String title = View.sanitizeStrict(params.getOrDefault("title", ""));
-		String content = View.sanitizePostContent(params.getOrDefault("content", ""));
-		String contact = View.sanitizeStrict(params.getOrDefault("contact", ""));
-		String csrfToken = params.getOrDefault("csrf_token", "");
-		boolean csrfValid = !model.getSessionManager().validateToken(csrfToken);
-		if(title.equals("") || content.equals("") || contact.equals("") || !csrfValid) {
-			context.put("title", title);
-			context.put("content", content);
-			context.put("contact", contact);
-			context.put("error", true);
-			context.put("csrfValidationFailed", csrfValid);
+		Validator validator = new Validator(model.getSessionManager())
+			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
+			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
+			.validateSingle("hasContent", View::sanitizePostContent, s -> s.length() > 0, "content")
+			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact");
+		
+		if(!validator.validate(session.getParms())) {
+			context.setValidator(validator);
 			return new Response(View.make("post.new", context));
 		}
 		
@@ -92,6 +85,9 @@ public class PostController {
 		}
 		
 		try {
+			String title = validator.value("username");
+			String content = validator.value("content");
+			String contact = validator.value("contact");
 			model.getPostManager().insert(title, content, contact);
 			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
 			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
