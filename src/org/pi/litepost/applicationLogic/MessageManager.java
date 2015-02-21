@@ -28,7 +28,7 @@ public class MessageManager extends Manager {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		String sender = "Anonym";
 		if (this.model.getSessionManager().exists("username")) {
-			sender = model.getUserManager().getActual().getUsername();
+			sender = model.getUserManager().getCurrent().getUsername();
 		}
 		this.model.getQueryManager().executeQuery("insertMessage", date,
 				sender, receiver, subject, content);
@@ -43,7 +43,7 @@ public class MessageManager extends Manager {
 	public ArrayList<Message> getByUser() throws SQLException{
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getActual().getUserId();
+			userId = model.getUserManager().getCurrent().getUserId();
 		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesByUser", userId);

@@ -1,17 +1,15 @@
-package org.pi.litepost;
+package org.pi.litepost.html;
 
 import java.util.ArrayList;
 
-import org.pi.litepost.applicationLogic.SessionManager;
+import org.pi.litepost.Router;
 
-public class HtmlResources {
+public class Resources {
 	private ArrayList<String> scriptsHeader = new ArrayList<>();
 	private ArrayList<String> scriptsFooter = new ArrayList<>();
 	private ArrayList<String> styles = new ArrayList<>();
-	private SessionManager sessionManager;
 	
-	public HtmlResources(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
+	public Resources() {
 		addStyle("css/style.css");
 	}
 	
@@ -25,11 +23,6 @@ public class HtmlResources {
 	
 	public void addScriptFooter(String uri) {	
 		scriptsFooter.add(Router.linkTo("public", uri));
-	}
-	
-	public String csrfToken() {
-		String format = "<input type=\"hidden\" class=\"csrf-token\" name=\"csrf_token\" value=\"%s\">";
-		return String.format(format, sessionManager.csrfToken());
 	}
 	
 	public ArrayList<String> getStyles() {

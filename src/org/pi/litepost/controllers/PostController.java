@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.pi.litepost.App;
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
+import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
 
@@ -21,44 +21,44 @@ import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class PostController {
-	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		ArrayList<Post> posts = new ArrayList<>();
 		try {
 			posts = model.getPostManager().getAll();
 		} catch (SQLException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
-		data.put("posts", posts);
-		return new Response(View.make("post.all", data));
+		context.put("posts", posts);
+		return new Response(View.make("post.all", context));
 	} 
 	
-	public static Response getSingle(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) { 
+	public static Response getSingle(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) { 
 		int postId = 0;
 		try {
 			postId = Integer.parseInt(args.getOrDefault("post_id", ""));
 		}catch(NumberFormatException e) {
-			return new Response(Status.NOT_FOUND, "text/html", View.make("404", data));
+			return new Response(Status.NOT_FOUND, "text/html", View.make("404", context));
 		}
 		
 		Post post = null;
 		try {
 			post = model.getPostManager().getById(postId);
 		} catch (SQLException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
-		data.put("post", post);
-		return new Response(View.make("post.single", data));
+		context.put("post", post);
+		return new Response(View.make("post.single", context));
 	}
 	
-	public static Response getNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
-		data.put("title", "");
-		data.put("content", "");
-		data.put("contact", "");
-		data.put("error", false);
-		return new Response(View.make("post.new", data));
+	public static Response getNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		context.put("title", "");
+		context.put("content", "");
+		context.put("contact", "");
+		context.put("error", false);
+		return new Response(View.make("post.new", context));
 	}
 	
-	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Map<String, String> params = session.getParms();
 		
 		String title = View.sanitizeStrict(params.getOrDefault("title", ""));
@@ -67,12 +67,12 @@ public class PostController {
 		String csrfToken = params.getOrDefault("csrf_token", "");
 		boolean csrfValid = !model.getSessionManager().validateToken(csrfToken);
 		if(title.equals("") || content.equals("") || contact.equals("") || !csrfValid) {
-			data.put("title", title);
-			data.put("content", content);
-			data.put("contact", contact);
-			data.put("error", true);
-			data.put("csrfValidationFailed", csrfValid);
-			return new Response(View.make("post.new", data));
+			context.put("title", title);
+			context.put("content", content);
+			context.put("contact", contact);
+			context.put("error", true);
+			context.put("csrfValidationFailed", csrfValid);
+			return new Response(View.make("post.new", context));
 		}
 		
 		String filename = params.get("image");
@@ -85,7 +85,7 @@ public class PostController {
 				try {
 					Files.copy(input, output);
 				} catch (IOException e) {
-					return Router.error(e, data);
+					return Router.error(e, context);
 				}
 			}
 		}
@@ -95,12 +95,12 @@ public class PostController {
 			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
 			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
 		} catch (SQLException e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		return Router.redirectTo("allPosts");
 	}
 	
-	public static Response commentPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response commentPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Map<String, String> params = session.getParms();
 		
 		String string_post_id = params.get("post_id");
@@ -116,7 +116,7 @@ public class PostController {
 		try {
 			model.getCommentManager().insert(content, parent_id, post_id);
 		} catch (SQLException  e) {
-			return Router.error(e, data);
+			return Router.error(e, context);
 		}
 		
 		return Router.redirectTo("singlePost", string_post_id);

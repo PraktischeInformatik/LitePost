@@ -71,6 +71,8 @@ public class DatabaseQueryManager {
 				"UPDATE posts SET reported = 1"));
 		databaseQueries.put("getReportedPosts", new DatabaseQuery(true,
 				"SELECT * FROM posts WHERE reported = 1"));
+		databaseQueries.put("searchPosts", new DatabaseQuery(true,
+				"SELECT * FROM posts WHERE content LIKE ? OR title LIKE ?"));
 
 		// Events:
 		databaseQueries.put("getFutureEvents", new DatabaseQuery(true,

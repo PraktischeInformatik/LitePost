@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.pi.litepost.App;
+import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -51,7 +52,7 @@ public class FileController {
         put("class", "application/octet-stream");
     }};
     
-    public static Response getUploadedFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+    public static Response getUploadedFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
     	String uri = args.get("filename");
 		// Remove URL arguments
         if (uri.indexOf('?') >= 0) {
@@ -72,7 +73,7 @@ public class FileController {
         return response != null ? response : new Response(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "404 - Resource not found");
     }
     
-	public static Response getFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, HashMap<String, Object> data, Model model) {
+	public static Response getFile(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		String uri = args.get("filename");
 		// Remove URL arguments
         if (uri.indexOf('?') >= 0) {

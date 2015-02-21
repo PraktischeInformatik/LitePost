@@ -2,33 +2,31 @@
 <div id="wrapper">
   <div id="main">
     <div id="login-container">
-      #if($Validation)
-        #if(not $Validation.valid("csrfTokenValid"))
-          <p>csrfToken not Valid</p>
-        #end
-        #if(not $Validation.valid("hasUsername"))
-          <p>has no Username</p>
-        #end
-        #if(not $Validation.valid("hasPassword"))
-          <p>has no Password</p>
-        #end
-        #if(not $Validation.valid("emailVerified"))
-          <p>email not Verified</p>
-        #end
-        #if(not $Validation.valid("loginSuccessful"))
-          <p>login unsuccessful</p>
-        #end
+      #if($Input.error("csrfTokenValid"))
+        <p>csrfToken not Valid</p>
       #end
-      <form method="POST" action="${Router.linkTo("loginPost")}" id="login-form">
+      #if($Input.error("hasUsername"))
+        <p>has no Username</p>
+      #end
+      #if($Input.error("hasPassword"))
+        <p>has no Password</p>
+      #end
+      #if($Input.error("emailVerified"))
+        <p>email not Verified</p>
+      #end
+      #if($Input.error("loginSuccessful"))
+        <p>login unsuccessful</p>
+      #end
+      $Form.begin("POST", ${Router.linkTo("loginPost")}).id("login-form")
         <h2>Login</h2>
-        <input id="login-username" type="text" $!Validation.prepopulateText("username") name="username" placeholder="Nutzername">
-        <input id="login-password" type="password" name="password" placeholder="Passwort">
-        <input id="login-remember" type="checkbox" name="remember" $Validation.prepopulateCheckbox("remember")>
-        $Resources.csrfToken()
-   	  <button type="submit" class="general">Login</button>
-      <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
-      <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
-      </form>
+        $Input.text.id("login-username").name("username").placeholder("Nutzername").prepopulate()
+        $Input.password.id("login-password").name("password").placeholder("Passwort")
+        $Input.checkbox.id("login-remember").name("remember").prepopulate()
+        $Input.csrfToken
+        $Input.submit.value("Login").general
+        <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
+        <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
+      $Form.end()
     </div>
   </div>
   #parse("sidebar.vm")

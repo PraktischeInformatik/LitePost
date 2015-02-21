@@ -17,6 +17,7 @@ import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
 import org.pi.litepost.controllers.PostController;
+import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -25,8 +26,8 @@ public class App extends NanoHTTPD{
 	public static Properties config;
 	public static String HOSTNAME;
 
-	public App(String hostname, int port) {
-		super(hostname, port);
+	public App(int port) {
+		super(port);
 		
 		Router.add("upload", Method.GET, "/public/upload/{filename}", FileController::getUploadedFile);
 		Router.add("public", Method.GET, "/public/{filename}", FileController::getFile);
@@ -63,15 +64,13 @@ public class App extends NanoHTTPD{
 	@Override public Response serve(IHTTPSession session) {
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		
-		
-		
 		//performance improvement: /public/.* needs no model. bypass everything
 		if(session.getUri().startsWith("/public/")) {
 			Route route = Router.getHandler(session);
 			if(route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
-				return route.getHandler().handle(session, args, files, new HashMap<>(), null);
+				return route.getHandler().handle(session, args, files, new ViewContext(), null);
 			}
 		}
 		
@@ -83,17 +82,15 @@ public class App extends NanoHTTPD{
 		}
 		
 		// standard setup & route handling
-		HashMap<String, Object> viewContext = new HashMap<>();
-		// Router is always available to Views
-		viewContext.put("Router", Router.class);
+		ViewContext viewContext = new ViewContext();
 		try (Model model = new Model()){
 			model.init();
 			model.getSessionManager().resumeSession(session.getCookies());
 			model.getSessionManager().cleanSessions();
 			
 			Route route = Router.getHandler(session);
+			viewContext.put("Validator", new Validator(model.getSessionManager()));
 			Response resp = null;
-			viewContext.put("Resources", new HtmlResources(model.getSessionManager()));
 			if (route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
@@ -121,7 +118,7 @@ public class App extends NanoHTTPD{
 		Properties machineProps = new Properties();
 		
 		defaultProps.put("litepost.serverport", "8080");
-		defaultProps.put("litepost.serverhost", "127.0.0.1");
+		defaultProps.put("litepost.serverhost", "127.0.0.1:8080");
 		defaultProps.put("litepost.public.folder", "public");
 		defaultProps.put("litepost.public.uploadfolder", "public/upload");
 		defaultProps.put("litepost.debug", "false");
@@ -173,7 +170,7 @@ public class App extends NanoHTTPD{
 			System.out.println("Falling back to default port: " + port);
 		}
 		
-		App app = new App(hostname, port);
+		App app = new App(port);
 		try {
 			app.start();
 		} catch (IOException e) {
@@ -181,7 +178,7 @@ public class App extends NanoHTTPD{
 			System.exit(-1);
 		}
 		
-		System.out.println(String.format("Server listening on %s:%d. Hit Enter to stop.", hostname, port));
+		System.out.println(String.format("Server listening on %s. Hit Enter to stop.", hostname));
 		
 		try {
 			System.in.read();
