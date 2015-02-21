@@ -1,6 +1,7 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
+
     #if($Validation)
       #if(not $Validation.valid("validCsrfToken"))
         <p>csrfToken not valid</p>
