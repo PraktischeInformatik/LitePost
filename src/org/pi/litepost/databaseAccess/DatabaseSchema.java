@@ -48,6 +48,7 @@ public class DatabaseSchema {
 			    .column("date", "DATE").notNull() 
 			    .column("parent_id", "INT").notNull().defaultVal(0)
 			    .column("post_id", "INT").notNull().foreignKey("Posts", "post_id")
+			    .column("reported", "INT(1)").notNull().defaultVal(0)
 			.table("Sessions")
 			    .column("session_id", "VARCHAR(255)").notNull().primaryKey()
 			    .column("key", "VARCHAR(64)").notNull().primaryKey()
