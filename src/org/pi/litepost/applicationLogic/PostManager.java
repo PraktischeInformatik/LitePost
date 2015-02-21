@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 /**
  * the PostManager
  * 
@@ -31,7 +30,7 @@ public class PostManager extends Manager {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getActual().getUserId();
+			userId = model.getUserManager().getCurrent().getUserId();
 		}
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
@@ -46,8 +45,7 @@ public class PostManager extends Manager {
 	 *            the post to which the image belongs
 	 * @throws SQLException
 	 */
-	public void addImage(String source, int post_id)
-			throws SQLException {
+	public void addImage(String source, int post_id) throws SQLException {
 		model.getQueryManager().executeQuery("insertImage", source);
 		ResultSet rs = model.getQueryManager().executeQuery("getLastId",
 				"Images");
@@ -94,13 +92,22 @@ public class PostManager extends Manager {
 	}
 
 	/**
-	 * searches a Comment by given keywords
+	 * searches a Post by given keywords
 	 * 
 	 * @param keywords
 	 * @return
+	 * @throws SQLException
 	 */
-	public ArrayList<Post> search(String[] keywords) {
-		return null;
+	@SuppressWarnings("null")
+	public ArrayList<Post> search(String[] keywords) throws SQLException {
+		ArrayList<Post> posts = null;
+		for (int i = 0; i < keywords.length; i++) {
+			String keyword = "%" + keywords[i] + "%";
+			ResultSet result = this.model.getQueryManager().executeQuery(
+					"searchPosts", keyword, keyword);
+			posts.addAll(this.createPosts(result));
+		}
+		return posts;
 	}
 
 	/**
@@ -138,8 +145,7 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Post> getByUser(int userId)
-			throws SQLException {
+	public ArrayList<Post> getByUser(int userId) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser", userId);
 		ArrayList<Post> posts = this.createPosts(result);
@@ -154,10 +160,10 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Post> getByUser() throws SQLException{
+	public ArrayList<Post> getByUser() throws SQLException {
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getActual().getUserId();
+			userId = model.getUserManager().getCurrent().getUserId();
 		}
 
 		ResultSet result = this.model.getQueryManager().executeQuery(
@@ -197,8 +203,7 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Event> getEvents(int month)
-			throws SQLException {
+	public ArrayList<Event> getEvents(int month) throws SQLException {
 		ArrayList<Event> events = new ArrayList<>();
 		ArrayList<Event> all = this.getEvents();
 		Iterator<Event> iter = all.iterator();
@@ -221,17 +226,17 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Event> getEvents() throws SQLException{
+	public ArrayList<Event> getEvents() throws SQLException {
 		ArrayList<Event> events = new ArrayList<>();
 
-		ResultSet result = this.model.getQueryManager()
-				.executeQuery("getFutureEvents");
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getFutureEvents");
 
 		while (result.next()) {
-			LocalDateTime postDate = 
-					result.getTimestamp("date").toLocalDateTime();
-			LocalDateTime eventDate = 
-					result.getTimestamp("event_date").toLocalDateTime();
+			LocalDateTime postDate = result.getTimestamp("date")
+					.toLocalDateTime();
+			LocalDateTime eventDate = result.getTimestamp("event_date")
+					.toLocalDateTime();
 			int postId = result.getInt("post_id");
 			String title = result.getString("title");
 			String content = result.getString("content");
@@ -239,10 +244,12 @@ public class PostManager extends Manager {
 			int userId = result.getInt("user_id");
 			boolean reported = result.getBoolean("reported");
 			boolean presentation = result.getBoolean("presentation");
-			Event event = new Event(postId, title, content, contact, postDate, userId, reported, presentation, eventDate);
-			
-			ResultSet images = this.model.getQueryManager().executeQuery("getImagesByPost", postId);
-			
+			Event event = new Event(postId, title, content, contact, postDate,
+					userId, reported, presentation, eventDate);
+
+			ResultSet images = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", postId);
+
 			while (images.next()) {
 				int imageId = images.getInt("image_id");
 				String source = images.getString("source");
@@ -254,8 +261,7 @@ public class PostManager extends Manager {
 		return events;
 	}
 
-	public ArrayList<Post> getPresentations()
-			throws SQLException, SQLException {
+	public ArrayList<Post> getPresentations() throws SQLException, SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPresentations");
 		ArrayList<Post> posts = this.createPosts(result);
@@ -269,15 +275,14 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	private ArrayList<Post> createPosts(ResultSet result)
-			throws SQLException {
+	private ArrayList<Post> createPosts(ResultSet result) throws SQLException {
 		ArrayList<Post> posts = new ArrayList<>();
 		while (result.next()) {
 			posts.add(createPost(result));
 		}
 		return posts;
 	}
-	
+
 	/**
 	 * method creates one Posts of given ResultSet
 	 * 
@@ -295,8 +300,9 @@ public class PostManager extends Manager {
 		boolean reported = rs.getBoolean("reported");
 		boolean presentation = rs.getBoolean("presentation");
 
-		Post post = new Post(id, title, content, contact, date, userId, reported, presentation);
-		
+		Post post = new Post(id, title, content, contact, date, userId,
+				reported, presentation);
+
 		ResultSet imResult = this.model.getQueryManager().executeQuery(
 				"getImagesByPost", id);
 
@@ -305,10 +311,10 @@ public class PostManager extends Manager {
 			String source = imResult.getString("source");
 			post.addImage(new Image(imageId, source));
 		}
-		for(Comment comment : this.model.getCommentManager().getByPost(id)) {
-			post.addComment(comment);	
+		for (Comment comment : this.model.getCommentManager().getByPost(id)) {
+			post.addComment(comment);
 		}
-		
+
 		return post;
 	}
 }

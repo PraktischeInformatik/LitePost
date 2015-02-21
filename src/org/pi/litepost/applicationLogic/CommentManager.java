@@ -30,7 +30,7 @@ public class CommentManager extends Manager {
 		LocalDateTime date = this.model.getCalenderManager().getDate();
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getActual().getUserId();
+			userId = model.getUserManager().getCurrent().getUserId();
 		}
 		this.model.getQueryManager().executeQuery("insertComment", userId,
 				content, date, parentId, postId);
