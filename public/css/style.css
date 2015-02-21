@@ -225,7 +225,6 @@ a:visited {
 }
 
 
-
 /*----------------------------------------------------
    Elements
 ----------------------------------------------------*/
@@ -284,6 +283,10 @@ label {
 label div {
   display: inline-block;
   width: 30%;
+}
+
+label input[type="checkbox"] + div {
+  width: 100%;
 }
 
 textarea:focus,
@@ -408,7 +411,7 @@ label textarea {
   display: block;
 }
 
-#post-form label{
+#isdate{
   width: auto;
 }
 
@@ -443,6 +446,17 @@ label textarea {
   height: 500px;
   font-size: 1.8em;
   background-color: white;
+}
+#side {
+  float: right;
+  width: 280px;
+  font-size: 0.7em;
+  background-color: white;
+  padding: 1em;
+  margin: 1em;
+}
+#side label div {
+  display: inline;
 }
 
 /*----------------------------------------------------

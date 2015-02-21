@@ -26,7 +26,7 @@ $Resources.addScriptFooter("js/newpost.js")
     </form>
   </div>
 
-  <div id="sidebar">
+  <div id="side">
 
     <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
     
