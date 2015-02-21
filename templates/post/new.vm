@@ -22,14 +22,13 @@ $Resources.addScriptFooter("js/newpost.js")
           $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)").prepopulate()
           <div>Dieser Post ist ein Event</div>
         </label>
-        $Input.text.name("date").placeholder("Datum").prepopulate()
+        <div id="date-div">
+          $Input.text.name("date").placeholder("Datum").prepopulate()
+        </div>
         <label>
           <div>Bilder anfügen</div>
           $Input.file.name("image").attr("accept", "image/*")
         </label>
-
-
-
         $Input.csrfToken
         $Input.submit.general.value("Posten")        
       $Form.end()

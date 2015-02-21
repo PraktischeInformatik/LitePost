@@ -13,6 +13,7 @@ import org.pi.litepost.View;
 import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
+import org.pi.litepost.html.Validator;
 
 import com.google.common.io.Files;
 
