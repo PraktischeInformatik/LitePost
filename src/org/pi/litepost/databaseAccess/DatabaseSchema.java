@@ -12,12 +12,13 @@ public class DatabaseSchema {
 		SCHEMA
 			.table("Users")
 				.column("user_id", "INT").notNull().primaryKey()
-		        .column("username", "VARCHAR(255)").notNull()
+		        .column("username", "VARCHAR(255)").notNull().index()
 		        .column("password", "VARCHAR(102)").notNull()
 		        .column("firstname", "VARCHAR(255)").notNull()
 		        .column("lastname", "VARCHAR(255)").notNull()
-		        .column("email", "VARCHAR(255)").notNull()
+		        .column("email", "VARCHAR(255)").notNull().unique().index()
 		        .column("admin", "INT(1)").notNull().defaultVal(0)
+		        .column("verified_email", "INT(1)").notNull().defaultVal(0)
 	        .table("Messages")
 		        .column("message_id", "INT").notNull().primaryKey()
 		        .column("date", "DATE").notNull()
@@ -51,6 +52,11 @@ public class DatabaseSchema {
 			    .column("session_id", "VARCHAR(255)").notNull().primaryKey()
 			    .column("key", "VARCHAR(64)").notNull().primaryKey()
 			    .column("value", "TEXT").notNull()
+			.table("Tokens")
+				.column("value", "TEXT").notNull().primaryKey()	
+				.column("user_id", "INT(6)").notNull().foreignKey("User", "user_id")
+				.column("type", "VARCHAR(32)").notNull()
+				.column("creation_time", "DATE").notNull()
 			.table("Ids")
 			    .column("table_name", "VARCHAR(128)").notNull().primaryKey()
 			    .column("next_id", "INT").notNull().defaultVal(0)
@@ -112,6 +118,7 @@ class Schema {
 class Table {
 	String name;
 	ArrayList<Column> columns = new ArrayList<>();
+	HashMap<String, Index> indices = new HashMap<>();
 	ArrayList<ForeignKey> foreignKeys = new ArrayList<>();
 	PrimaryKey primaryKey = new PrimaryKey();
 	Schema schema;
@@ -140,6 +147,15 @@ class Table {
 		return schema.table(name);
 	}
 	
+	public Table index(String name, Column col) {
+		if(!indices.containsKey(name)) {
+			indices.put(name, new Index(name, this, col));
+		} else {
+			indices.get(name).columns.add(col);
+		}
+		return this;
+	}
+	
 	public Schema afterCreation(String sql) {
 		schema.afterCreate.add(sql);
 		return schema;
@@ -166,9 +182,14 @@ class Table {
 					.reduce((a, s) -> a + ",\n\t" + s)
 					.get();
 		}
-		return String.format("CREATE TABLE %s(\n"
-				+ "\t%s\n"
-				+ ");", name, definition);
+		
+		String createIndices = indices.values().stream()
+			.map(Index::toString)
+			.reduce((is, i) -> is + ";\n" + i)
+			.map((is) -> '\n' + is + ';')
+			.orElse("");
+		return String.format("CREATE TABLE %s(\n\t%s\n);%s",
+				name, definition, createIndices);
 	}
 }
 
@@ -215,6 +236,17 @@ class Column {
 		table.foreignKeys.add(new ForeignKey(this, otherTable, otherColumn));
 		return this;
 	}
+	
+	public Column index(String name) {
+		table.index(name, this);
+		return this;
+	}
+	
+	public Column index() {
+		table.index(table.name + "_" + name, this);
+		return this;
+	}
+	
 	
 	public Column column(String name, String definition) {
 		return table.column(name, definition);
@@ -264,5 +296,26 @@ class ForeignKey  {
 				column.name,
 				otherTable,
 				otherColumn); 
+	}
+}
+
+class Index {
+	String name;
+	Table table;
+	ArrayList<Column> columns = new ArrayList<>();
+	
+	public Index(String name, Table table, Column col) {
+		this.name = name;
+		this.table = table;
+		columns.add(col);
+	}
+	
+	@Override
+	public String toString() {
+		String cols = columns.stream()
+				.map(c -> c.name)
+				.reduce((cs, c) -> cs + ", " + c)
+				.get();
+		return String.format("CREATE INDEX %s ON %s(%s)", name, table.name, cols);
 	}
 }

@@ -64,11 +64,14 @@ public class PostController {
 		String title = View.sanitizeStrict(params.getOrDefault("title", ""));
 		String content = View.sanitizePostContent(params.getOrDefault("content", ""));
 		String contact = View.sanitizeStrict(params.getOrDefault("contact", ""));
-		if(title.equals("") || content.equals("") || contact.equals("")) {
+		String csrfToken = params.getOrDefault("csrf_token", "");
+		boolean csrfValid = !model.getSessionManager().validateToken(csrfToken);
+		if(title.equals("") || content.equals("") || contact.equals("") || !csrfValid) {
 			data.put("title", title);
 			data.put("content", content);
 			data.put("contact", contact);
 			data.put("error", true);
+			data.put("csrfValidationFailed", csrfValid);
 			return new Response(View.make("post.new", data));
 		}
 		
@@ -76,7 +79,7 @@ public class PostController {
 		if(filename != null) {
 			String filepath = files.get("image");
 			File input = new File(filepath);
-			String uploadfolder = (String) App.config.get("uploadfolder");
+			String uploadfolder = (String) App.config.get("litepost.public.uploadfolder");
 			File output = new File(uploadfolder + File.separatorChar + filename);
 			if(input.exists()) {
 				try {

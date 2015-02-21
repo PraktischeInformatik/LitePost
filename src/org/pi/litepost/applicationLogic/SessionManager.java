@@ -115,11 +115,7 @@ public class SessionManager extends Manager {
 	}
 	
 	private void set(String sessionid, String key, String value) throws SQLException {
-		if(exists(key)) {
-			model.getQueryManager().executeQuery("updateSessionVar", value, sessionId, key);
-		} else {
-			model.getQueryManager().executeQuery("setSessionVar", sessionId, key, value);
-		}
+		model.getQueryManager().executeQuery("setSessionVar", sessionId, key, value);
 	}
 	private boolean exists(String sessionid, String key) throws SQLException {
 		if(sessionId != null) {

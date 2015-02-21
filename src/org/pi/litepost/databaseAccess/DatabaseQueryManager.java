@@ -73,8 +73,8 @@ public class DatabaseQueryManager {
 				"SELECT * FROM posts WHERE reported = 1"));
 
 		// Events:
-		databaseQueries.put("getEvents", new DatabaseQuery(true,
-				"SELECT * FROM Posts NATURAL JOIN Events"));
+		databaseQueries.put("getFutureEvents", new DatabaseQuery(true,
+				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date >= datetime('now')"));
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,
@@ -92,45 +92,56 @@ public class DatabaseQueryManager {
 		// User:
 		databaseQueries.put("deleteUser", new DatabaseQuery(false,
 				"DELETE FROM Users WHERE user_id = ?"));
-		databaseQueries.put("checkUsername", new DatabaseQuery(true,
-				"SELECT * FROM Users WHERE username = ?"));
+		databaseQueries.put("checkUserData", new DatabaseQuery(true,
+				"SELECT * FROM Users WHERE username = ? or email = ?"));
 		databaseQueries.put("insertUser", new DatabaseQuery(false, 
-				"INSERT INTO Users(user_id, username, password, firstname, lastname, email, admin) VALUES(?, ?, ?, ?, ?, ?)",
+				"INSERT INTO Users(user_id, username, password, firstname, lastname, email) VALUES(?, ?, ?, ?, ?, ?)",
 				"Users"));
 		databaseQueries.put("checkUser", new DatabaseQuery(true,
 				"SELECT * FROM Users WHERE username = ?, password = ?"));
 		databaseQueries.put("updateUser", new DatabaseQuery(false,
-				"UPDATE Users SET password = ?, firstname = ?, lastname = ? WHERE id = ?"));
+				"UPDATE Users SET password = ?, firstname = ?, lastname = ? WHERE user_id = ?"));
+		databaseQueries.put("verifyEmail", new DatabaseQuery(false,
+				"UPDATE Users SET verified_email = 1 WHERE user_id = ?"));
 		databaseQueries.put("getUserByUsername", new DatabaseQuery(true,
 				"SELECT * FROM Users WHERE username = ?"));
 		databaseQueries.put("getUserById", new DatabaseQuery(true,
 				"SELECT * FROM Users WHERE user_id = ?"));
+		databaseQueries.put("getUserByEmail", new DatabaseQuery(true,
+				"SELECT * FROM Users WHERE email = ?"));
 		databaseQueries.put("setAdmin", new DatabaseQuery(false,
 				"UPDATE Users SET admin = 1"));
 
 		// Session
-		databaseQueries.put("startSession", new DatabaseQuery(false,
-				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 		databaseQueries.put("endSession", new DatabaseQuery(false,
 				"DELETE FROM Sessions WHERE session_id = ?"));
 		databaseQueries.put("setSessionVar", new DatabaseQuery(false,
-				"INSERT INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
-
+				"REPLACE INTO Sessions(session_id, key, value) VALUES(?, ?, ?)"));
 		databaseQueries.put("getSessionVar", new DatabaseQuery(true,
 				"SELECT value FROM Sessions WHERE session_id = ? and key = ?"));
-
-		databaseQueries.put("updateSessionVar", new DatabaseQuery(false,
-				"UPDATE Sessions SET value = ? where session_id = ? and key = ?"));
-
 		databaseQueries.put("sessionKeyExists",new DatabaseQuery(true,
 				"SELECT Count(*) FROM Sessions WHERE session_id = ? and key = ?"));
-
 		databaseQueries.put("getAllSessions", new DatabaseQuery(true,
 				"SELECT * FROM Sessions WHERE key = \"expiration\""));
-
 		databaseQueries.put("removeSession", new DatabaseQuery(false,
 				"DELETE FROM Sessions WHERE session_id = ?"));
-
+		
+		// Tokens
+		databaseQueries.put("setEmailVerificationToken", new DatabaseQuery(false,
+				"REPLACE INTO Tokens(user_id, type, value, creation_time) VALUES(?, \"email_verification\", ?, datetime('now'))"));
+		databaseQueries.put("setPasswordResetToken", new DatabaseQuery(false,
+				"REPLACE INTO Tokens(user_id, type, value, creation_time) VALUES(?, \"password_reset\", ?, datetime('now'))"));
+		databaseQueries.put("getEmailVerificationToken", new DatabaseQuery(true,
+				"SELECT * FROM Tokens WHERE value = ? AND type = \"email_verification\" AND creation_time > datetime('now', '-24 hours')"));
+		databaseQueries.put("getPasswordResetToken", new DatabaseQuery(true,
+				"SELECT * FROM Tokens WHERE value = ? AND type = \"password_reset\" AND creation_time > datetime('now', '-24 hours')"));
+		databaseQueries.put("deleteEmailVerificationToken", new DatabaseQuery(false,
+				"DELETE FROM Tokens WHERE value = ? AND type = \"email_verification\""));
+		databaseQueries.put("deletePasswordResetToken", new DatabaseQuery(false,
+				"DELETE FROM Tokens WHERE value = ? AND type = \"password_reset\""));
+		databaseQueries.put("removeOldTokens", new DatabaseQuery(false,
+				"DELETE FROM Tokens WHERE creation_time < datetime('now' '-24 hours')"));
+		
 		// Ids:
 		databaseQueries.put("getIdByTableName", new DatabaseQuery(true,
 				"SELECT next_id FROM Ids WHERE table_name = ?"));

@@ -5,8 +5,8 @@ package org.pi.litepost.applicationLogic;
  *
  */
 public class Image {
-	private int imageId;
-	private String source;
+	private final int imageId;
+	private final String source;
 
 	public Image(int imageId, String source) {
 		super();
@@ -18,16 +18,7 @@ public class Image {
 		return imageId;
 	}
 
-	public void setImageId(int imageId) {
-		this.imageId = imageId;
-	}
-
 	public String getSource() {
 		return source;
 	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
 }

@@ -1,0 +1,3 @@
+<h1>Wilkommen $user.getUsername()</h1>
+
+<a href="$verificationLink">$verificationLink</a>

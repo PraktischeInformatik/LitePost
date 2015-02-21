@@ -90,7 +90,8 @@ public class CommentManager extends Manager {
 		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
 		int parentId = rs.getInt("parent_id");
 		int postId = rs.getInt("post_id");
-		Comment comment = new Comment(commentId, userId, content, date, parentId, postId);
+		boolean reported = rs.getBoolean("reported");
+		Comment comment = new Comment(commentId, userId, content, date, parentId, postId, reported);
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getCommentsByParentId", commentId);
 		while(result.next()) {

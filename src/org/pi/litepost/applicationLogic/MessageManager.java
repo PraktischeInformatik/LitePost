@@ -2,7 +2,6 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -41,7 +40,6 @@ public class MessageManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Message> getByUser() throws SQLException{
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
@@ -50,36 +48,9 @@ public class MessageManager extends Manager {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesByUser", userId);
 
-		ArrayList<Message> messages = null;
-		int messageId;
-		Timestamp ldate;
-		LocalDateTime date;
-		int sender;
-		int receiver;
-		String subject;
-		String content;
-		boolean hidden;
-		boolean read;
-		Message lmessage;
+		ArrayList<Message> messages = new ArrayList<>();
 		while (result.next()) {
-			messageId = result.getInt("message_id");
-			ldate = result.getTimestamp("date");
-			date = ldate.toLocalDateTime();
-			;
-			sender = result.getInt("sender");
-			receiver = result.getInt("receiver");
-			subject = result.getString("subject");
-			content = result.getString("content");
-			hidden = result.getBoolean("hidden");
-			read = result.getBoolean("read");
-			lmessage = new Message(messageId, date, sender, receiver, subject,
-					content);
-			if (hidden)
-				lmessage.isHidden();
-			if (read)
-				lmessage.isRead();
-
-			messages.add(lmessage);
+			messages.add(createMessage(result));
 		}
 		return messages;
 	}
@@ -94,32 +65,25 @@ public class MessageManager extends Manager {
 	public Message getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getMessagesById", id);
-
-		Timestamp ldate;
-		LocalDateTime date;
-		int sender;
-		int receiver;
-		String subject;
-		String content;
-		boolean hidden;
-		boolean read;
-		Message lmessage;
-
-		ldate = result.getTimestamp("date");
-		date = ldate.toLocalDateTime();
-		sender = result.getInt("sender");
-		receiver = result.getInt("receiver");
-		subject = result.getString("subjct");
-		content = result.getString("content");
-		hidden = result.getBoolean("hidden");
-		read = result.getBoolean("read");
-		lmessage = new Message(id, date, sender, receiver, subject, content);
-		if (hidden)
-			lmessage.isHidden();
-		if (read)
-			lmessage.isRead();
-
-		return lmessage;
+		if(result.next()) {
+			return createMessage(result);
+		} else {
+			return null;
+		}
+	}
+	
+	public Message createMessage(ResultSet rs) throws SQLException {
+		int messageId = rs.getInt("message_id");
+		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
+		int sender = rs.getInt("sender");
+		int receiver = rs.getInt("receiver");
+		String subject = rs.getString("subject");
+		String content = rs.getString("content");
+		boolean hidden = rs.getBoolean("hidden");
+		boolean read = rs.getBoolean("read");
+		Message message = new Message(messageId, date, sender, receiver, subject,
+				content, hidden, read);
+		return message;
 	}
 
 	/**

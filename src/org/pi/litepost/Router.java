@@ -134,7 +134,7 @@ public class Router {
 	}
 	
 	public static Response error(Exception e, HashMap<String, Object> data) {
-		if(App.config.getProperty("Debug").equalsIgnoreCase("true")) {
+		if(App.config.getProperty("litepost.debug").equalsIgnoreCase("true")) {
 			data.put("error", new Error(e));
 			return new Response(Status.INTERNAL_ERROR, "text/html", View.make("error.debug", data));
 		}else {

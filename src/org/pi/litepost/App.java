@@ -2,9 +2,9 @@ package org.pi.litepost;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.apache.velocity.app.Velocity;
 import org.pi.litepost.Router.Route;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.controllers.ConfigController;
 import org.pi.litepost.controllers.FileController;
 import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
@@ -22,9 +23,10 @@ import fi.iki.elonen.NanoHTTPD;
 public class App extends NanoHTTPD{
 
 	public static Properties config;
+	public static String HOSTNAME;
 
-	public App(int port) {
-		super(port);
+	public App(String hostname, int port) {
+		super(hostname, port);
 		
 		Router.add("upload", Method.GET, "/public/upload/{filename}", FileController::getUploadedFile);
 		Router.add("public", Method.GET, "/public/{filename}", FileController::getFile);
@@ -33,11 +35,21 @@ public class App extends NanoHTTPD{
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
 		Router.add("daysight", Method.GET, "/daysight", HomeController::getDaySight);
 		
+		//configuration
+		Router.add("setupPage", Method.GET, "/setup", ConfigController::getSetup);
+		Router.add("setupPost", Method.POST, "/setup", ConfigController::postSetup);
 		
 		//user
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
 		Router.add("logout", Method.GET, "/logout", LoginController::logout);
+		Router.add("registrationPage", Method.GET, "/register", LoginController::getRegistration);
+		Router.add("registrationPost", Method.POST, "/register", LoginController::postRegistration);
+		Router.add("emailVerification", Method.GET, "/verify/{verification_token}", LoginController::verifyEmail);
+		Router.add("lostPasswordPage", Method.GET, "/lostpassword", LoginController::getLostPassword);
+		Router.add("lostPasswordPost", Method.POST, "/lostpassword", LoginController::postLostPassword);
+		Router.add("resetPasswordPage", Method.GET, "/resetpassword/{reset_token}", LoginController::getResetPassword);
+		Router.add("resetPasswordPost", Method.POST, "/resetpassword/{reset_token}", LoginController::postResetPassword);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
@@ -51,6 +63,8 @@ public class App extends NanoHTTPD{
 	@Override public Response serve(IHTTPSession session) {
 		System.out.println(String.format("%s %s", session.getMethod(), session.getUri()));
 		
+		
+		
 		//performance improvement: /public/.* needs no model. bypass everything
 		if(session.getUri().startsWith("/public/")) {
 			Route route = Router.getHandler(session);
@@ -58,6 +72,13 @@ public class App extends NanoHTTPD{
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
 				HashMap<String, String> files = new HashMap<>();
 				return route.getHandler().handle(session, args, files, new HashMap<>(), null);
+			}
+		}
+		
+		//first time configuration
+		if(!config.getProperty("litepost.configured").equals("true")) {
+			if(!session.getUri().equals(Router.linkTo("setupPage"))) {
+				return Router.redirectTo("setupPage");
 			}
 		}
 		
@@ -92,7 +113,45 @@ public class App extends NanoHTTPD{
 			return Router.error(e, viewContext);
 		} 
 	}
-
+	
+	public static void loadConfig() {
+		config = new Properties();
+		Properties defaultProps = new Properties();
+		Properties generalProps = new Properties();
+		Properties machineProps = new Properties();
+		
+		defaultProps.put("litepost.serverport", "8080");
+		defaultProps.put("litepost.serverhost", "127.0.0.1");
+		defaultProps.put("litepost.public.folder", "public");
+		defaultProps.put("litepost.public.uploadfolder", "public/upload");
+		defaultProps.put("litepost.debug", "false");
+		defaultProps.put("litepost.configured", "false");
+		
+		String generalFilePath = "res" + File.separatorChar + "config.properties";
+		try {
+			InputStream inStream = new FileInputStream(generalFilePath);
+			generalProps.load(inStream);
+		} catch (Exception e) {
+			System.out.println("Could not load config file");
+		}
+		
+		try {
+			String computername = InetAddress.getLocalHost().getHostName();
+			String machineFilePath = "res" + 
+					File.separatorChar + 
+					"machine" + 
+					File.separatorChar +
+					computername + 
+					".properties";
+			InputStream inStream = new FileInputStream(machineFilePath);
+			machineProps.load(inStream);
+		} catch (Exception e1) {}
+		
+		config.putAll(defaultProps);
+		config.putAll(generalProps);
+		config.putAll(machineProps);
+	}
+	
 	public static void main(String[] args) {
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
@@ -100,24 +159,12 @@ public class App extends NanoHTTPD{
         File f = new File("templates");
         p.setProperty("file.resource.loader.path", f.getAbsolutePath());
         
-        
 		Velocity.init(p);
 		
-		InputStream inStream = null;
-		try {
-			inStream = new FileInputStream("res" + File.separatorChar + "config.properties");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		config = new Properties();
-		try {
-			config.load(inStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		String serverport = (String) config.getOrDefault("Serverport", "8080");
+		loadConfig();
+		
+		String hostname = (String) config.get("litepost.serverhost");
+		String serverport = (String) config.get("litepost.serverport");
 		int port = 8080;
 		try {
 			port = Integer.parseInt(serverport);
@@ -126,7 +173,7 @@ public class App extends NanoHTTPD{
 			System.out.println("Falling back to default port: " + port);
 		}
 		
-		App app = new App(port);
+		App app = new App(hostname, port);
 		try {
 			app.start();
 		} catch (IOException e) {
@@ -134,7 +181,7 @@ public class App extends NanoHTTPD{
 			System.exit(-1);
 		}
 		
-		System.out.println(String.format("Server startet on port %d. Hit Enter to stop.", port));
+		System.out.println(String.format("Server listening on %s:%d. Hit Enter to stop.", hostname, port));
 		
 		try {
 			System.in.read();
