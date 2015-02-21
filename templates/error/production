@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #parse("header.vm")
 <div id="wrapper">
   <div id="main"> 
@@ -10,3 +11,17 @@
   #parse("sidebar.vm")
 </div>
 #parse("footer.vm")
+=======
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+  <div class="production">
+	  <h1 align="center"> 
+	  		Ein <big> <b> Fehler </b> </big> ist aufgetreten.
+	  </h1>
+  </div>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
+>>>>>>> branch 'master' of https://github.com/PraktischeInformatik/LitePost.git
