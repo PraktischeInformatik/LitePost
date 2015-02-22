@@ -37,3 +37,11 @@ public class Input extends Tag<Input>{
 		return (Input) attr("checked");
 	}
 }
+
+class Textarea extends Input {
+	Textarea(Validator validator) {
+		super("", validator);
+		this.closeTag = true;
+	}
+	
+}
