@@ -1302,12 +1302,13 @@ public abstract class NanoHTTPD {
     }
 
     public static class Cookie {
-        private String n, v, e;
+        private String n, v, e, p;
 
-        public Cookie(String name, String value, String expires) {
+        public Cookie(String name, String value, String expires, String path) {
             n = name;
             v = value;
             e = expires;
+            p = path;
         }
 
         public Cookie(String name, String value) {
@@ -1315,7 +1316,11 @@ public abstract class NanoHTTPD {
         }
         
         public static Cookie sessionCookie(String name, String value) {
-        	return new Cookie(name, value, null);
+        	return sessionCookie(name, value, null);
+        }
+        
+        public static Cookie sessionCookie(String name, String value, String path) {
+        	return new Cookie(name, value, null, path);
         }
 
         public Cookie(String name, String value, int numDays) {
@@ -1325,14 +1330,15 @@ public abstract class NanoHTTPD {
         }
 
         public String getHTTPHeader() {
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(n).append("=").append(v).append("; ");
         	if(e != null) {
-        		String fmt = "%s=%s; expires=%s";
-                return String.format(fmt, n, v, e);	
-        	}else {
-        		String fmt = "%s=%s";
-        		return String.format(fmt, n, v);
+                sb.append("expires=").append(e);
         	}
-            
+        	if(p != null) {
+        		sb.append("path=").append(e);
+        	}
+            return sb.toString();
         }
 
         public static String getHTTPTime(int days) {
@@ -1390,7 +1396,7 @@ public abstract class NanoHTTPD {
          * @param expires How many days until the cookie expires.
          */
         public void set(String name, String value, int expires) {
-            queue.add(new Cookie(name, value, Cookie.getHTTPTime(expires)));
+            queue.add(new Cookie(name, value, Cookie.getHTTPTime(expires), null));
         }
 
         public void set(Cookie cookie) {
