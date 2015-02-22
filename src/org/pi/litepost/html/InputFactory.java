@@ -8,6 +8,9 @@ public class InputFactory {
 	}
 	
 	public Input get(String type) {
+		if(type.equalsIgnoreCase("textarea")) {
+			return new Textarea(validator);
+		}
 		return new Input(type, validator);
 	}
 	

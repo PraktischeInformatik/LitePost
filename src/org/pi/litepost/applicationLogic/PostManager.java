@@ -133,8 +133,11 @@ public class PostManager extends Manager {
 	public Post getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostById", id);
-
-		return createPost(result);
+		if(result.next()) {
+			return createPost(result);
+		}else {
+			return null;
+		}
 	}
 
 	/**

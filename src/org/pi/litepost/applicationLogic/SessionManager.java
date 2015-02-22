@@ -59,11 +59,11 @@ public class SessionManager extends Manager {
 		if(duration == null){
 			sessionOnly = "true";
 			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
-			cookie = Cookie.sessionCookie("sessionId", sessionId);
+			cookie = Cookie.sessionCookie("sessionId", sessionId, "/");
 		} else {
 			sessionOnly = "false";
 			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(duration));
-			cookie = new Cookie("sessionId", sessionId, expiration);
+			cookie = new Cookie("sessionId", sessionId, expiration, "/");
 		}
 		if(newSession || duration != null || isSessionOnly()) {
 			set("expiration", expiration);
