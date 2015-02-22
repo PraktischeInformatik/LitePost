@@ -63,11 +63,11 @@ public class PostController {
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
 			.validateSingle("hasContent", View::sanitizePostContent, s -> s.length() > 0, "content")
-			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact");
+			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
+			.validateFlag("isEvent", "is-event");
 		context.setValidator(validator);
 		
 		if(!validator.validate(session.getParms())) {
-			
 			return new Response(View.make("post.new", context));
 		}
 		
