@@ -32,38 +32,6 @@ $Resources.addScriptFooter("js/newpost.js")
         $Input.csrfToken
         $Input.submit.general.value("Posten")        
       $Form.end()
-<!--
-    <form id="post-form" method="POST" action="${Router.linkTo("insertPost")}" enctype="multipart/form-data">
-      
-        <input id="input-title" type="text" name="title" placeholder="Titel" value="$title">
-
-        <input type="hidden" id="input-content" name="content">
-
-        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
-      
-        <button type="submit" class="general" id="post-submit">Post</button>
-      
-      $Resources.csrfToken()
-    </form>
-  </div>
-
-  <div id="side">
-
-    <input id="input-contact" type="text" name="contact" placeholder="Kontakt" value="$contact">
-    
-    <label>
-      <input type="checkbox" name="is-event" onclick="toggle_event(this)">
-      <div>Dieser Post ist ein Event</div>
-    </label>
-
-    <div id="date-div">
-      <input id="input-date" type="text" name="date" placeholder="Datum">
-    </div>
-
-    <input id="input-image" type="file" name="image" accept="image/*">
-
-  </div>-->
-
 </div>
 
 #parse("footer.vm")
