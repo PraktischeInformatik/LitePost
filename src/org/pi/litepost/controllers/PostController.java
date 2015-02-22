@@ -38,12 +38,15 @@ public class PostController {
 		try {
 			postId = Integer.parseInt(args.getOrDefault("post_id", ""));
 		}catch(NumberFormatException e) {
-			return new Response(Status.NOT_FOUND, "text/html", View.make("404", context));
+			return Router.notFound(context);
 		}
 		
 		Post post = null;
 		try {
 			post = model.getPostManager().getById(postId);
+			if(post == null)  {
+				return Router.notFound(context);
+			}
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
@@ -56,20 +59,19 @@ public class PostController {
 	}
 	
 	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		Map<String, String> params = session.getParms();
-		
 		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
 			.validateSingle("hasContent", View::sanitizePostContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact");
+		context.setValidator(validator);
 		
 		if(!validator.validate(session.getParms())) {
-			context.setValidator(validator);
+			
 			return new Response(View.make("post.new", context));
 		}
 		
-		String filename = params.get("image");
+		String filename = session.getParms().get("image");
 		if(filename != null) {
 			String filepath = files.get("image");
 			File input = new File(filepath);
@@ -98,24 +100,34 @@ public class PostController {
 	}
 	
 	public static Response commentPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		Map<String, String> params = session.getParms();
+		Validator validator = new Validator(model.getSessionManager())
+			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
+			.validateSingle("parentIdNumericOrEmpty", s -> s.matches("[0-9]*"), "parent_id")
+			.validateSingle("hasContent", View::sanitizeStrict, s -> s.length() > 0, "content");
+		context.setValidator(validator);
 		
-		String string_post_id = params.get("post_id");
-		String string_parent_id = params.getOrDefault("parent_id", "0");
-		String content = View.sanitizeStrict(params.getOrDefault("content", ""));
-		if(content.equals("")) {
-			return Router.redirectTo("singlePost", string_post_id);
+		int postId = 0;
+		try {
+			postId = Integer.parseInt(args.getOrDefault("post_id", ""));
+		}catch(NumberFormatException e) {
+			return new Response(Status.NOT_FOUND, "text/html", View.make("404", context));
 		}
 		
-		int post_id = Integer.parseInt(string_post_id);
-		int parent_id = Integer.parseInt(string_parent_id);
+		if(!validator.validate(session.getParms())) {
+			return getSingle(session, args, files, context, model);
+		}
 		
 		try {
-			model.getCommentManager().insert(content, parent_id, post_id);
+			int parentId = 0;
+			try {
+				parentId = Integer.parseInt(validator.value("parent_id"));
+			}catch(NumberFormatException e){}
+			String content = validator.value("content");
+			model.getCommentManager().insert(content, parentId, postId);
 		} catch (SQLException  e) {
 			return Router.error(e, context);
 		}
 		
-		return Router.redirectTo("singlePost", string_post_id);
+		return Router.redirectTo("singlePost", postId);
 	}
 }

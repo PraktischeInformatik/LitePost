@@ -2,9 +2,9 @@
   <ul> 
     #foreach($comment in $comments)
       <li>
-        <p>$comment.getText()</p>
+        <p>$comment.text</p>
         <a href="javascript:answerComment($comment.getCommentId())">Antworten</a>
-        #set($subComments = $comment.getSubComments())
+        #set($subComments = $comment.subComments)
         #comments($subComments)
       </li>
     #end
@@ -14,22 +14,34 @@
 #parse("header.vm")
 <div id="wrapper">
   	<div id="main"> 
-      <h2>$post.getTitle()</h2>
-      <p>$post.getText()</p>
+      <h2>$post.title</h2>
+      <p>$post.text</p>
       <ul>
-        #foreach($image in $post.getImages())
-          <li><img width="30%" src="$image.getSource()"></li>
+        #foreach($image in $post.images)
+          <li><img width="30%" src="$image.source"></li>
         #end
       </ul>
-      <small>$post.getContact()</small>
-      <h3>Kommentare</h3>
-      <form method="POST" action="${Router.linkTo("commentPost")}">
-        <input type="hidden" name="post_id" value="$post.getPostId()">
-        <input type="hidden" name="parent_id" value="0" id="parentId">
-        <textarea name="content"></textarea>
-        <button type="submit">Kommentieren</button>
-      </form>
-      #comments($post.getComments())
+      <small>$post.contact</small>
+      $Form.begin("POST", ${Router.linkTo("commentPost", $post.postId)})
+        <h3>Kommentare</h3>
+        #if($Validator.error("hasContent")) 
+          <p>Bitte geben sie einen Kommentar ein</p>  
+        #end
+        #if($Validator.error("validCsrfToken")) 
+          <p>validCsrfToken</p>  
+        #end
+        #if($Validator.error("postIdNumeric")) 
+          <p>postIdNumeric</p>  
+        #end
+        #if($Validator.error("parentIdNumericOrEmpty")) 
+          <p>parentIdNumericOrEmpty</p>  
+        #end
+        $Input.hidden.name("parent_id").value("0").id("parentId")
+        $Input.textarea.name("content").prepopulate()
+        $Input.csrfToken
+        $Input.submit.general.value("Kommentieren")
+      $Form.end()
+      #comments($post.comments)
     </div>
   </div>
   #parse("sidebar.vm")
