@@ -7,10 +7,15 @@ public class InputFactory {
 		this.validator = validator;
 	}
 	
+	public Select getSelect() {
+		return new Select(validator);
+	}
+	
+	public Textarea getTextarea() {
+		return new Textarea(validator);
+	}
+	
 	public Input get(String type) {
-		if(type.equalsIgnoreCase("textarea")) {
-			return new Textarea(validator);
-		}
 		return new Input(type, validator);
 	}
 	

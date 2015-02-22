@@ -1,5 +1,7 @@
 package org.pi.litepost.html;
 
+import java.util.ArrayList;
+
 
 public class Input extends Tag<Input>{
 	Validator validator = null;
@@ -36,12 +38,4 @@ public class Input extends Tag<Input>{
 	public Input checked() {
 		return (Input) attr("checked");
 	}
-}
-
-class Textarea extends Input {
-	Textarea(Validator validator) {
-		super("", validator);
-		this.closeTag = true;
-	}
-	
 }

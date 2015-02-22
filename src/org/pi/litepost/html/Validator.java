@@ -220,12 +220,7 @@ public class Validator
 	 */
 	public String prepopulateCheckbox(String paramName)
 	{
-		String value = value(paramName);
-		if(value.equals("true"))
-		{
-			return "checked";
-		}
-		return "";
+		return flag(paramName)? "checked" : "";
 	}
 	
 	/**

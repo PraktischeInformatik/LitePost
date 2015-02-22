@@ -64,6 +64,10 @@ public abstract class Tag<T extends Tag<?>> {
 		return attr("class", value);
 	}
 	
+	public Tag<T> style(String style) {
+		return attr("style", style);
+	}
+	
 	public Tag<T> data(String name, String value) {
 		return attr("data-" + name, value);
 	}
