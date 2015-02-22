@@ -1,8 +1,9 @@
 $Resources.addStyle("css/pikaday.css")
 $Resources.addStyle("css/medium-editor.css")
 $Resources.addStyle("css/themes/bootstrap.css")
-$Resources.addScriptFooter("js/pikaday.js")
 $Resources.addScriptFooter("js/medium-editor.min.js")
+$Resources.addScriptFooter("js/moment-with-locales.min.js")
+$Resources.addScriptFooter("js/pikaday.js")
 $Resources.addScriptFooter("js/newpost.js")
 
 #parse("header.vm")
@@ -13,9 +14,10 @@ $Resources.addScriptFooter("js/newpost.js")
       <p>Bitte füllen sie alle benötigten Felder aus</p>
     #end
 
-      $Form.begin("POST", ${Router.linkTo("insertPost")})
+      $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
         $Input.text.name("title").placeholder("Titel").prepopulate()
         $Input.hidden.name("content").prepopulate()
+        $Input.hidden.name("date").prepopulate()
         <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt"></div>
         $Input.text.name("contact").placeholder("Kontakt").prepopulate()
         <label>
@@ -23,10 +25,13 @@ $Resources.addScriptFooter("js/newpost.js")
           <div>Dieser Post ist ein Event</div>
         </label>
         <div id="date-div">
-          $Input.text.name("date").placeholder("Datum").prepopulate()
+          $Input.hidden.name("date").id("pikaday-field").prepopulate()
+          $Input.text.id("pikaday").placeholder("Datum").style("width: auto")
+          $Input.select.id("pikatime").addTimes().style("width: auto")
         </div>
         <label>
           <div>Bilder anfügen</div>
+          $Input.file.name("image").attr("accept", "image/*")
           $Input.file.name("image").attr("accept", "image/*")
         </label>
         $Input.csrfToken

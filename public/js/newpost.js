@@ -1,6 +1,27 @@
-var picker = new Pikaday({
-  field: document.querySelectorAll("#date-div input")[0]
-});
+var
+  picker,
+  editor;
+  pikatime;
+  datetime_format = 'YYYY-MM-DD hh:mm';
+
+(function() {
+  moment.locale("de");
+  picker = new Pikaday({
+    format: 'DD. MMMM YYYY',
+    field: document.getElementById("pikaday"),
+    onSelect: pikaday_select
+  });  
+
+  pikatime = document.getElementById("pikatime");
+  pikatime.onchange = pikaday_select;
+  set_moment();
+  var box = document.querySelector('input[onclick="toggle_event(this)"]')
+  toggle_event(box);
+  editor = new MediumEditor('#input-editor', {
+    placeholder: 'Inhalt',
+    buttons: ['bold', 'italic', 'underline', 'anchor', 'header2']
+  });
+})();
 
 function toggle_event(checkbox) {
   var input = document.getElementById("date-div");
@@ -16,7 +37,31 @@ function serialize_text() {
   content.value = editor.serialize()["input-editor"].value;
 }
 
-var editor = new MediumEditor('#input-editor', {
-   placeholder: 'Inhalt',
-   buttons: ['bold', 'italic', 'underline', 'anchor', 'header2']
-});
+function pikaday_select() {
+  var input = document.getElementById("pikaday-field");
+  var time = pikatime.value;
+  var hour = parseInt(time.substr(0, 2));
+  var minute = parseInt(time.substr(2));
+  var datetime = picker.getMoment() 
+  datetime.hour(hour);
+  datetime.minute(minute);
+  input.value = datetime.format(datetime_format);
+}
+
+function set_moment(datetime) {
+  if(datetime !== undefined) {
+    picker.setMoment(datetime);
+    var minute = (Math.round(datetime.minute()/15) * 15) % 60;
+    minute = ("00" + String(minute)).slice(-2);
+    var hour = datetime.hour();
+    hour = ("00" + String(hour)).slice(-2);
+    pikatime.value = hour + minute;
+  } else {
+    var input = document.getElementById("pikaday-field");
+    if(input.value !== "") {
+      set_moment(moment(input.value, datetime_format))
+    }else {
+      set_moment(moment());
+    }
+  }
+}

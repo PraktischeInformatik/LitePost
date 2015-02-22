@@ -287,18 +287,20 @@ label div {
 }
 
 label input[type="checkbox"] + div {
-  width: 100%;
+  width: auto;
 }
 
 textarea:focus,
-input:focus {
+input:focus,
+select:focus {
   outline:0;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="date"],
-input[type="password"] {
+input[type="password"],
+select {
   width: 100%;
   margin: 0.5em 0;
   border: 0;
