@@ -1336,7 +1336,7 @@ public abstract class NanoHTTPD {
                 sb.append("expires=").append(e);
         	}
         	if(p != null) {
-        		sb.append("path=").append(e);
+        		sb.append("path=").append(p);
         	}
             return sb.toString();
         }
