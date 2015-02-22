@@ -133,6 +133,10 @@ public class Router {
 		return uri;
 	}
 	
+	public static Response notFound(ViewContext context) {
+		return new Response(Status.NOT_FOUND, "text/html", View.make("404", context));
+	}
+	
 	public static Response error(Exception e, ViewContext context) {
 		if(App.config.getProperty("litepost.debug").equalsIgnoreCase("true")) {
 			context.put("error", new Error(e));
