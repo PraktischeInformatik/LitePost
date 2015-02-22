@@ -89,7 +89,7 @@ public class App extends NanoHTTPD{
 			model.getSessionManager().cleanSessions();
 			
 			Route route = Router.getHandler(session);
-			viewContext.put("Validator", new Validator(model.getSessionManager()));
+			viewContext.setValidator(new Validator(model.getSessionManager()));
 			Response resp = null;
 			if (route != null) {
 				HashMap<String, String> args = Router.getRouteParams(session.getUri(), route);
@@ -150,6 +150,12 @@ public class App extends NanoHTTPD{
 	}
 	
 	public static void main(String[] args) {
+		try{
+			Seeder.seed();
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
         p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");

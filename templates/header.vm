@@ -22,7 +22,7 @@
    </ul>
 </nav>
 
-<a href="${Router.linkTo("login")}">
+<a href="${Router.linkTo("loginPage")}">
    <div id="login">
       Login
    </div>
