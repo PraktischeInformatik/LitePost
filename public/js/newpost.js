@@ -1,7 +1,8 @@
 var
   picker,
-  editor;
-  pikatime;
+  editor,
+  pikatime,
+  images,
   datetime_format = 'YYYY-MM-DD hh:mm';
 
 (function() {
@@ -21,6 +22,8 @@ var
     placeholder: 'Inhalt',
     buttons: ['bold', 'italic', 'underline', 'anchor', 'header2']
   });
+
+  images = document.getElementById('images')
 })();
 
 function toggle_event(checkbox) {
@@ -64,4 +67,38 @@ function set_moment(datetime) {
       set_moment(moment());
     }
   }
+}
+
+function enumerate_images() {
+  var inputs = images.getElementsByTagName('input');
+  if(inputs.length === 0) {
+    add_image();
+  }
+  for (var i = inputs.length - 1; i >= 0; i--) {
+    inputs[i].name = 'image' + i;
+  }; 
+}
+
+function add_image() {
+  var label = document.createElement('label');
+
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+
+  var button = document.createElement('button');
+  button.setAttribute('onclick', 'remove_image(this.parentElement); return false;');
+  button.textContent = 'Entfernen';
+
+  label.appendChild(input);
+  label.appendChild(button);
+
+  images.appendChild(label);
+  enumerate_images()
+}
+
+
+function remove_image(image) {
+  image.parentElement.removeChild(image);
+  enumerate_images();
 }

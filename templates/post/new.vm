@@ -16,7 +16,7 @@ $Resources.addScriptFooter("js/newpost.js")
 
       $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
         $Input.text.name("title").placeholder("Titel").prepopulate()
-        $Input.hidden.name("content").prepopulate()
+        $Input.hidden.name("content").id("input-content").prepopulate()
         $Input.hidden.name("date").prepopulate()
         <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt"></div>
         $Input.text.name("contact").placeholder("Kontakt").prepopulate()
@@ -29,11 +29,10 @@ $Resources.addScriptFooter("js/newpost.js")
           $Input.text.id("pikaday").placeholder("Datum").style("width: auto")
           $Input.select.id("pikatime").addTimes().style("width: auto")
         </div>
-        <label>
+        <div id="images">
           <div>Bilder anfügen</div>
-          $Input.file.name("image").attr("accept", "image/*")
-          $Input.file.name("image").attr("accept", "image/*")
-        </label>
+        </div>
+        <div><button onclick="add_image(); return false;">+</button></div>
         $Input.csrfToken
         $Input.submit.general.value("Posten")        
       $Form.end()
