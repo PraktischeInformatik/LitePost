@@ -39,5 +39,3 @@ $Resources.addScriptFooter("js/newpost.js")
 </div>
 
 #parse("footer.vm")
-</body>
-</html>
