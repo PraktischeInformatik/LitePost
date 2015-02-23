@@ -57,11 +57,17 @@ public abstract class Tag<T extends Tag<?>> {
 	}
 	
 	public Tag<T> get(String value) {
+		
 		return class_(value);
 	}
 	
 	public Tag<T> class_(String value) {
-		return attr("class", value);
+		if(!attributes.containsKey("class")) {
+			attr("class", value);
+		}else {
+			attr("class", attributes.get("class") + " " + value);
+		}
+		return this;
 	}
 	
 	public Tag<T> style(String style) {

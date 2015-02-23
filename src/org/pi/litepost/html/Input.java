@@ -1,7 +1,5 @@
 package org.pi.litepost.html;
 
-import java.util.ArrayList;
-
 
 public class Input extends Tag<Input>{
 	Validator validator = null;
@@ -17,7 +15,7 @@ public class Input extends Tag<Input>{
 			if(attributes.get("type").equalsIgnoreCase("checkbox")) {
 				if(value.equals("true")) checked();
 			}else {
-				value(value);	
+				value(value.replace("&", "&amp;").replace("\"", "&quot;"));	
 			}
 		}
 		return this;

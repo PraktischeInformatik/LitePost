@@ -199,31 +199,6 @@ public class Validator
 	}
 	
 	/**
-	 * used to prepopulate an input in a form
-	 * @param name the name of the parameter
-	 * @return the markup for the parameterValue if value is present. Empty String otherwise
-	 */
-	public String prepopulateText(String paramName)
-	{
-		String value = value(paramName);
-		if(value.equals(""))
-		{
-			return "";
-		}
-		return String.format("value=\"%s\"", value(paramName));
-	}
-	
-	/**
-	 * used to prepopulate a checkbox in a form
-	 * @param name the name of the parameter
-	 * @return "checked" if value is equal to "true". Empty String otherwise
-	 */
-	public String prepopulateCheckbox(String paramName)
-	{
-		return flag(paramName)? "checked" : "";
-	}
-	
-	/**
 	 * @author Felix Breitweiser
 	 * helper class to hold validations
 	 */

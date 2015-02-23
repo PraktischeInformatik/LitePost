@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.pi.litepost.App;
 import org.pi.litepost.Router;
@@ -66,10 +67,15 @@ public class PostController {
 	
 	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		String datePattern = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}";
+		
+		Function<String, String> saniziteContent = 
+				s -> View.sanitizePostContent(
+						s.replace("&quot;", "\"")
+						 .replace("&amp;", "&"));
 		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
-			.validateSingle("hasContent", View::sanitizePostContent, s -> s.length() > 0, "content")
+			.validateSingle("hasContent", saniziteContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
 			.validateFlag("isEvent", "is-event")
 			.validateMultiple("validDateIfEvent", p -> !p[0].isEmpty() && p[1].matches(datePattern), "is-event", "date");

@@ -15,6 +15,12 @@ public class InputFactory {
 		return new Textarea(validator);
 	}
 	
+	public Input getSubmit() {
+		Input input = new Input("submit", validator);
+		input.class_("button");
+		return input;
+	}
+	
 	public Input get(String type) {
 		return new Input(type, validator);
 	}
@@ -33,5 +39,13 @@ public class InputFactory {
 		} else {
 			return false;
 		}
+	}
+	
+	public String value(String name) {
+		if(validator != null) {
+			return validator.value(name);
+		} else {
+			return "";
+		} 
 	}
 }
