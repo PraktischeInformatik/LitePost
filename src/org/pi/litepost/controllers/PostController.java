@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class PostController {
+	private static DateTimeFormatter FILENAME_TIME_FORMAT = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
 	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		ArrayList<Post> posts = new ArrayList<>();
 		try {
@@ -71,28 +74,55 @@ public class PostController {
 			return new Response(View.make("post.new", context));
 		}
 		
-		String filename = session.getParms().get("image");
-		if(filename != null) {
-			String filepath = files.get("image");
-			File input = new File(filepath);
-			String uploadfolder = (String) App.config.get("litepost.public.uploadfolder");
-			File output = new File(uploadfolder + File.separatorChar + filename);
-			if(input.exists()) {
-				try {
-					Files.copy(input, output);
-				} catch (IOException e) {
-					return Router.error(e, context);
+		int i = 0;
+		String image = "image" + i;
+		Map<String, String> params = session.getParms();
+		String uploadfolder = (String) App.config.get("litepost.public.uploadfolder");
+		ArrayList<File> loadedImages = new ArrayList<>();
+		ArrayList<String> sources = new ArrayList<>(); 
+		while(params.containsKey(image)) {
+			String filename = LocalDateTime.now().format(FILENAME_TIME_FORMAT);
+			String imagename = params.get(image);
+			if(imagename != null) {
+				String extension = imagename.substring(imagename.lastIndexOf('.'));
+				String outfilename = filename + extension;
+				File output = new File(uploadfolder + File.separator + outfilename);
+				int filenum = 1;
+				while(output.exists()){
+					outfilename = filename + "-" + filenum + extension;
+					output = new File(uploadfolder + File.separator + outfilename);
+					filenum++;
+				}
+				File input = new File(files.get(image));
+				if(input.exists()) {
+					try {
+						loadedImages.add(output);
+						Files.copy(input, output);
+						input.delete();
+						sources.add(outfilename);
+					} catch (IOException e) {
+						for(File f : loadedImages) {
+							f.delete();
+						}
+						return Router.error(e, context);
+					}
 				}
 			}
+			i++;
+			image = "image" + i;
 		}
 		
 		try {
-			String title = validator.value("username");
+			String title = validator.value("title");
 			String content = validator.value("content");
 			String contact = validator.value("contact");
 			model.getPostManager().insert(title, content, contact);
-			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts"); 
-			model.getPostManager().addImage(Router.linkTo("upload", filename), rs.getInt(1));
+			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts");
+			int postId = rs.getInt(1);
+			for(String s : sources) {
+				String src = Router.linkTo("upload", s);
+				model.getPostManager().addImage(src, postId);
+			}
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
