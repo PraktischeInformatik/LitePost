@@ -80,14 +80,14 @@ public class DatabaseQueryManager {
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,
-				"SELECT * FROM Images WHERE image_id = (SELECT image_id FROM Post_has_Images WHERE post_id = ?)"
+				"SELECT * FROM Images WHERE image_id in (SELECT image_id FROM Post_has_Images WHERE post_id = ?)"
 		));
 		databaseQueries.put("insertImage",new DatabaseQuery(false,
 				"INSERT INTO Images(image_id, source) VALUES(?, ?)",
 				"Images"
 		));
 		databaseQueries.put("addImageToPost",new DatabaseQuery(false,
-				"INSERT INTO Post_has_Images(post_id, image_id) VALUES(?, ?)"
+				"INSERT INTO Post_has_Images(image_id, post_id) VALUES(?, ?)"
 		));
 		
 
