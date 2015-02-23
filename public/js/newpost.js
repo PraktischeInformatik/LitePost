@@ -71,9 +71,6 @@ function set_moment(datetime) {
 
 function enumerate_images() {
   var inputs = images.getElementsByTagName('input');
-  if(inputs.length === 0) {
-    add_image();
-  }
   for (var i = inputs.length - 1; i >= 0; i--) {
     inputs[i].name = 'image' + i;
   }; 
@@ -88,6 +85,7 @@ function add_image() {
 
   var button = document.createElement('button');
   button.setAttribute('onclick', 'remove_image(this.parentElement); return false;');
+  button.className = 'button secondary';
   button.textContent = 'Entfernen';
 
   label.appendChild(input);

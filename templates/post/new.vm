@@ -2,6 +2,7 @@ $Resources.addStyle("css/pikaday.css")
 $Resources.addStyle("css/medium-editor.css")
 $Resources.addStyle("css/themes/bootstrap.css")
 $Resources.addScriptFooter("js/medium-editor.min.js")
+$Resources.addScriptFooter("js/medium-editor-mobile-plugin.min.js")
 $Resources.addScriptFooter("js/moment-with-locales.min.js")
 $Resources.addScriptFooter("js/pikaday.js")
 $Resources.addScriptFooter("js/newpost.js")
@@ -18,7 +19,11 @@ $Resources.addScriptFooter("js/newpost.js")
         $Input.text.name("title").placeholder("Titel").prepopulate()
         $Input.hidden.name("content").id("input-content").prepopulate()
         $Input.hidden.name("date").prepopulate()
-        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt"></div>
+        #set($content = $Input.value("content"))
+        #if(not $content or $content.isEmpty())
+          #set($content = "")
+        #end
+        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
         $Input.text.name("contact").placeholder("Kontakt").prepopulate()
         <label>
           $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)").prepopulate()
@@ -32,7 +37,7 @@ $Resources.addScriptFooter("js/newpost.js")
         <div id="images">
           <div>Bilder anfügen</div>
         </div>
-        <div><button onclick="add_image(); return false;">+</button></div>
+        <div><button onclick="add_image(); return false;" class="button secondary">+</button></div>
         $Input.csrfToken
         $Input.submit.general.value("Posten")        
       $Form.end()

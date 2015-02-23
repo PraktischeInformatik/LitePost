@@ -27,8 +27,8 @@
         </label>
         $Input.csrfToken
         $Input.submit.value("Login").general
-        <a href="${Router.linkTo("registrationPage")}">Registrieren</a>
-        <a href="${Router.linkTo("lostPasswordPage")}">Passwort vergessen?</a>
+        <a href="${Router.linkTo("registrationPage")}" class="button secondary">Registrieren</a>
+        <a href="${Router.linkTo("lostPasswordPage")}" class="button secondary">Passwort vergessen?</a>
       $Form.end()
     </div>
   </div>

@@ -11,21 +11,35 @@
    #foreach($script in $Resources.getScriptsHeader())
       <script type="text/javascript" src="$script"></script>
    #end
+   <script type="text/javascript">
+      var menu;
+      function toggle_menu() {
+        if(menu===undefined) {
+          menu = document.getElementById('main-navigation')
+        }
+        if(menu.className==='show') {
+          menu.className = '';
+        }else {
+          menu.className = 'show';  
+        }
+      }
+   </script>
 </head>
 <body>
    <header id="head">
-    <h1 id="title">Lite Post</h1>
-    <nav id="nav">
+    <h1 id="title"><a href="/">Lite Post</a></h1>
+    <div id="menu-toggle" style="display: none;"><a href="javascript:toggle_menu()">Menü</a></div>
+    <nav id="main-navigation">
      <ul>
-      <a href="#"><li>About</li></a>
-      <a href="${Router.linkTo("allPosts")}"><li>Posts</li></a>
-      <a href="${Router.linkTo("calendar")}"><li>Events</li></a>
+      <li><a href="#">About</a></li>
+      <li><a href="${Router.linkTo("allPosts")}">Posts</a></li>
+      <li><a href="${Router.linkTo("calendar")}">Events</a></li>
    </ul>
 </nav>
 
-<a href="${Router.linkTo("loginPage")}">
-   <div id="login">
+  <div id="login">
+    <a href="${Router.linkTo("loginPage")}">
       Login
-   </div>
-</a>
+    </a>
+  </div>
 </header>

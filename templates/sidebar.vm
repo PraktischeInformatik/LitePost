@@ -5,8 +5,8 @@
       <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
       <input id="input-contact" type="text" name="contact" placeholder="Kontakt" />
     </form>
-    <a href="${Router.linkTo("newPost")}">
-      <button class="general">Erweitert</button>
+    <button class="button general">Posten</button>
+    <a href="${Router.linkTo("newPost")}" id="advanced-button">
+      <button class="button secondary">Erweitert</button>
     </a>
-    <button class="general" id="submit">Posten</button>
 </div>

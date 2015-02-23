@@ -64,7 +64,6 @@ $Resources.addScriptFooter("js/singlepost.js")
       </ul>
       <small>$post.contact</small>
       $Form.begin("POST", ${Router.linkTo("commentPost", $post.postId)})
-        <h3>Kommentare</h3>
         #if($Validator.error("hasContent")) 
           <p>Bitte geben sie einen Kommentar ein</p>  
         #end
@@ -78,14 +77,15 @@ $Resources.addScriptFooter("js/singlepost.js")
           <p>parentIdNumericOrEmpty</p>  
         #end
         $Input.hidden.name("parent_id").value("0").id("parentId")
-        $Input.textarea.name("content").prepopulate()
+        $Input.textarea.name("content").placeholder("Kommentar").prepopulate()
         $Input.csrfToken
-        $Input.submit.general.value("Kommentieren")
+        $Input.submit.general.small.value("Kommentieren")
       $Form.end()
+      <h3>Kommentare</h3>
       #comments($post.comments)
     </div>
-  </div>
   #parse("sidebar.vm")
+  </div>
 </div>
 
 <script type="text/javascript">

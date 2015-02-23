@@ -7,7 +7,7 @@ h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
+dl, dt, dd, ol, ul, li, 
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
     border: 0;
@@ -80,6 +80,9 @@ a:active {
 a img {
     border: 0;
 }
+textarea {
+  padding: 0;
+}
 
 /*----------------------------------------------------
    Typography
@@ -96,12 +99,12 @@ body,
 button,
 input,
 select,
-textarea {
-   color: #404040;
-   font-family: Lato;
-   font-size: 1.8em;
-   line-height: 1.5;
-
+textarea,
+.button {
+  font-size: 1.1875em;
+  line-height: 1.421052632em;
+  color: #404040;
+  font-family: Lato;
 }
 
 /*form, div {
@@ -122,32 +125,47 @@ h1,h2,h3,h4,h5,h6 {
    font-weight: bold;
 }
 
-header {
-    font-family: Lato;
-}
-
 h1 {
-   font-size: 2.8em;
+  font-size: 1.947368421em;
+  line-height: 1.45945946em;
 }
 h2 {
-   font-size: 2.4em;
+  font-size: 1.578947368em;
+  line-height: 1.8em;
 }
 h3 {
-   font-size: 2em;
+  font-size: 1.263157895em;
+  line-height: 1.125em;
+}
+h4 {
+  font-size: 1em;
+  line-height: 1.421052632em;
 }
 
-h4 {
-   font-size: 1.6em;
+/* Sanitation */
+hr {
+  border: 1px solid;
+  margin: -1px 0;
 }
-h5 {
-   font-size: 1.2em;
+ul ul, ol ol, ul ol, ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
 }
-h6 {
-   font-size: 1em;
+b, strong, em, small, code {
+  line-height: 1;
+}
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub {
+  top: 0.4em;
 }
 
 p {
    margin-bottom: 1em;
+   margin-top: 1em;
 }
 
 b, strong {
@@ -224,6 +242,9 @@ a:visited {
   color: #404040;
 }
 
+#head {
+  font-size: 130%;
+}
 
 /*----------------------------------------------------
    Elements
@@ -234,8 +255,8 @@ body {
 }
 
 #wrapper {
-  margin:auto;
-  max-width: 1250px;
+  margin: auto;
+  max-width: 1050px;
 }
 
 .block {
@@ -244,31 +265,35 @@ body {
 
 #main{
   width: calc(100% - 335px);
-  font-size: 0.7em;
-  float: left;
-  display: inline;
+  min-height: 50vh;
+  display: inline-block;
   background-color: white;
   margin: 1em;
-  padding: 0.8em;
+  padding: 1.5em;
 }
 
-
-.general {
+.button {
   border-style: none;
-  background: #65E080;
+  display: inline-block;
   border-radius: 5px;
-  display: inline;
-  font-size: 1.2em;
+  padding: .5em 1em;
+  cursor: pointer;
 }
 
-.general:hover {
+.button.general {
+  background: #65E080;
+}
+
+.button.general:hover {
   background: #27D04C;
 }
 
-#input-title {
-  border-style: solid;
-  border-bottom: 2px;
-  border-color: #CCC;
+.button.secondary {
+  background: #eee;
+}
+
+.button.secondary:hover {
+  background: #ddd;
 }
 
 /*----------------------------------------------------
@@ -300,12 +325,16 @@ input[type="text"],
 input[type="email"],
 input[type="date"],
 input[type="password"],
-select {
+select,
+textarea {
   width: 100%;
-  margin: 0.5em 0;
   border: 0;
-
 }
+
+input, select, textarea{
+  margin: 0.5em 0;
+}
+
 label input[type="text"],
 label input[type="email"],
 label input[type="date"],
@@ -321,41 +350,46 @@ label textarea {
 ----------------------------------------------------*/
 
 #head {
+  height: 60px;
+  width: 100%;
+}
+
+#head,
+#head a {
   background-color: #65E080;
-  height: 3.5em;
 }
 
-#title {
-  display: inline;
-  float: left;
-  line-height: 1;
-  padding: 0.1em;
-  padding-right: 0.2em;
+#head * {
+  margin: 0;
+  line-height: 60px;
+  display: inline-block;
 }
 
-#head li {
-  background-color: #65E080;
-  padding-top: 1em;
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-bottom: 1em;
-  float: left;
+#head a {
+  width: 100%;
+  height: 100%;
 }
 
-#head li:hover{
+#head a:hover{
   background-color: #27D04C;
 }
 
-#login {
-  padding-top: 1em;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 1em;
-  float: right;
+#head a {
+  padding: 0 16px;
 }
 
-#login:hover{
-  background: #27D04C;
+#title {
+  float: left;
+}
+
+#title a {
+  padding-right: 16px;
+}
+
+#login {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 /*----------------------------------------------------
@@ -364,64 +398,33 @@ label textarea {
 
 #sidebar {
   float: right;
-  width: 280px;/*280px*/
-  font-size: 0.7em;
+  width: 280px;
   background-color: white;
-  padding: 1em;
+  padding: 1.5em;
   margin: 1em;
-}
-
-#sidebar button {
-  margin-top: 2px;
 }
 
 #sidebar input,
 #sidebar textarea {
-  width: 250px;
-  margin-bottom: 4px;
-  border-width: 1px;
+  width: 100%;
   border-style: none;
 }
 
-#sidebar #input-title {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #CCC
-}
 
 #sidebar textarea {
-  height: 250px;
+  height: 20em;
 }
 
-#submit {
+#advanced-button {
   float: right;
-  margin-right: 10px;
 }
 
 /*----------------------------------------------------
    new post
 ----------------------------------------------------*/
-
-#post-form input,
-#post-form input-editor{
-  width:100%;
-  border: none;
-  margin-top: 0.3em;
-  display: block;
-}
-
-#isdate{
-  width: auto;
-}
-
-#post-form #input-title {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #CCC
-}
-
-#post-form #input-event {
-  width: auto;
+#input-title {
+  /* used also in sidebar */
+  border-bottom: .2em solid #ccc;
 }
 
 #date-div {
@@ -435,113 +438,16 @@ label textarea {
   height: auto;
 }
 
-#input-date {
-  height: 1.5em;
-  border: none;
-}
 
 #input-editor {
-  height: 500px;
-  font-size: 1.8em;
-  background-color: white;
+  min-height: 500px;
 }
-#side {
-  float: right;
-  width: 280px;
-  font-size: 0.7em;
-  background-color: white;
-  padding: 1em;
-  margin: 1em;
-}
-#side label div {
-  display: inline;
-}
-
-/*----------------------------------------------------
-   Login
-----------------------------------------------------*/
-
-#login-container {
-  margin: 3em 4em;
-  display: block;
-  width: 250px;
-  /*float: left;*/
-}
-
-#login-container h2 {
-  font-size: 1.8em;
-}
-
-#login-container .general {
-  font-size: 1.2em;
-  margin-top: 4px;
-}
-
-#register {
-  float: right;
-  padding: 1px 6px;
-}
-
-#login-form {
-  display: inline;
-}
-
-#login-form input {
-  margin-top: 4px;
-  font-size: 1.2em;
-  height: 2em;
-  width: 250px;
-  border: none;
-  display: block;
-}
-
-/*----------------------------------------------------
-   Register
-----------------------------------------------------*/
-
-#registration-container {
-  margin-top: 4em;
-  margin-left: 3em;
-}
-
-
-#registration {
-  margin-left: 4px;
-}
-
-#registration-container input{
-  display: block;
-  margin: 4px;
-  font-size: 1.2em;
-  height: 2em;
-  width: 250px;
-}
-
-/*----------------------------------------------------
-   Content
-----------------------------------------------------*/
-
-/*----------------------------------------------------
-   Media queries
-----------------------------------------------------*/
-
-@media screen and (max-width: 767px) {
-  #main {
-    width: 100%;
-  }
-  #sidebar {
-    display: none;
-  }
-}
-
-
 
 /*----------------------------------------------------
    Calender
 ----------------------------------------------------*/
 
 #month_dates{
-font-size:1em;
 width:100%;
 }
 
@@ -566,7 +472,6 @@ width:100%;
 }
 
 #dates tr th {
-font-size:2.5em;
 width:1.6em;
 height:1.6em;
 background-color:#65E080;
@@ -574,7 +479,6 @@ background-color:#65E080;
 
 
 #dates tr td{
-font-size:2.5em;
 width:1.6em;
 height:1.6em;
 
@@ -583,7 +487,6 @@ border-spacing:2em;
 
 #dates caption button{
 float:right;
-font-size:2em;
 margin-right:0.2em;
 border-radius:30px;
 background-color:black;
@@ -592,7 +495,6 @@ color:white;
 
 #dates caption h1{
 float:right;
-font-size:2.3em;
 padding-left:0.5em;
 padding-right:0.7em;
 }
@@ -718,9 +620,6 @@ width:100%;
 /*----------------------------------------------------
    Profile
 ----------------------------------------------------*/
-
-
-
 .profile{
   width:100%;
 }
@@ -744,15 +643,9 @@ width:100%;
   margin-left:0.5em;
 }
 
-
-
-
 /*----------------------------------------------------
    EditProfile
 ----------------------------------------------------*/
-
-
-
 .edit_profile{
   width:100%;
 }
@@ -776,9 +669,6 @@ width:100%;
   margin-top:0.5em;
   margin-left:0.5em;
 }
-<<<<<<< HEAD
-
-
 
 /*----------------------------------------------------s
    Event
@@ -973,4 +863,47 @@ width:100%;
   margin-top:5em;
   width: 600px;
   margin-left: 200px;
- }
+}
+
+
+/*----------------------------------------------------
+   Media queries
+----------------------------------------------------*/
+
+@media screen and (max-width: 767px) {
+  body {
+    background: white;
+  }
+
+  #main {
+    width: 100%;
+    margin: 0; 
+  }
+
+  #menu-toggle {
+    display: inline-block !important;
+  }
+  /* Collapse menu */
+  #main-navigation ul {
+    opacity: 0;
+    pointer-events: none;
+    position: relative;
+    transition: opacity 0.3s;
+    -webkit-transition: opacity 0.3s;
+  }
+
+  #main-navigation.show ul {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #main-navigation,
+  #main-navigation ul,
+  #main-navigation li{
+    width: 100%;
+  }
+
+  #sidebar {
+    display: none;
+  }
+}
