@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class PostController {
 	private static DateTimeFormatter FILENAME_TIME_FORMAT = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
+	private static DateTimeFormatter EVENT_TIME_FORMAT = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
+	
 	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		ArrayList<Post> posts = new ArrayList<>();
 		try {
@@ -62,18 +65,19 @@ public class PostController {
 	}
 	
 	public static Response postNew(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		String datePattern = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}";
 		Validator validator = new Validator(model.getSessionManager())
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
 			.validateSingle("hasContent", View::sanitizePostContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
-			.validateFlag("isEvent", "is-event");
+			.validateFlag("isEvent", "is-event")
+			.validateMultiple("validDateIfEvent", p -> !p[0].isEmpty() && p[1].matches(datePattern), "is-event", "date");
 		context.setValidator(validator);
 		
 		if(!validator.validate(session.getParms())) {
 			return new Response(View.make("post.new", context));
 		}
-		
 		int i = 0;
 		String image = "image" + i;
 		Map<String, String> params = session.getParms();
@@ -110,6 +114,12 @@ public class PostController {
 			}
 			i++;
 			image = "image" + i;
+		}
+		
+		if(validator.flag("isEvent")) {
+			//LocalDateTime date = LocalDateTime.from(
+			//		EVENT_TIME_FORMAT.parse(validator.value("date")));
+			
 		}
 		
 		try {
