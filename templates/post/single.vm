@@ -1,3 +1,5 @@
+$Resources.addScriptFooter("js/singlepost.js")
+
 #macro(comments $comments)
   <ul> 
     #foreach($comment in $comments)
@@ -12,13 +14,52 @@
 #end
 
 #parse("header.vm")
+<style type="text/css">
+  #images li{
+    display: inline-block;
+    vertical-align: top;
+  }
+  #images img {
+    width: 100%;
+    max-width: 300px;
+    border: 1em solid #eee;
+    
+  }
+  #images img:hover {
+    border-color: #ddd;
+  }
+  #image-box {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1em transparent #eee;
+    background: rgba(28, 28, 28, 0.7);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  #image-box.show {
+    display: block;
+    opacity: 0;
+  }
+  #image-box.full {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>
 <div id="wrapper">
   	<div id="main"> 
       <h2>$post.title</h2>
       <p>$post.text</p>
-      <ul>
+      <ul id="images">
+        <div id="image-box" onclick="hide_image()"></div>
         #foreach($image in $post.images)
-          <li><img width="30%" src="$image.source"></li>
+          <li><img onclick="enlarge_image(this)" src="$image.source"></li>
         #end
       </ul>
       <small>$post.contact</small>
@@ -55,5 +96,4 @@ function answerComment(comment_id) {
 }
 
 </script>
-
 #parse("footer.vm")
