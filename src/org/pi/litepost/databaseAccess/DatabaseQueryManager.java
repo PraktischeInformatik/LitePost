@@ -75,8 +75,8 @@ public class DatabaseQueryManager {
 				"SELECT * FROM posts WHERE content LIKE ? OR title LIKE ?"));
 
 		// Events:
-		databaseQueries.put("getFutureEvents", new DatabaseQuery(true,
-				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date >= datetime('now')"));
+		databaseQueries.put("getEventsAfter", new DatabaseQuery(true,
+				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date >= ?"));
 		databaseQueries.put("makeEvent", new DatabaseQuery(false,
 				"INSERT INTO events(event_id, post_id, event_date) VALUES(?, ?, ?)",
 				"Events"));

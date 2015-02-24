@@ -14,10 +14,6 @@ public class HomeController {
 		return new Response(View.make("home", context));
 	}
 	
-	public static Response getCalendar(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		return new Response(View.make("calendar", context));
-	}
-	
 	public static Response getAllEvents(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		return new Response(View.make("allevents", context));
 	}

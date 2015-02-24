@@ -33,7 +33,7 @@
      <ul>
       <li><a href="#">About</a></li>
       <li><a href="${Router.linkTo("allPosts")}">Posts</a></li>
-      <li><a href="${Router.linkTo("calendar")}">Events</a></li>
+      <li><a href="${Router.linkTo("overview")}">Events</a></li>
    </ul>
 </nav>
 

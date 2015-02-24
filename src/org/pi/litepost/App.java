@@ -12,11 +12,7 @@ import java.util.Properties;
 import org.apache.velocity.app.Velocity;
 import org.pi.litepost.Router.Route;
 import org.pi.litepost.applicationLogic.Model;
-import org.pi.litepost.controllers.ConfigController;
-import org.pi.litepost.controllers.FileController;
-import org.pi.litepost.controllers.HomeController;
-import org.pi.litepost.controllers.LoginController;
-import org.pi.litepost.controllers.PostController;
+import org.pi.litepost.controllers.*;
 import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -32,7 +28,8 @@ public class App extends NanoHTTPD{
 		Router.add("upload", Method.GET, "/public/upload/{filename}", FileController::getUploadedFile);
 		Router.add("public", Method.GET, "/public/{filename}", FileController::getFile);
 		Router.add("home", Method.GET, "/", HomeController::getHome);
-		Router.add("calendar", Method.GET, "/calendar", HomeController::getCalendar);
+		Router.add("calendar", Method.GET, "/events/calendar", EventController::getCalendar);
+		Router.add("overview", Method.GET, "/events/overview", EventController::getOverview);
 		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
 		Router.add("daysight", Method.GET, "/daysight", HomeController::getDaySight);
 		

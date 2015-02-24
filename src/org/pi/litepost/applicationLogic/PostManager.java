@@ -245,7 +245,7 @@ public class PostManager extends Manager {
 		ArrayList<Event> events = new ArrayList<>();
 
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getFutureEvents");
+				"getEventsAfter", LocalDateTime.now());
 
 		while (result.next()) {
 			LocalDateTime postDate = result.getTimestamp("date").toLocalDateTime();
