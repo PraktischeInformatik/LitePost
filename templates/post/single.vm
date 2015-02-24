@@ -56,6 +56,9 @@ $Resources.addScriptFooter("js/singlepost.js")
   	<div id="main"> 
       <h2>$post.title</h2>
       <p>$post.text</p>
+      #if($post.event)
+        <i>$post.eventDate</i>
+      #end
       <ul id="images">
         <div id="image-box" onclick="hide_image()"></div>
         #foreach($image in $post.images)

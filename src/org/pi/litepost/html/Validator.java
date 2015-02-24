@@ -232,12 +232,14 @@ public class Validator
 		
 		public boolean process(Map<String, String> params)
 		{
+			String[] paramValues = new String[paramNames.length];
 			for(int i = 0; i < paramNames.length; i++)
 			{
 				String value = params.getOrDefault(paramNames[i], "");
-				transformedValues.put(paramNames[i], trans.apply(value));
+				paramValues[i] = trans.apply(value);
+				transformedValues.put(paramNames[i], paramValues[i]);
 			}
-			return pred.test(transformedValues.values().toArray(new String[0]));
+			return pred.test(paramValues);
 		}
 	}
 }

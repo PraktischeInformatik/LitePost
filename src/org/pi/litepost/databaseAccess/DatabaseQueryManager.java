@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class DatabaseQueryManager {
 	DatabaseConnector databaseConnector;
 	HashMap<String, DatabaseQuery> databaseQueries;
-
+	
 	public DatabaseQueryManager(DatabaseConnector databaseConnector) {
 		this.databaseConnector = databaseConnector;
 		databaseQueries = new HashMap<String, DatabaseQuery>();
@@ -77,6 +77,12 @@ public class DatabaseQueryManager {
 		// Events:
 		databaseQueries.put("getFutureEvents", new DatabaseQuery(true,
 				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date >= datetime('now')"));
+		databaseQueries.put("makeEvent", new DatabaseQuery(false,
+				"INSERT INTO events(event_id, post_id, event_date) VALUES(?, ?, ?)",
+				"Events"));
+		databaseQueries.put("getEventForPost", new DatabaseQuery(true,
+				"SELECT * FROM Events WHERE post_id = ?"));
+		
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,

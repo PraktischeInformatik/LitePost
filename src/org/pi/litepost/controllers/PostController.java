@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Function;
@@ -77,8 +76,8 @@ public class PostController {
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
 			.validateSingle("hasContent", saniziteContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
-			.validateFlag("isEvent", "is-event")
-			.validateMultiple("validDateIfEvent", p -> !p[0].isEmpty() && p[1].matches(datePattern), "is-event", "date");
+			.validateMultiple("validDateIfEvent", p -> !p[0].isEmpty() && p[1].matches(datePattern), "is-event", "date")
+			.validateFlag("isEvent", "is-event");
 		context.setValidator(validator);
 		
 		if(!validator.validate(session.getParms())) {
@@ -122,12 +121,6 @@ public class PostController {
 			image = "image" + i;
 		}
 		
-		if(validator.flag("isEvent")) {
-			//LocalDateTime date = LocalDateTime.from(
-			//		EVENT_TIME_FORMAT.parse(validator.value("date")));
-			
-		}
-		
 		try {
 			String title = validator.value("title");
 			String content = validator.value("content");
@@ -138,6 +131,11 @@ public class PostController {
 			for(String s : sources) {
 				String src = Router.linkTo("upload", s);
 				model.getPostManager().addImage(src, postId);
+			}
+			if(validator.flag("is-event")) {
+				LocalDateTime date = LocalDateTime.from(
+						EVENT_TIME_FORMAT.parse(validator.value("date")));
+				model.getPostManager().makeEvent(postId, date);
 			}
 		} catch (SQLException e) {
 			return Router.error(e, context);

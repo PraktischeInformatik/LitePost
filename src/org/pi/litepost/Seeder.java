@@ -1,10 +1,10 @@
 package org.pi.litepost;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-import org.pi.litepost.databaseAccess.*;
+import org.pi.litepost.databaseAccess.DatabaseConnector;
+import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 
 public class Seeder {
 	
@@ -27,6 +27,7 @@ public class Seeder {
 		dbQueryManager.executeQuery("verifyEmail", 4);
 		
 		dbQueryManager.executeQuery("insertPost", "Was ist Text?", "Text schmerz mich", LocalDateTime.of(2015, 2, 15, 5, 15), "0090/99913213", 1);
+		dbQueryManager.executeQuery("makeEvent", 1 , LocalDateTime.of(2015, 2, 15, 5, 15));
 		dbQueryManager.executeQuery("insertPost", "Mein supertolles neues Fahrrad", "Mir wurde zu Weihnachten ein supertolles neues Fahrrad geschenkt, welches ich aber nicht brauche, also wollte ich es verkaufen.", LocalDateTime.of(2015, 2, 15, 5, 20), "Schlachthausstraße 19", 3);
 		dbQueryManager.executeQuery("insertPost", "Gamer PC DDDDD FFFFF 00000 1 x 109191000hz TKraft 73", "", LocalDateTime.of(2015, 2, 15, 8, 1), "Burgumstraße 20", 4);
 		dbQueryManager.executeQuery("insertPost", "Schärfe-Wettessen", "Beispiel-Text zur Demonstration des Forums.", LocalDateTime.of(2015, 2, 15, 17, 15), "I-wo beliebiges", 2);

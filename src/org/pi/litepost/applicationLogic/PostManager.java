@@ -35,6 +35,18 @@ public class PostManager extends Manager {
 		this.model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
 	}
+	
+	/**
+	 * creates an event for a post
+	 * 
+	 * @param postId  
+	 * @param eventDate
+	 * @throws SQLException
+	 */
+	public void makeEvent(int postId, LocalDateTime eventDate) 
+			throws SQLException	{
+		model.getQueryManager().executeQuery("makeEvent", postId, eventDate);
+	}
 
 	/**
 	 * adds an image to a post
@@ -236,10 +248,8 @@ public class PostManager extends Manager {
 				"getFutureEvents");
 
 		while (result.next()) {
-			LocalDateTime postDate = result.getTimestamp("date")
-					.toLocalDateTime();
-			LocalDateTime eventDate = result.getTimestamp("event_date")
-					.toLocalDateTime();
+			LocalDateTime postDate = result.getTimestamp("date").toLocalDateTime();
+			LocalDateTime eventDate = result.getTimestamp("event_date").toLocalDateTime();
 			int postId = result.getInt("post_id");
 			String title = result.getString("title");
 			String content = result.getString("content");
@@ -303,17 +313,29 @@ public class PostManager extends Manager {
 		boolean reported = rs.getBoolean("reported");
 		boolean presentation = rs.getBoolean("presentation");
 
-		Post post = new Post(id, title, content, contact, date, userId,
-				reported, presentation);
+		Post post; 
 
+		ResultSet evResult = this.model.getQueryManager().executeQuery(
+				"getEventForPost", id);
+		
+		if(evResult.next()) {
+			LocalDateTime eventDate = evResult.getTimestamp("event_date").toLocalDateTime();
+			post = new Event(id, title, content, contact, date, userId,
+					reported, presentation, eventDate);
+		} else {
+			post = new Post(id, title, content, contact, date, userId,
+					reported, presentation);
+		}
+		
 		ResultSet imResult = this.model.getQueryManager().executeQuery(
 				"getImagesByPost", id);
-
+		
 		while (imResult.next()) {
 			int imageId = imResult.getInt("image_id");
 			String source = imResult.getString("source");
 			post.addImage(new Image(imageId, source));
 		}
+		
 		for (Comment comment : this.model.getCommentManager().getByPost(id)) {
 			post.addComment(comment);
 		}
