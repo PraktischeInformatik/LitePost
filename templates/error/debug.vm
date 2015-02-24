@@ -13,14 +13,14 @@ $Resources.addScriptFooter("js/prism.js")
 
 #parse("header.vm")
 <div id="wrapper">
-  	<div id="main"> 
-		<h2>Oops an error occured!</h2>
-		<p>in $error.getClassName(): $error.getMessage()</p>
-		<ul>
-			#foreach($frame in $error.getStackTrace())
-				#source($frame)
-			#end
-		</ul>
+	<div id="main"> 
+  	<h2>Oops an error occured!</h2>
+  	<p>in $error.getClassName(): $error.getMessage()</p>
+  	<ul>
+  		#foreach($frame in $error.getStackTrace())
+  			#source($frame)
+  		#end
+  	</ul>
     #if($has_cause)
       <h3>cause:</h3>  
       <p>in $cause_classname: $cause_message</p>
@@ -30,10 +30,10 @@ $Resources.addScriptFooter("js/prism.js")
         #end
       </ul>
     #end
-    </div>
   </div>
   #parse("sidebar.vm")
 </div>
+
 <style type="text/css">
   pre.prism {
     display: none;
