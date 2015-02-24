@@ -1,0 +1,12 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+    <ul>
+      #foreach($event in $events)
+        <li><a href="${Router.linkTo("singlePost", $event.postId)}">$event.title <i>$event.eventDate</i></a></li>
+      #end
+    </ul>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
