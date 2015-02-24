@@ -92,7 +92,7 @@ public class PostController {
 		while(params.containsKey(image)) {
 			String filename = LocalDateTime.now().format(FILENAME_TIME_FORMAT);
 			String imagename = params.get(image);
-			if(imagename != null) {
+			if(imagename != null && !imagename.isEmpty()) {
 				String extension = imagename.substring(imagename.lastIndexOf('.'));
 				String outfilename = filename + extension;
 				File output = new File(uploadfolder + File.separator + outfilename);
