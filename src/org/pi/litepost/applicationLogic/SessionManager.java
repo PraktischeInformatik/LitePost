@@ -18,6 +18,7 @@ public class SessionManager extends Manager {
 
 	private CookieHandler cookies;
 	private String sessionId;
+	private String csrfToken;
 	private static final DateTimeFormatter COOKIE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, dd-MMM-yyyy HH:mm:ss 'GMT'");
 	
 	public void resumeSession(CookieHandler cookieHandler) throws SQLException {
@@ -135,18 +136,25 @@ public class SessionManager extends Manager {
 	}
 
 	public String csrfToken() {
-		String token = createToken();
+		if(csrfToken != null){
+			return csrfToken;
+		}
+		csrfToken = createToken();
 		try {
-			set("csrf_token", token);
+			set("csrf_token", csrfToken);
 		} catch (SQLException e) {
 			return "";
 		}
-		return token;
+		return csrfToken;
 	}
 	
 	public boolean validateToken(String token) {
 		try {
-			return token != null && !token.equals("") && exists("csrf_token") && get("csrf_token").equals(token);
+			if(exists("csrf_token") && get("csrf_token").equals(token)) {
+				set("csrf_token", "");
+				return token != null && !token.equals("");
+			}
+			return false;
 		} catch (SQLException e) {
 			return false;
 		}
