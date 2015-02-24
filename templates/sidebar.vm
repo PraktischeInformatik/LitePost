@@ -1,11 +1,12 @@
 <div id="sidebar">
     <h2>Neuer Post</h2>
-    <form method="POST" action="${Router.linkTo("newPost")}">
-      <input id="input-title" type="text" name="title" placeholder="Titel" />
-      <textarea id="input-content" type="text" name="content" placeholder="Inhalt" ></textarea>
-      <input id="input-contact" type="text" name="contact" placeholder="Kontakt" />
-    </form>
-    <button class="button general">Posten</button>
+    $Form.begin("POST", ${Router.linkTo("newPost")}).id("sidebar-form")
+      $Input.text.id("input-title").name("title").placeholder("Title").prepopulate()
+      $Input.textarea.id("input-content").name("content").placeholder("Inhalt").prepopulate()
+      $Input.text.id("input-contact").name("contact").placeholder("Kontakt").prepopulate()
+      $Input.csrfToken
+    $Form.end()
+    $Input.submit.general.value("Posten").attr("form", "sidebar-form")
     <a href="${Router.linkTo("newPost")}" id="advanced-button">
       <button class="button secondary">Erweitert</button>
     </a>

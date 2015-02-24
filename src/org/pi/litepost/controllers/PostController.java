@@ -76,7 +76,7 @@ public class PostController {
 			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
 			.validateSingle("hasContent", saniziteContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
-			.validateMultiple("validDateIfEvent", p -> !p[0].isEmpty() && p[1].matches(datePattern), "is-event", "date")
+			.validateMultiple("validDateIfEvent", p -> !p[0].equals("on") || p[1].matches(datePattern), "is-event", "date")
 			.validateFlag("isEvent", "is-event");
 		context.setValidator(validator);
 		

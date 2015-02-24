@@ -331,7 +331,10 @@ textarea {
   border: 0;
 }
 
-input, select, textarea{
+input,
+select,
+textarea,
+.button {
   margin: 0.5em 0;
 }
 
@@ -406,10 +409,8 @@ label textarea {
 
 #sidebar input,
 #sidebar textarea {
-  width: 100%;
-  border-style: none;
+  
 }
-
 
 #sidebar textarea {
   height: 20em;
