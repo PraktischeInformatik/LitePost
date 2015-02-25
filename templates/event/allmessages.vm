@@ -1,0 +1,44 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+
+  <div class="allMessages">
+    <h1>Deine Nachrichten</h1>
+    <button>Neue Nachricht</button>
+
+    <div id="contacts">
+      <ul>
+
+        <li>
+          <div class="oneContact">
+            <table>
+              <tr>
+                <th><div>Marina</div></th>
+                <th><div id="newMessageSign">&nbsp</div></th>
+              </tr>
+            </table>
+          </div>
+        </li>
+
+        <li>
+          <div class="oneContact">
+            <table>
+              <tr>
+                <th><div>Max</div></th>
+                <th><div id="newMessageSign">&nbsp</div></th>
+              </tr>
+            </table>
+          </div>
+        </li>
+        
+      </ul>
+    </div>
+
+
+  
+  
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

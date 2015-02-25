@@ -7,7 +7,7 @@ h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li, 
+dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
     border: 0;
@@ -331,10 +331,7 @@ textarea {
   border: 0;
 }
 
-input,
-select,
-textarea,
-.button {
+input, select, textarea{
   margin: 0.5em 0;
 }
 
@@ -409,8 +406,10 @@ label textarea {
 
 #sidebar input,
 #sidebar textarea {
-  
+  width: 100%;
+  border-style: none;
 }
+
 
 #sidebar textarea {
   height: 20em;
@@ -431,7 +430,7 @@ label textarea {
 #date-div {
   height: 0;
   overflow: hidden;
-  /*-webkit-transition: height 0.3s; 
+  /*-webkit-transition: height 0.3s;
   transition: height 0.3s;*/
 }
 
@@ -868,6 +867,59 @@ width:100%;
 
 
 /*----------------------------------------------------
+   AllMessages
+----------------------------------------------------*/
+
+#contacts{
+  width:60%;
+  margin-top:2em;
+  border: 1px solid green;
+  max-height:25em;
+  overflow:auto;
+}
+
+.oneContact{
+  border-bottom: 1px solid green;
+  padding:0.5em;
+}
+
+.allMessages button{
+  margin-top:1em;
+}
+
+#newMessageSign{
+  vertical-align:bottom;
+  border: 1px solid red;
+  width:15px;
+  height:15px;
+  border-radius:20px;
+  margin-left:3em;
+}
+
+.oneContact table{
+  table-layout:fixed;
+}
+
+.oneContact table tr th{
+  width:3em;
+}
+
+
+
+/*----------------------------------------------------
+   reported
+----------------------------------------------------*/
+
+.reported table{
+border: 1px solid green;
+}
+
+.reported table tr td{
+padding:0.5em;
+}
+
+
+/*----------------------------------------------------
    Media queries
 ----------------------------------------------------*/
 
@@ -878,7 +930,7 @@ width:100%;
 
   #main {
     width: 100%;
-    margin: 0; 
+    margin: 0;
   }
 
   #menu-toggle {
