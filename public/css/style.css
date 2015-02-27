@@ -386,10 +386,26 @@ label textarea {
   padding-right: 16px;
 }
 
-#login {
+#login,
+#profile {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+#profile ul {
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+
+#profile:hover ul,
+#profile.hover ul {
+  height: auto;
+}
+
+#profile li {
+  display: block;
 }
 
 /*----------------------------------------------------

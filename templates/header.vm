@@ -11,19 +11,6 @@
    #foreach($script in $Resources.getScriptsHeader())
       <script type="text/javascript" src="$script"></script>
    #end
-   <script type="text/javascript">
-      var menu;
-      function toggle_menu() {
-        if(menu===undefined) {
-          menu = document.getElementById('main-navigation')
-        }
-        if(menu.className==='show') {
-          menu.className = '';
-        }else {
-          menu.className = 'show';  
-        }
-      }
-   </script>
 </head>
 <body>
    <header id="head">
@@ -36,10 +23,19 @@
       <li><a href="${Router.linkTo("overview")}">Events</a></li>
    </ul>
 </nav>
-
-  <div id="login">
-    <a href="${Router.linkTo("loginPage")}">
-      Login
-    </a>
-  </div>
+  #if($username)
+    <div id="profile">
+      <a href="$Router.linkTo("profilePage")">$username</a>
+      <ul>
+        <li><a href="$Router.linkTo("profilePage")">profile</a></li>
+        <li><a href="$Router.linkTo("logout")">logout</a></li>
+      </ul>
+    </div>
+  #else
+    <div id="login">
+      <a href="${Router.linkTo("loginPage")}">
+        Login
+      </a>
+    </div>
+  #end
 </header>

@@ -1,5 +1,35 @@
-   #foreach($script in $Resources.getScriptsFooter())
-      <script type="text/javascript" src="$script"></script>
-   #end
-   </body>
+  #foreach($script in $Resources.getScriptsFooter())
+    <script type="text/javascript" src="$script"></script>
+  #end
+  <script type="text/javascript">
+    //toggle menu for mobile
+    var menu;
+    function toggle_menu() {
+      if(menu===undefined) {
+        menu = document.getElementById('main-navigation')
+      }
+      if(menu.className==='show') {
+        menu.className = '';
+      }else {
+        menu.className = 'show';  
+      }
+    }
+
+    //fix hovering for mobile
+    (function(){
+      if('ontouchstart' in window) {
+        var login = document.getElementById('profile');
+        var link = login.getElementsByTagName('a')[0];
+        link.ontouchstart = function() {
+          if(login.className === '') {
+            login.className = 'hover';
+          } else {
+            login.className = '';
+          }
+          return false;
+        };
+      }
+    })();
+  </script>
+</body>
 </html>

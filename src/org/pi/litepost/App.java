@@ -85,6 +85,12 @@ public class App extends NanoHTTPD{
 			model.getSessionManager().resumeSession(session.getCookies());
 			model.getSessionManager().cleanSessions();
 			
+			String username = model.getSessionManager().get("username");
+			if(username != null)
+			{
+				viewContext.put("username", username);
+			}
+			
 			Route route = Router.getHandler(session);
 			viewContext.setValidator(new Validator(model.getSessionManager()));
 			Response resp = null;

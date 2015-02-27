@@ -35,7 +35,6 @@ public class LoginController {
 			return new Response(View.make("user.login", context));
 		}
 		
-		
 		try {			
 			boolean remember = validator.flag("remember");
 			String username = validator.value("username");
