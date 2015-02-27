@@ -163,6 +163,17 @@ public class App extends NanoHTTPD{
 		
 		loadConfig();
 		
+		File file = new File((String) config.get("litepost.public.uploadfolder"));
+		if(!file.exists() || !file.isDirectory())
+		{
+			if (!file.mkdirs())
+			{
+				System.out.println("could not create Upload folder");
+				System.exit(-1);
+			}
+		}
+		
+		
 		String hostname = (String) config.get("litepost.serverhost");
 		String serverport = (String) config.get("litepost.serverport");
 		int port = 8080;
