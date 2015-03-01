@@ -4,7 +4,7 @@
     <a href="$prevMonthLink">&lt;&lt;</a>
     <span>$monthName $year</span>
     <a href="$nextMonthLink">&gt;&gt;</a>
-    <table>
+    <table class="no-collapse">
       <thead>
         <tr>
           <th>Mo</th>

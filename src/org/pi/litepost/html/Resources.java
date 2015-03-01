@@ -11,6 +11,7 @@ public class Resources {
 	
 	public Resources() {
 		addStyle("css/style.css");
+		addScriptFooter("js/script.js");
 	}
 	
 	public void addStyle(String uri) {	

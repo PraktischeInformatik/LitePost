@@ -1015,4 +1015,45 @@ padding:0.5em;
   #sidebar {
     display: none;
   }
+
+  /*Rearrange tables*/
+  table:not(.no-collapse) {
+    width: 100%;
+  }
+
+  table:not(.no-collapse) thead {
+    display: none;
+  }
+
+  table:not(.no-collapse) tr {
+    position: relative;
+  }
+
+  table:not(.no-collapse) td:not(:first-child) {
+    border-top: 1px solid #ccc;
+  }
+
+  table:not(.no-collapse) td {
+    box-sizing: border-box;
+    word-wrap: break-word;
+    width: 100%;
+    display: block;
+    min-height: 2.5em;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  table:not(.no-collapse) td:empty {
+    display: none;
+  }
+
+  table:not(.no-collapse) td:before {
+    padding-left: .5em;
+    content: attr(data-header);
+    display: inline;
+    position: absolute;
+    left: 0;
+    width: calc(50% - 1em);
+    font-weight: bold;
+  }
 }
