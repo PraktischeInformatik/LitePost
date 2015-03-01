@@ -1,5 +1,7 @@
 package org.pi.litepost.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -19,6 +21,9 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class LoginController {
 	public static Response getLogin(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		if(args.containsKey("redirect")) {
+			context.put("redirect", args.get("redirect"));
+		}
 		return new Response(View.make("user.login", context));
 	}
 	
@@ -50,7 +55,15 @@ public class LoginController {
 		} catch (Exception e) {
 			return Router.error(e, context);
 		}
-		return Router.redirectTo("profile");
+		if(args.containsKey("redirect")) {
+			try {
+				String url = URLDecoder.decode(args.get("redirect"), "UTF-8");
+				return Router.redirectTo(url);
+			} catch (UnsupportedEncodingException e) {
+				return Router.error(e, context);
+			}
+		}
+		return Router.redirectTo("profilePage");
 	}
 	
 	public static Response getRegistration(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {

@@ -17,7 +17,11 @@
       #if($Input.error("loginSuccessful"))
         <p>login unsuccessful</p>
       #end
-      $Form.begin("POST", ${Router.linkTo("loginPost")})
+      #set($link = $Router.linkTo("loginPost"))
+      #if($redirect)
+        #set($link = $Router.linkTo("loginPostRedirect", $redirect))
+      #end
+      $Form.begin("POST", $link)
         <h2>Login</h2>
         $Input.text.name("username").placeholder("Nutzername").prepopulate()
         $Input.password.name("password").placeholder("Passwort")
