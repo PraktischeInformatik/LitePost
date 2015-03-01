@@ -24,6 +24,7 @@ public class DatabaseSchema {
 		        .column("date", "DATE").notNull()
 		        .column("sender", "INT").notNull().foreignKey("Users", "user_id")
 		        .column("receiver", "INT").notNull().foreignKey("Users", "user_id")
+		        .column("outgoing", "INT(1)").notNull()
 		        .column("subject", "TEXT").notNull()
 		        .column("content", "TEXT").notNull()
 		        .column("hidden", "INT(1)").notNull().defaultVal(0)

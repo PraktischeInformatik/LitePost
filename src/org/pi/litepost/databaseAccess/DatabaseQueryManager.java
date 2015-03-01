@@ -36,14 +36,14 @@ public class DatabaseQueryManager {
 		// Messages:
 		databaseQueries.put("deleteMessage", new DatabaseQuery(false,
 				"DELETE FROM Messages WHERE message_id = ?"));
-		databaseQueries.put("deleteMessageByUser", new DatabaseQuery(false,
-				"DELETE FROM Messages WHERE receiver = ? OR sender = ?"));
-		databaseQueries.put("getMessagesByUser", new DatabaseQuery(true,
-				"SELECT * FROM Messages WHERE userId = ?"));
+		databaseQueries.put("getMessagesFromUser", new DatabaseQuery(true,
+				"SELECT * FROM Messages WHERE sender = ? AND outgoing = 1"));
+		databaseQueries.put("getMessagesToUser", new DatabaseQuery(true,
+				"SELECT * FROM Messages WHERE receiver = ? AND outgoing = 0"));
 		databaseQueries.put("insertMessage", new DatabaseQuery(false,
-				"INSERT INTO Messages(message_id, date, sender, receiver, subject, content) VALUES(?, ?, ?, ?, ?, ?)",
+				"INSERT INTO Messages(message_id, date, sender, receiver, outgoing, subject, content) VALUES(?, ?, ?, ?, ?, ?, ?)",
 				"Messages"));
-		databaseQueries.put("getMessagesById", new DatabaseQuery(true,
+		databaseQueries.put("getMessageById", new DatabaseQuery(true,
 				"SELECT * FROM Messages WHERE message_id = ?"));
 
 		// Posts:

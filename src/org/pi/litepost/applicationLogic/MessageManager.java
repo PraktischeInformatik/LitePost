@@ -24,29 +24,41 @@ public class MessageManager extends Manager {
 	 * @param content
 	 * @throws SQLException
 	 */
-	public void insert(String receiver, String subject, String content) throws SQLException{
+	public void insert(User sender, User receiver, String subject, String content) throws SQLException{
 		LocalDateTime date = this.model.getCalenderManager().getDate();
-		String sender = "Anonym";
-		if (this.model.getSessionManager().exists("username")) {
-			sender = model.getUserManager().getCurrent().getUsername();
-		}
+		
 		this.model.getQueryManager().executeQuery("insertMessage", date,
-				sender, receiver, subject, content);
+				sender.getUserId(), receiver.getUserId(), true, subject, content);
+		this.model.getQueryManager().executeQuery("insertMessage", date,
+				sender.getUserId(), receiver.getUserId(), false, subject, content);
 	}
 
 	/**
-	 * returns an ArrayList containing all Messages of the actual User
+	 * returns an ArrayList containing all Messages a User has sent
 	 * 
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Message> getByUser() throws SQLException{
-		int userId = 0;
-		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getCurrent().getUserId();
-		}
+	public ArrayList<Message> getFromUser(User user) throws SQLException{
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getMessagesByUser", userId);
+				"getMessagesFromUser", user.getUserId());
+
+		ArrayList<Message> messages = new ArrayList<>();
+		while (result.next()) {
+			messages.add(createMessage(result));
+		}
+		return messages;
+	}
+	
+	/**
+	 * returns an ArrayList containing all Messages a User has received
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public ArrayList<Message> getToUser(User user) throws SQLException {
+		ResultSet result = this.model.getQueryManager().executeQuery(
+				"getMessagesToUser", user.getUserId());
 
 		ArrayList<Message> messages = new ArrayList<>();
 		while (result.next()) {
@@ -64,7 +76,7 @@ public class MessageManager extends Manager {
 	 */
 	public Message getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getMessagesById", id);
+				"getMessageById", id);
 		if(result.next()) {
 			return createMessage(result);
 		} else {
@@ -75,13 +87,17 @@ public class MessageManager extends Manager {
 	public Message createMessage(ResultSet rs) throws SQLException {
 		int messageId = rs.getInt("message_id");
 		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
-		int sender = rs.getInt("sender");
-		int receiver = rs.getInt("receiver");
+		int senderId = rs.getInt("sender");
+		int receiverId = rs.getInt("receiver");
+		boolean outgoing = rs.getBoolean("outgoing");
 		String subject = rs.getString("subject");
 		String content = rs.getString("content");
 		boolean hidden = rs.getBoolean("hidden");
 		boolean read = rs.getBoolean("read");
-		Message message = new Message(messageId, date, sender, receiver, subject,
+		
+		User sender = model.getUserManager().getById(senderId);
+		User receiver = model.getUserManager().getById(receiverId);
+		Message message = new Message(messageId, date, sender, receiver, outgoing, subject,
 				content, hidden, read);
 		return message;
 	}

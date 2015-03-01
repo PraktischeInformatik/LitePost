@@ -33,9 +33,11 @@ public class App extends NanoHTTPD{
 		Router.add("setupPage", Method.GET, "/setup", ConfigController::getSetup);
 		Router.add("setupPost", Method.POST, "/setup", ConfigController::postSetup);
 		
-		//user
+		//Login & registration
 		Router.add("loginPage", Method.GET, "/login", LoginController::getLogin);
+		Router.add("loginPageRedirect", Method.GET, "/login/{redirect}", LoginController::getLogin);
 		Router.add("loginPost", Method.POST, "/login", LoginController::postLogin);
+		Router.add("loginPostRedirect", Method.POST, "/login/{redirect}", LoginController::postLogin);
 		Router.add("logout", Method.GET, "/logout", LoginController::logout);
 		Router.add("registrationPage", Method.GET, "/register", LoginController::getRegistration);
 		Router.add("registrationPost", Method.POST, "/register", LoginController::postRegistration);
@@ -44,6 +46,10 @@ public class App extends NanoHTTPD{
 		Router.add("lostPasswordPost", Method.POST, "/lostpassword", LoginController::postLostPassword);
 		Router.add("resetPasswordPage", Method.GET, "/resetpassword/{reset_token}", LoginController::getResetPassword);
 		Router.add("resetPasswordPost", Method.POST, "/resetpassword/{reset_token}", LoginController::postResetPassword);
+		
+		//user
+		Router.add("profilePage", Method.GET, "/profile", UserController::getProfile);
+		Router.add("messagesPage", Method.GET, "/messages", UserController::getMessages);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);

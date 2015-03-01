@@ -9,19 +9,21 @@ import java.time.LocalDateTime;
 public class Message {
 	private final int messageId;
 	private final LocalDateTime date;
-	private final int sender;
-	private final int receiver;
+	private final User sender;
+	private final User receiver;
+	private final boolean outgoing;
 	private final String subject;
 	private final String text;
 	private final boolean hidden;
 	private final boolean read;
 
-	public Message(int messageId, LocalDateTime date, int sender, int receiver,
-			String subject, String text, boolean hidden, boolean read) {
+	public Message(int messageId, LocalDateTime date, User sender, User receiver,
+			boolean outgoing, String subject, String text, boolean hidden, boolean read) {
 		this.messageId = messageId;
 		this.date = date;
 		this.sender = sender;
 		this.receiver = receiver;
+		this.outgoing = outgoing;
 		this.subject = subject;
 		this.text = text;
 		this.hidden = hidden;
@@ -36,11 +38,11 @@ public class Message {
 		return date;
 	}
 
-	public int getSender() {
+	public User getSender() {
 		return sender;
 	}
 
-	public int getReceiver() {
+	public User getReceiver() {
 		return receiver;
 	}
 
@@ -58,5 +60,9 @@ public class Message {
 
 	public boolean isRead() {
 		return read;
+	}
+	
+	public boolean isOutgoing() {
+		return outgoing;
 	}
 }

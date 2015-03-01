@@ -1,7 +1,7 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
-	<h2>Login Successful</h2>
+	$user.username
   </div>
   #parse("sidebar.vm")
 </div>

@@ -28,8 +28,9 @@
     <div id="profile">
       <a href="$Router.linkTo("profilePage")">$username</a>
       <ul>
-        <li><a href="$Router.linkTo("profilePage")">profile</a></li>
-        <li><a href="$Router.linkTo("logout")">logout</a></li>
+        <li><a href="$Router.linkTo("profilePage")">Profil</a></li>
+        <li><a href="$Router.linkTo("messagesPage")">Nachrichten</a></li>
+        <li><a href="$Router.linkTo("logout")">Logout</a></li>
       </ul>
     </div>
   #else
