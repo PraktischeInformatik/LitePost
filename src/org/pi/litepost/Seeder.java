@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 
 import org.pi.litepost.databaseAccess.DatabaseConnector;
+import org.pi.litepost.databaseAccess.DatabaseQuery;
 import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 
 public class Seeder {
@@ -17,6 +18,7 @@ public class Seeder {
 		DbConnector.connect();
 		DatabaseQueryManager dbQueryManager= new DatabaseQueryManager(DbConnector);
 		
+		System.out.println("Seeding...");
 		dbQueryManager.executeQuery("insertUser", "uhukoenig123", PasswordHash.createHash("troll22"), "Markus", "Cohenheim", "blubla@gmx.de");
 		dbQueryManager.executeQuery("insertUser", "uhukönig123", PasswordHash.createHash("troll22"), "Reiner", "Mahan", "Reiner_Mahan@gmx.de");
 		dbQueryManager.executeQuery("insertUser", "FRUITSPONGYSAMURAISAN", PasswordHash.createHash("troll22"), "Sebastian", "Rosenthal", "emo_lord89@gmx.de");
@@ -25,6 +27,12 @@ public class Seeder {
 		dbQueryManager.executeQuery("verifyEmail", 2);
 		dbQueryManager.executeQuery("verifyEmail", 3);
 		dbQueryManager.executeQuery("verifyEmail", 4);
+		
+		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 1, 2, 0, "Test", "Testing");
+		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 1, 2, 1, "Test", "Testing");
+		
+		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 2, 1, 0, "Test2", "Testing2");
+		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 2, 1, 1, "Test2", "Testing2");
 		
 		dbQueryManager.executeQuery("insertPost", "Was ist Text?", "Text schmerz mich", LocalDateTime.of(2015, 2, 15, 5, 15), "0090/99913213", 1);
 		dbQueryManager.executeQuery("makeEvent", 1 , LocalDateTime.of(2015, 3, 15, 5, 15));
@@ -35,7 +43,8 @@ public class Seeder {
 		dbQueryManager.executeQuery("insertComment", 3, "nicht weiter!", LocalDateTime.of(2015, 2, 15, 5, 17), 0, 1);
 		dbQueryManager.executeQuery("insertComment", 1, "lol", LocalDateTime.of(2015, 2, 15, 5, 18), 1, 1);
 		
-		
 		DbConnector.close();
+		
+		System.out.println("Done Seeding!");
 	}
 }
