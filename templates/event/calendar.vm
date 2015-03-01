@@ -1,8 +1,41 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main"> 
+    <a href="$prevMonthLink">&lt;&lt;</a>
+    <span>$monthName $year</span>
+    <a href="$nextMonthLink">&gt;&gt;</a>
+    <table>
+      <thead>
+        <tr>
+          <th>Mo</th>
+          <th>Di</th>
+          <th>Mi</th>
+          <th>Do</th>
+          <th>Fr</th>
+          <th>Sa</th>
+          <th>So</th>
+        </tr>
+      </thead>
+      <tbody>
+        #foreach($week in $month.weeks)
+          <tr>
+            #foreach($day in $week.days)
+              <td>
+                #if(not $day.isOffset())
+                  #if($day.hasEvent())
+                    <a href="$day.link">$day.num</a>
+                  #else
+                    $day.num
+                  #end
+                #end
+              </td>
+            #end
+          </tr>
+        #end
+      </tbody>
+    </table>
 
-    <div id="month_dates">
+    <!--div id="month_dates">
      <table id="dates" >
       <caption> 
         <h1>Januar 2015</h1> 
@@ -72,9 +105,9 @@
         
       </tbody>
      </table>
-    </div>
-    
-  </div>
-  #parse("sidebar.vm")
+  </div -->
+
+</div>
+#parse("sidebar.vm")
 </div>
 #parse("footer.vm")
