@@ -1,0 +1,27 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main">
+    #if($Input.error("csrfTokenValid"))
+      <p>csrfToken not Valid</p>
+    #end
+    #if($Input.error("receiverExists"))
+      <p>Receiver does not exist</p>
+    #end
+    #if($Input.error("hasSubject"))
+      <p>has no Subject</p>
+    #end
+    #if($Input.error("hasContent"))
+      <p>has no Contetn</p>
+    #end
+    $Form.begin("POST", $Router.linkTo("sendMessagePost"))
+      <h2>Nachricht verfassen</h2>
+      $Input.text.name("receiver").placeholder("Empfänger").prepopulate()
+      $Input.text.name("subject").placeholder("Betreff").prepopulate()
+      $Input.textarea.name("content").placeholder("Inhalt").prepopulate()
+      $Input.csrfToken
+      $Input.submit.value("Senden").general
+    $Form.end()
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

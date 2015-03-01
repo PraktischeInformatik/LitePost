@@ -236,6 +236,9 @@ public class UserManager extends Manager {
 	public User getByName(String username) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getUserByUsername", username);
+		if(!result.next()) {
+			return null;
+		}
 		return this.createUser(result);
 	}
 

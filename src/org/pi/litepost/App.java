@@ -50,6 +50,8 @@ public class App extends NanoHTTPD{
 		//user
 		Router.add("profilePage", Method.GET, "/profile", UserController::getProfile);
 		Router.add("messagesPage", Method.GET, "/messages", UserController::getMessages);
+		Router.add("sendMessagePage", Method.GET, "/messages/send", UserController::getSendMessage);
+		Router.add("sendMessagePost", Method.POST, "/messages/send", UserController::postSendMessages);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
