@@ -2,9 +2,10 @@ package org.pi.litepost.applicationLogic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * the PostManager
@@ -218,19 +219,36 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Event> getEvents(int month) throws SQLException {
+	public ArrayList<Event> getEvents(YearMonth month) throws SQLException {
+		LocalDateTime begin =  month.atDay(1).atStartOfDay();
+		LocalDateTime end = month.atEndOfMonth().plusDays(1).atStartOfDay();
+		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween", begin, end);
+		
 		ArrayList<Event> events = new ArrayList<>();
-		ArrayList<Event> all = this.getEvents();
-		Iterator<Event> iter = all.iterator();
-		while (iter.hasNext()) {
-			Event actual = (Event) iter.next();
-			if (actual.getEventDate().getMonthValue() == month
-					&& actual.getEventDate().getYear() == model
-							.getCalenderManager().getDate().getYear()) {
-				events.add(actual);
-			}
+		while(rs.next()) {
+			events.add(createEvent(rs));
 		}
-
+		
+		return events;
+	}
+	
+	/**
+	 * returns an ArrayList containing all Events on the given date
+	 * 
+	 * @param month
+	 * @return
+	 * @throws SQLException
+	 */
+	public ArrayList<Event> getEvents(LocalDate date) throws SQLException {
+		LocalDateTime begin =  date.atStartOfDay();
+		LocalDateTime end = date.plusDays(1).atStartOfDay();
+		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween", begin, end);
+		
+		ArrayList<Event> events = new ArrayList<>();
+		while(rs.next()) {
+			events.add(createEvent(rs));
+		}
+		
 		return events;
 	}
 
@@ -248,27 +266,7 @@ public class PostManager extends Manager {
 				"getEventsAfter", LocalDateTime.now());
 
 		while (result.next()) {
-			LocalDateTime postDate = result.getTimestamp("date").toLocalDateTime();
-			LocalDateTime eventDate = result.getTimestamp("event_date").toLocalDateTime();
-			int postId = result.getInt("post_id");
-			String title = result.getString("title");
-			String content = result.getString("content");
-			String contact = result.getString("contact");
-			int userId = result.getInt("user_id");
-			boolean reported = result.getBoolean("reported");
-			boolean presentation = result.getBoolean("presentation");
-			Event event = new Event(postId, title, content, contact, postDate,
-					userId, reported, presentation, eventDate);
-
-			ResultSet images = this.model.getQueryManager().executeQuery(
-					"getImagesByPost", postId);
-
-			while (images.next()) {
-				int imageId = images.getInt("image_id");
-				String source = images.getString("source");
-				event.addImage(new Image(imageId, source));
-			}
-			events.add(event);
+			events.add(createEvent(result));
 		}
 
 		return events;
@@ -341,5 +339,41 @@ public class PostManager extends Manager {
 		}
 
 		return post;
+	}
+	
+	/**
+	 * method creates one Event of given ResultSet
+	 * 
+	 * @param result
+	 * @return
+	 * @throws SQLException
+	 */
+	private Event createEvent(ResultSet rs) throws SQLException {
+		int id = rs.getInt("post_id");
+		String title = rs.getString("title");
+		String content = rs.getString("content");
+		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
+		String contact = rs.getString("contact");
+		int userId = rs.getInt("user_id");
+		boolean reported = rs.getBoolean("reported");
+		boolean presentation = rs.getBoolean("presentation");
+		LocalDateTime eventDate = rs.getTimestamp("event_date").toLocalDateTime();
+		Event event = new Event(id, title, content, contact, date, userId,
+				reported, presentation, eventDate);
+		
+		ResultSet imResult = this.model.getQueryManager().executeQuery(
+				"getImagesByPost", id);
+		
+		while (imResult.next()) {
+			int imageId = imResult.getInt("image_id");
+			String source = imResult.getString("source");
+			event.addImage(new Image(imageId, source));
+		}
+		
+		for (Comment comment : this.model.getCommentManager().getByPost(id)) {
+			event.addComment(comment);
+		}
+
+		return event;
 	}
 }

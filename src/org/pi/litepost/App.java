@@ -28,10 +28,6 @@ public class App extends NanoHTTPD{
 		Router.add("upload", Method.GET, "/public/upload/{filename}", FileController::getUploadedFile);
 		Router.add("public", Method.GET, "/public/{filename}", FileController::getFile);
 		Router.add("home", Method.GET, "/", HomeController::getHome);
-		Router.add("calendar", Method.GET, "/events/calendar", EventController::getCalendar);
-		Router.add("overview", Method.GET, "/events/overview", EventController::getOverview);
-		Router.add("allevents", Method.GET, "/allevents", HomeController::getAllEvents);
-		Router.add("daysight", Method.GET, "/daysight", HomeController::getDaySight);
 		
 		//configuration
 		Router.add("setupPage", Method.GET, "/setup", ConfigController::getSetup);
@@ -55,6 +51,12 @@ public class App extends NanoHTTPD{
 		Router.add("insertPost", Method.POST, "/posts/new", PostController::postNew);
 		Router.add("singlePost", Method.GET, "/post/{post_id}", PostController::getSingle);
 		Router.add("commentPost", Method.POST, "/post/{post_id}/comment", PostController::commentPost);
+		
+		//Events
+		Router.add("dailyOverview", Method.GET, "/events/{year}/{month}/{day}", EventController::getDailyOverview);
+		Router.add("calendar", Method.GET, "/events/{year}/{month}", EventController::getCalendar);
+		Router.add("calendarToday", Method.GET, "/events", EventController::redirectCalendar);
+		Router.add("overview", Method.GET, "/events/overview", EventController::getOverview);
 		
 	}
 	
