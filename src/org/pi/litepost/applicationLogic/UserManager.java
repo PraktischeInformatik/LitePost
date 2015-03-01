@@ -270,7 +270,10 @@ public class UserManager extends Manager {
 	 */
 	public User getCurrent() throws SQLException {
 		String username = this.model.getSessionManager().get("username");
-		return this.getByName(username);
+		if(username != null){
+			return this.getByName(username);
+		}
+		return null;
 	}
 
 	/**
