@@ -27,7 +27,7 @@ public class DatabaseQuery{
 	}
 	
 	public ResultSet execute(DatabaseQueryManager databaseQueryManager, DatabaseConnector databaseConnector, Object...values) throws SQLException{
-		if(this.preparedStatement == null){
+		if(this.preparedStatement == null || !this.preparedStatement.isClosed()) {
 			this.preparedStatement = databaseConnector.createPreparedStatement(preparationSQL);
 		}
 		else{

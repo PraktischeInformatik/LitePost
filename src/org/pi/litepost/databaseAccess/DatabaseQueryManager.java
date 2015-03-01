@@ -77,12 +77,13 @@ public class DatabaseQueryManager {
 		// Events:
 		databaseQueries.put("getEventsAfter", new DatabaseQuery(true,
 				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date >= ?"));
+		databaseQueries.put("getEventsBetween", new DatabaseQuery(true,
+				"SELECT * FROM Posts NATURAL JOIN Events WHERE event_date > ? and event_date < ?"));
 		databaseQueries.put("makeEvent", new DatabaseQuery(false,
 				"INSERT INTO events(event_id, post_id, event_date) VALUES(?, ?, ?)",
 				"Events"));
 		databaseQueries.put("getEventForPost", new DatabaseQuery(true,
 				"SELECT * FROM Events WHERE post_id = ?"));
-		
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,
