@@ -1,6 +1,7 @@
 (function(){
   mobile_hover();
   responsive_tables();
+  link_tables();
 })();
 
 //toggle menu for mobile
@@ -51,5 +52,14 @@ function add_data_headers(table) {
     for (var j = length - 1; j >= 0; j--) {
       cells[j].setAttribute("data-header", headers[j].innerHTML);
     };
+  };
+}
+
+// make link rows in tables clickable
+function link_tables() {
+  var rows = document.querySelectorAll("table tr[data-link]");
+  for (var i = rows.length - 1; i >= 0; i--) {
+    var link = rows[i].getAttribute("data-link");
+    rows[i].setAttribute("onclick", "document.location = '" + link + "'");
   };
 }

@@ -1,20 +1,31 @@
+#macro(messageRows $messages)
+  #foreach($message in $messages)
+    #set($msgUsername = $message.sender.username)
+    #if(not $message.outgoing)
+      #set($msgUsername = $message.receiver.username)
+    #end
+    #set($highlight = not $message.outgoing and not $message.read)
+    <tr data-link="$Router.linkTo("readMessage", $message.messageId)">
+      <td>#if($highlight)<b>$msgUsername</b>#{else}$msgUsername#{end}</td>
+      <td>#if($highlight)<b>$message.subject</b>#{else}$message.subject#{end}</td>
+      <td style="padding: 0;text-align: center"><a href="$Router.linkTo("deleteMessage", $message.messageId)" class="button danger">Löschen</a></td>
+    </tr>
+  #end
+#end
+
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
     <div id="received">
+      <h1>Nachrichten</h1>
+      <a href="$Router.linkTo("sendMessagePage")" class="button general">Nachricht verfassen</a>
       <h2>Empfangene Nachrichten</h2>
-      <table>
+      <table class="link-rows">
         <thead>
-          <tr><th>Von</th><th>Betreff</th><th>Inhalt</th></tr>
+          <tr><th>Von</th><th>Betreff</th><th></th></tr>
         </thead>
         <tbody>
-          #foreach($message in $receivedMessages)
-            <tr>
-              <td>$message.sender.username</td>
-              <td>$message.subject</td>
-              <td>$message.text</td>
-            </tr>
-          #end
+          #messageRows($receivedMessages)
         </tbody>
       </table>
     </div>
@@ -22,16 +33,10 @@
       <h2>Gesendete Nachrichten</h2>
       <table>
         <thead>
-          <tr><th>An</th><th>Betreff</th><th>Inhalt</th></tr>
+          <tr><th>An</th><th>Betreff</th><th></th></tr>
         </thead>
         <tbody>
-          #foreach($message in $sentMessages)
-            <tr>
-              <td>$message.receiver.username</td>
-              <td>$message.subject</td>
-              <td>$message.text</td>
-            </tr>
-          #end
+          #messageRows($sentMessages)
         </tbody>
       </table>
     </div>

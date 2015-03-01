@@ -84,6 +84,29 @@ public class MessageManager extends Manager {
 		}
 	}
 	
+
+	/**
+	 * marks a message as read
+	 * 
+	 * @param message_id
+	 * @return
+	 * @throws SQLException
+	 */	
+	public void readMessage(int message_id) throws SQLException {	
+		model.getQueryManager().executeQuery("readMessage", message_id);
+	}
+	
+	/**
+	 * deletes a message as read
+	 * 
+	 * @param message_id
+	 * @return
+	 * @throws SQLException
+	 */	
+	public void deleteMessage(int message_id) throws SQLException {	
+		model.getQueryManager().executeQuery("deleteMessage", message_id);
+	}
+	
 	public Message createMessage(ResultSet rs) throws SQLException {
 		int messageId = rs.getInt("message_id");
 		LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();

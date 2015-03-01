@@ -271,6 +271,11 @@ table:not(.no-highlight) thead tr{
   background: #f3f3f3; 
 }
 
+table tr[data-link]:hover{
+  background: #eee;
+  cursor: pointer;
+}
+
 ul li + li {
   padding: 0.5em 0;
   border-top: 1px solid #eee;
@@ -306,12 +311,18 @@ li > ul {
   padding: 1.5em;
 }
 
-.button {
+.button,
+a.button {
   border-style: none;
   display: inline-block;
   border-radius: 5px;
   padding: .5em 1em;
   cursor: pointer;
+  color: #404040;
+}
+
+.button:hover {
+  color: #404040;
 }
 
 .button.general {
@@ -328,6 +339,14 @@ li > ul {
 
 .button.secondary:hover {
   background: #ddd;
+}
+
+.button.danger {
+  background: #FB4330;
+}
+
+.button.danger:hover {
+  background: #DE1C08;
 }
 
 /*----------------------------------------------------

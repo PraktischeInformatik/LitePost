@@ -1,0 +1,15 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main">
+    <a href="$Router.linkTo("messagesPage")">&lt; Zurück</a>
+    #set($msgUsername = $message.sender.username)
+    #if($message.outgoing)
+      #set($msgUsername = $message.receiver.username)
+    #end
+    <h2>Nacricht #if($message.outgoing)an#{else}von#{end} $msgUsername</h2>  
+    <h3>$message.subject</h3>
+    <p>$message.text</p>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

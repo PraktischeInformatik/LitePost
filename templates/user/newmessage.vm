@@ -17,7 +17,7 @@
       <h2>Nachricht verfassen</h2>
       $Input.text.name("receiver").placeholder("Empfänger").prepopulate()
       $Input.text.name("subject").placeholder("Betreff").prepopulate()
-      $Input.textarea.name("content").placeholder("Inhalt").prepopulate()
+      $Input.textarea.name("content").placeholder("Inhalt").attr("rows", "10").prepopulate()
       $Input.csrfToken
       $Input.submit.value("Senden").general
     $Form.end()

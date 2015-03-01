@@ -128,4 +128,26 @@ public class UserController {
 		}
 		return Router.redirectTo("messagesPage");
 	}
+	
+	public static Response readMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		int message_id = Integer.parseInt(args.get("message_id"));
+		try {
+			model.getMessageManager().readMessage(message_id);
+			Message msg = model.getMessageManager().getById(message_id);
+			context.put("message", msg);
+			return new Response(View.make("user.message", context));
+		}catch(SQLException e) {
+			return Router.error(e, context);
+		}
+	}
+	
+	public static Response deleteMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		int message_id = Integer.parseInt(args.get("message_id"));
+		try {
+			model.getMessageManager().deleteMessage(message_id);
+			return Router.redirectTo("messagesPage");
+		}catch(SQLException e) {
+			return Router.error(e, context);
+		}
+	}
 }

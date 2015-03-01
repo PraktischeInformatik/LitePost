@@ -7,7 +7,5 @@
       $Input.csrfToken
     $Form.end()
     $Input.submit.general.value("Posten").attr("form", "sidebar-form")
-    <a href="${Router.linkTo("newPost")}" id="advanced-button">
-      <button class="button secondary">Erweitert</button>
-    </a>
+    <a href="${Router.linkTo("newPost")}" id="advanced-button" class="button secondary">Erweitert</a>
 </div>
