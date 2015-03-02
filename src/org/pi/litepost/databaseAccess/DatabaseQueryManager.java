@@ -48,7 +48,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("readMessage", new DatabaseQuery(false,
 				"UPDATE Messages SET read = 1 WHERE message_id = ?"));
 		databaseQueries.put("deleteMessagesFromUser", new DatabaseQuery(false,
-				"DELEET FROM Messages WHERE outgoing = 1 AND sender = ?"));
+				"DELETE FROM Messages WHERE outgoing = 1 AND sender = ?"));
 		databaseQueries.put("deleteMessagesToUser", new DatabaseQuery(false,
 				"DELETE FROM Messages WHERE outgoing = 0 AND receiver = ?"));
 		
