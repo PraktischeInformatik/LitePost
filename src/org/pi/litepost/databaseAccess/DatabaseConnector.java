@@ -21,6 +21,10 @@ public class DatabaseConnector implements AutoCloseable{
 	}
 	
 	public void connect() throws SQLException, ClassNotFoundException {
+		connect(false);
+	}
+	
+	public void connect(boolean forceRebuildSchema) throws SQLException, ClassNotFoundException {
 		Class.forName(jdbcDriverPath);
 		connection = DriverManager.getConnection(this.databasePath);
 		DatabaseMetaData meta = connection.getMetaData();
@@ -35,9 +39,8 @@ public class DatabaseConnector implements AutoCloseable{
 			}
 			existingSchema.put(tableName, columnNames);
 		}
-		if(!DatabaseSchema.SCHEMA.validate(existingSchema)) {
+		if(forceRebuildSchema || !DatabaseSchema.SCHEMA.validate(existingSchema)) {
 			for(String s : DatabaseSchema.SCHEMA.getDropAndCreate()) {
-				System.out.println(s);
 				connection.createStatement().executeUpdate(s);
 			}
 		}

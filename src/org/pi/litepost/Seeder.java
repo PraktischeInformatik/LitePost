@@ -1,6 +1,5 @@
 package org.pi.litepost;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 import org.pi.litepost.databaseAccess.DatabaseConnector;
@@ -9,13 +8,10 @@ import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 public class Seeder {
 	
 	public static void seed() throws Exception{
-		File data = new File("res/litepost.db");
-	    if (data.exists()) {
-	    	data.delete();
-	    }
-		DatabaseConnector DbConnector = new DatabaseConnector("res/litepost.db");
-		DbConnector.connect();
-		DatabaseQueryManager dbQueryManager= new DatabaseQueryManager(DbConnector);
+	    DatabaseConnector DbConnector = new DatabaseConnector("res/litepost.db");
+	    System.out.println("Building schema...");
+		DbConnector.connect(true);
+		DatabaseQueryManager dbQueryManager = new DatabaseQueryManager(DbConnector);
 		
 		System.out.println("Seeding...");
 		dbQueryManager.executeQuery("insertUser", "uhukoenig123", PasswordHash.createHash("troll22"), "Markus", "Cohenheim", "blubla@gmx.de");
