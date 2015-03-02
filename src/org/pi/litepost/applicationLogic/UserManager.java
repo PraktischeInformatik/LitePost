@@ -27,7 +27,8 @@ import org.pi.litepost.exceptions.UseranameExistsException;
  *
  */
 public class UserManager extends Manager {
-
+	
+	private User current;
 	/**
 	 * registers a new User (creates a User-Object) and saves it in the Database;
 	 * the userId is taken from the corresponding id-table
@@ -144,6 +145,7 @@ public class UserManager extends Manager {
 	 */
 	public void logout() throws SQLException {
 		model.getSessionManager().endSession();
+		current = null;
 	}
 	
 	/**
@@ -271,11 +273,13 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 */
 	public User getCurrent() throws SQLException {
-		String username = this.model.getSessionManager().get("username");
-		if(username != null){
-			return this.getByName(username);
+		if(current == null) {
+			String username = this.model.getSessionManager().get("username");
+			if(username != null){
+				current = this.getByName(username);
+			}
 		}
-		return null;
+		return current;
 	}
 
 	/**
