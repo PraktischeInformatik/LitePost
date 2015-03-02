@@ -91,7 +91,10 @@ public class CommentManager extends Manager {
 		int parentId = rs.getInt("parent_id");
 		int postId = rs.getInt("post_id");
 		boolean reported = rs.getBoolean("reported");
-		Comment comment = new Comment(commentId, userId, content, date, parentId, postId, reported);
+		
+		User user = model.getUserManager().getById(userId);
+		
+		Comment comment = new Comment(commentId, user, content, date, parentId, postId, reported);
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getCommentsByParentId", commentId);
 		while(result.next()) {

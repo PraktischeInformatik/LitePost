@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Comment {
 	private final int commentId;
-	private final int userId;
+	private final User user;
 	private final String text;
 	private final LocalDateTime date;
 	private final int parentId;
@@ -17,10 +17,10 @@ public class Comment {
 	private final ArrayList<Comment> subComments;
 	private final boolean reported;
 
-	public Comment(int commentId, int userId, String text, LocalDateTime date,
+	public Comment(int commentId, User user, String text, LocalDateTime date,
 			int parentId, int postId, boolean reported) {
 		this.commentId = commentId;
-		this.userId = userId;
+		this.user = user;
 		this.text = text;
 		this.date = date;
 		this.parentId = parentId;
@@ -32,8 +32,8 @@ public class Comment {
 	public int getCommentId() {
 		return commentId;
 	}
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
 	public String getText() {

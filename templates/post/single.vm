@@ -5,7 +5,10 @@ $Resources.addScriptFooter("js/singlepost.js")
     #foreach($comment in $comments)
       <li>
         <p>$comment.text</p>
-        <a href="javascript:answerComment($comment.getCommentId())">Antworten</a>
+        #if($comment.user)
+          <i>von $comment.user.username</i>
+        #end
+        <a href="javascript:answerComment($comment.commentId)">Antworten</a>
         #set($subComments = $comment.subComments)
         #comments($subComments)
       </li>
@@ -14,6 +17,38 @@ $Resources.addScriptFooter("js/singlepost.js")
 #end
 
 #parse("header.vm")
+<div id="wrapper">
+  	<div id="main"> 
+      <h2>$post.title</h2>
+      <p>$post.text</p>
+      #if($post.event)
+        <i>$post.eventDate</i>
+      #end
+      #if($post.user)
+        <i>von $post.user.username</i>
+      #end
+      <ul id="images">
+        <div id="image-box" onclick="hide_image()"></div>
+        #foreach($image in $post.images)
+          <li><img onclick="enlarge_image(this)" src="$image.source"></li>
+        #end
+      </ul>
+      <p><small>$post.contact</small></p>
+      <ul>
+        <li><h3>Kommentare</h3></li>
+        <li>
+          #comments($post.comments)
+        </li>
+        <li>
+          <a href="javascript:answerComment(0)" class="button general">Kommentieren</a>
+        </li>
+      </ul>
+
+    </div>
+  #parse("sidebar.vm")
+  </div>
+</div>
+
 <style type="text/css">
   #images li{
     display: inline-block;
@@ -51,54 +86,66 @@ $Resources.addScriptFooter("js/singlepost.js")
     opacity: 1;
     pointer-events: all;
   }
+
+  #comment-form {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+  }
+  #comment-form div {
+    position: relative;
+    top: 30%;
+    max-width: 300px;
+    max-height: 300px;
+    margin: auto;
+    padding: 1em;
+    background: white;
+  }
 </style>
-<div id="wrapper">
-  	<div id="main"> 
-      <h2>$post.title</h2>
-      <p>$post.text</p>
-      #if($post.event)
-        <i>$post.eventDate</i>
+<div onclick="if(event.target === this){ hideCommentForm(); }" =""  id="comment-form">
+  <div>
+    $Form.begin("POST", ${Router.linkTo("commentPost", $post.postId)})
+      #if($Validator.error("hasContent")) 
+        <p>Bitte geben sie einen Kommentar ein</p>  
       #end
-      #if($post.user)
-        <i>von $post.user.username</i>
+      #if($Validator.error("validCsrfToken")) 
+        <p>validCsrfToken</p>  
       #end
-      <ul id="images">
-        <div id="image-box" onclick="hide_image()"></div>
-        #foreach($image in $post.images)
-          <li><img onclick="enlarge_image(this)" src="$image.source"></li>
-        #end
-      </ul>
-      <small>$post.contact</small>
-      $Form.begin("POST", ${Router.linkTo("commentPost", $post.postId)})
-        #if($Validator.error("hasContent")) 
-          <p>Bitte geben sie einen Kommentar ein</p>  
-        #end
-        #if($Validator.error("validCsrfToken")) 
-          <p>validCsrfToken</p>  
-        #end
-        #if($Validator.error("postIdNumeric")) 
-          <p>postIdNumeric</p>  
-        #end
-        #if($Validator.error("parentIdNumericOrEmpty")) 
-          <p>parentIdNumericOrEmpty</p>  
-        #end
-        $Input.hidden.name("parent_id").value("0").id("parentId")
-        $Input.textarea.name("content").placeholder("Kommentar").prepopulate()
-        $Input.csrfToken
-        $Input.submit.general.value("Kommentieren")
-      $Form.end()
-      <h3>Kommentare</h3>
-      #comments($post.comments)
-    </div>
-  #parse("sidebar.vm")
+      #if($Validator.error("postIdNumeric")) 
+        <p>postIdNumeric</p>  
+      #end
+      #if($Validator.error("parentIdNumericOrEmpty")) 
+        <p>parentIdNumericOrEmpty</p>  
+      #end
+      $Input.hidden.name("parent_id").value("0").id("parent-id")
+      $Input.textarea.name("content").placeholder("Kommentar").prepopulate()
+      $Input.csrfToken
+      $Input.submit.general.value("Kommentieren")
+      <a href="javascript:hideCommentForm()" class="button secondary">X</a>
+    $Form.end()
   </div>
 </div>
-
 <script type="text/javascript">
+var comment_form,
+  parent_id;
 
 function answerComment(comment_id) {
-  var parentId = document.getElementById("parentId");
-  parentId.value = comment_id;
+  if(comment_form == undefined) {
+    comment_form = document.getElementById('comment-form')
+  }
+  if(parent_id == undefined) {
+    parent_id = document.getElementById('parent-id');
+  }
+  parent_id.value = comment_id;
+  comment_form.style.display = 'block';
+}
+
+function hideCommentForm() {
+  comment_form.style.display = 'none';  
 }
 
 </script>

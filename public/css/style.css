@@ -12,7 +12,6 @@ fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
     border: 0;
     font-family: inherit;
-    font-size: 100%;
     font-style: inherit;
     font-weight: inherit;
     margin: 0;
@@ -122,20 +121,32 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 h1 {
-  font-size: 1.947368421em;
-  line-height: 1.45945946em;
+  font-size: 2.842105263em;
+  line-height: 1em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
 }
 h2 {
-  font-size: 1.578947368em;
-  line-height: 1.8em;
+  font-size: 2em;
+  line-height: 1.421052632em;
+  margin-top: 1.42105263em;
+  margin-bottom: 0.71052632em;
 }
 h3 {
-  font-size: 1.263157895em;
-  line-height: 1.125em;
+  font-size: 1.421052632em;
+  line-height: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 h4 {
   font-size: 1em;
   line-height: 1.421052632em;
+  margin-top: 1.42105263em;
+  margin-bottom: 1.42105263em;
+}
+p, ul, ol, pre, table, blockquote {
+  margin-top: 1.42105263em;
+  margin-bottom: 1.42105263em;
 }
 
 /* Sanitation */
@@ -245,6 +256,10 @@ a:hover {
   font-size: 130%;
 }
 
+div *:first-child {
+  margin-top: 0;
+}
+
 /*----------------------------------------------------
    Elements
 ----------------------------------------------------*/
@@ -291,7 +306,6 @@ li > ul {
   border-left: 2px solid #65E080;
 
 }
-
 
 #wrapper {
   margin: auto;
