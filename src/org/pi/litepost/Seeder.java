@@ -4,7 +4,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 
 import org.pi.litepost.databaseAccess.DatabaseConnector;
-import org.pi.litepost.databaseAccess.DatabaseQuery;
 import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 
 public class Seeder {
