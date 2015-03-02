@@ -50,7 +50,7 @@ public class DatabaseQueryManager {
 		databaseQueries.put("deleteMessagesFromUser", new DatabaseQuery(false,
 				"DELEET FROM Messages WHERE outgoing = 1 AND sender = ?"));
 		databaseQueries.put("deleteMessagesToUser", new DatabaseQuery(false,
-				"DELEET FROM Messages WHERE outgoing = 0 AND receiver = ?"));
+				"DELETE FROM Messages WHERE outgoing = 0 AND receiver = ?"));
 		
 		// Posts:
 		databaseQueries.put("deletePost", new DatabaseQuery(false,
