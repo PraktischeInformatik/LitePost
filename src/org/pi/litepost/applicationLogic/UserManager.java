@@ -15,6 +15,7 @@ import org.pi.litepost.App;
 import org.pi.litepost.PasswordHash;
 import org.pi.litepost.Router;
 import org.pi.litepost.exceptions.EmailExistsException;
+import org.pi.litepost.exceptions.ForbiddenOperationException;
 import org.pi.litepost.exceptions.LoginFailedException;
 import org.pi.litepost.exceptions.PasswordResetException;
 import org.pi.litepost.exceptions.UserEmailNotVerifiedException;
@@ -205,13 +206,19 @@ public class UserManager extends Manager {
 	 * 
 	 * @param userId
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */
-	public void delete(int id) throws SQLException {
-		this.model.getQueryManager().executeQuery("deleteUser", id);
-		this.model.getQueryManager().executeQuery("resetPostsByUser", id);
-		this.model.getQueryManager().executeQuery("resetCommentsByUser", id);
-		this.model.getQueryManager().executeQuery("deleteMessagesFromUser", id);
-		this.model.getQueryManager().executeQuery("deleteMessagesToUser", id);
+	public void delete(int id) throws SQLException, ForbiddenOperationException {
+		User user = getCurrent();
+		if(id != user.getUserId() && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		logout();
+		model.getQueryManager().executeQuery("deleteUser", id);
+		model.getQueryManager().executeQuery("resetPostsByUser", id);
+		model.getQueryManager().executeQuery("resetCommentsByUser", id);
+		model.getQueryManager().executeQuery("deleteMessagesFromUser", id);
+		model.getQueryManager().executeQuery("deleteMessagesToUser", id);
 	}
 
 	/**
@@ -222,9 +229,10 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 */
 	public void delete() throws SQLException {
-		User user = this.getCurrent();
-		int id = user.getUserId();
-		delete(id);
+		int id = getCurrent().getUserId();
+		try {
+			delete(id);
+		} catch (ForbiddenOperationException e) {}
 	}
 
 	/**

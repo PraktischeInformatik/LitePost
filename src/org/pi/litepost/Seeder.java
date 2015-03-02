@@ -18,10 +18,15 @@ public class Seeder {
 		dbQueryManager.executeQuery("insertUser", "uhukönig123", PasswordHash.createHash("troll22"), "Reiner", "Mahan", "Reiner_Mahan@gmx.de");
 		dbQueryManager.executeQuery("insertUser", "FRUITSPONGYSAMURAISAN", PasswordHash.createHash("troll22"), "Sebastian", "Rosenthal", "emo_lord89@gmx.de");
 		dbQueryManager.executeQuery("insertUser", "PakoElectronics", PasswordHash.createHash("troll222"), "Herbert", "Kranz", "PakoElectronixs@gmx.de");
+		dbQueryManager.executeQuery("insertUser", "admin", PasswordHash.createHash("admin"), "Jens", "Stahlträger", "jens@mcfit.de");
+		
 		dbQueryManager.executeQuery("verifyEmail", 1);
 		dbQueryManager.executeQuery("verifyEmail", 2);
 		dbQueryManager.executeQuery("verifyEmail", 3);
 		dbQueryManager.executeQuery("verifyEmail", 4);
+		dbQueryManager.executeQuery("verifyEmail", 5);
+		
+		dbQueryManager.executeQuery("setAdmin", 5);
 		
 		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 1, 2, 0, "Test", "Testing");
 		dbQueryManager.executeQuery("insertMessage", LocalDateTime.now(), 1, 2, 1, "Test", "Testing");

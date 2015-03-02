@@ -134,7 +134,11 @@ public class Router {
 	}
 	
 	public static Response notFound(ViewContext context) {
-		return new Response(Status.NOT_FOUND, "text/html", View.make("404", context));
+		return new Response(Status.NOT_FOUND, "text/html", View.make("error.404", context));
+	}
+	
+	public static Response forbidden(ViewContext context) {
+		return new Response(Status.FORBIDDEN, "text/html", View.make("error.forbidden", context));
 	}
 	
 	public static Response error(Exception e, ViewContext context) {

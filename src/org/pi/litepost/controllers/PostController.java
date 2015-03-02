@@ -16,6 +16,7 @@ import org.pi.litepost.View;
 import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
+import org.pi.litepost.exceptions.ForbiddenOperationException;
 import org.pi.litepost.html.Validator;
 
 import com.google.common.io.Files;
@@ -174,4 +175,22 @@ public class PostController {
 		
 		return Router.redirectTo("singlePost", postId);
 	}
+	
+	public static Response deletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+			int postId = Integer.parseInt(args.get("post_id"));
+			model.getPostManager().delete(postId);
+ 		} catch(ForbiddenOperationException e){
+ 			return Router.forbidden(context);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+		return null;
+	}
+	
 }

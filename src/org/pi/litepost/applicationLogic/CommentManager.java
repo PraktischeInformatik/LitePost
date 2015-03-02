@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.pi.litepost.exceptions.ForbiddenOperationException;
+
 /**
  * the CommentManager
  * 
@@ -40,11 +42,22 @@ public class CommentManager extends Manager {
 	 * 
 	 * @param id
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 * @throws IllegalParameterLengthException
 	 */
-	public void delete(int id) throws SQLException{
+	public void delete(int id) throws SQLException, ForbiddenOperationException{
+		Comment comment = getById(id);
+		User user = model.getUserManager().getCurrent();
+		if(user.getUserId() != comment.getUser().getUserId() && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
 		this.model.getQueryManager().executeQuery("DeleteComment", id);
 
+	}
+
+	private Comment getById(int id) throws SQLException {
+		ResultSet rs = model.getQueryManager().executeQuery("getComment", id);
+		return commentFromResultSet(rs);
 	}
 
 	/**
@@ -119,8 +132,13 @@ public class CommentManager extends Manager {
 	 * 
 	 * @return
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */
-	public ArrayList<Comment> getReports() throws SQLException {
+	public ArrayList<Comment> getReports() throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		if(!user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getReportedComments");
 		ArrayList<Comment> comments = new ArrayList<>();

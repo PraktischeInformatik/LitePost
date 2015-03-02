@@ -13,6 +13,7 @@ import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Message;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.User;
+import org.pi.litepost.exceptions.ForbiddenOperationException;
 import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -20,7 +21,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class UserController {
 	
-	private static Response mustLogin(IHTTPSession session, Model model, ViewContext context) {
+	public static Response mustLogin(IHTTPSession session, Model model, ViewContext context) {
 		User user = null;
 		try {
 			user = model.getUserManager().getCurrent();
@@ -157,6 +158,8 @@ public class UserController {
 			return Router.redirectTo("messagesPage");
 		}catch(SQLException e) {
 			return Router.error(e, context);
+		} catch (ForbiddenOperationException e) {
+			return Router.forbidden(context);
 		}
 	}
 	
@@ -168,10 +171,11 @@ public class UserController {
 
 		try {
 			int id = model.getUserManager().getCurrent().getUserId();
-			model.getUserManager().logout();
 			model.getUserManager().delete(id);
 		} catch (SQLException e) {
 			return Router.error(e, context);
+		} catch (ForbiddenOperationException e) {
+			return Router.forbidden(context);
 		}
 		return Router.redirectTo("home");
 	}

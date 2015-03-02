@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 
+import org.pi.litepost.exceptions.ForbiddenOperationException;
+
 /**
  * the PostManager
  * 
@@ -72,7 +74,12 @@ public class PostManager extends Manager {
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void delete(int id) throws SQLException {
+	public void delete(int id) throws SQLException, ForbiddenOperationException {
+		Post post = getById(id);
+		User user = model.getUserManager().getCurrent();
+		if(post.getUser().getUserId() != user.getUserId() && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
 		this.model.getQueryManager().executeQuery("deletePost", id);
 	}
 
@@ -97,9 +104,15 @@ public class PostManager extends Manager {
 	 * @param contact
 	 * @param userId
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */
 	public void update(int id, String title, String content, String contact)
-			throws SQLException {
+			throws SQLException, ForbiddenOperationException {
+		Post post = getById(id);
+		User user = model.getUserManager().getCurrent();
+		if(user.getUserId() != post.getUser().getUserId() && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
 		this.model.getQueryManager().executeQuery("updatePost", title, content,
 				contact, id);
 	}
@@ -160,8 +173,14 @@ public class PostManager extends Manager {
 	 * @param userId
 	 * @return
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */
-	public ArrayList<Post> getByUser(int userId) throws SQLException {
+	public ArrayList<Post> getByUser(int userId) throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		if(user.getUserId() != userId && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser", userId);
 		ArrayList<Post> posts = this.createPosts(result);
@@ -177,16 +196,15 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	public ArrayList<Post> getByUser() throws SQLException {
-		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
-			userId = model.getUserManager().getCurrent().getUserId();
+			int userId = model.getUserManager().getCurrent().getUserId();
+			try {
+				return getByUser(userId);
+			} catch (ForbiddenOperationException e) {
+				//not going to happen, since we made sure userId is the current Users id
+			}
 		}
-
-		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getPostsByUser", userId);
-
-		ArrayList<Post> posts = this.createPosts(result);
-		return posts;
+		return null;
 	}
 
 	/**
@@ -204,8 +222,12 @@ public class PostManager extends Manager {
 	 * 
 	 * @return
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */
-	public ArrayList<Post> getReports() throws SQLException {
+	public ArrayList<Post> getReports() throws SQLException, ForbiddenOperationException {
+		if(!model.getUserManager().getCurrent().isAdmin())  {
+			throw new ForbiddenOperationException();
+		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getRreportPost");
 		ArrayList<Post> posts = this.createPosts(result);

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.pi.litepost.exceptions.ForbiddenOperationException;
+
 /**
  * the MessageManager
  * 
@@ -102,8 +104,15 @@ public class MessageManager extends Manager {
 	 * @param message_id
 	 * @return
 	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
 	 */	
-	public void deleteMessage(int message_id) throws SQLException {	
+	public void deleteMessage(int message_id) throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		Message msg = getById(message_id);
+		User msgUser = msg.isOutgoing() ? msg.getSender() : msg.getReceiver();
+		if(user.getUserId() != msgUser.getUserId() && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
 		model.getQueryManager().executeQuery("deleteMessage", message_id);
 	}
 	
@@ -125,13 +134,4 @@ public class MessageManager extends Manager {
 		return message;
 	}
 
-	/**
-	 * deletes the message with given id
-	 * 
-	 * @param id
-	 * @throws SQLException
-	 */
-	public void delete(String id) throws SQLException{
-		this.model.getQueryManager().executeQuery("deleteMessage", id);
-	}
 }
