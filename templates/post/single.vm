@@ -59,6 +59,9 @@ $Resources.addScriptFooter("js/singlepost.js")
       #if($post.event)
         <i>$post.eventDate</i>
       #end
+      #if($post.user)
+        <i>von $post.user.username</i>
+      #end
       <ul id="images">
         <div id="image-box" onclick="hide_image()"></div>
         #foreach($image in $post.images)
@@ -82,7 +85,7 @@ $Resources.addScriptFooter("js/singlepost.js")
         $Input.hidden.name("parent_id").value("0").id("parentId")
         $Input.textarea.name("content").placeholder("Kommentar").prepopulate()
         $Input.csrfToken
-        $Input.submit.general.small.value("Kommentieren")
+        $Input.submit.general.value("Kommentieren")
       $Form.end()
       <h3>Kommentare</h3>
       #comments($post.comments)
