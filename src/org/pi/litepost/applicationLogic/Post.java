@@ -14,19 +14,19 @@ public class Post {
 	private final LocalDateTime date;
 	private final String contact;
 	private final ArrayList<Image> images;
-	private final int userId;
+	private final User user;
 	private final ArrayList<Comment> comments;
 	private final boolean reported;
 	private final boolean presentation;
 
 	public Post(int postId, String title, String text, String contact,
-			LocalDateTime date, int userId, boolean reported, boolean presentation) {
+			LocalDateTime date, User user, boolean reported, boolean presentation) {
 		this.postId = postId;
 		this.title = title;
 		this.text = text;
 		this.contact = contact;
 		this.date = date;
-		this.userId = userId;
+		this.user = user;
 		this.images = new ArrayList<>();
 		this.comments = new ArrayList<>();
 		this.reported = reported;
@@ -53,8 +53,8 @@ public class Post {
 		return date;
 	}
 
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
 	public ArrayList<Comment> getComments() {

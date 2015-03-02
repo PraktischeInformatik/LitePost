@@ -316,12 +316,14 @@ public class PostManager extends Manager {
 		ResultSet evResult = this.model.getQueryManager().executeQuery(
 				"getEventForPost", id);
 		
+		User user = model.getUserManager().getById(userId);
+		
 		if(evResult.next()) {
 			LocalDateTime eventDate = evResult.getTimestamp("event_date").toLocalDateTime();
-			post = new Event(id, title, content, contact, date, userId,
+			post = new Event(id, title, content, contact, date, user,
 					reported, presentation, eventDate);
 		} else {
-			post = new Post(id, title, content, contact, date, userId,
+			post = new Post(id, title, content, contact, date, user,
 					reported, presentation);
 		}
 		
@@ -358,7 +360,10 @@ public class PostManager extends Manager {
 		boolean reported = rs.getBoolean("reported");
 		boolean presentation = rs.getBoolean("presentation");
 		LocalDateTime eventDate = rs.getTimestamp("event_date").toLocalDateTime();
-		Event event = new Event(id, title, content, contact, date, userId,
+		
+		User user = model.getUserManager().getById(userId);
+		
+		Event event = new Event(id, title, content, contact, date, user,
 				reported, presentation, eventDate);
 		
 		ResultSet imResult = this.model.getQueryManager().executeQuery(

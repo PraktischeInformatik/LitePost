@@ -10,8 +10,8 @@ public class Event extends Post {
 	private final LocalDateTime eventDate;
 
 	public Event(int postId, String title, String text, String contact,
-			LocalDateTime date, int userId, boolean reported, boolean presentation, LocalDateTime eventDate) {
-		super(postId, title, text, contact, date, userId, reported, presentation);
+			LocalDateTime date, User user, boolean reported, boolean presentation, LocalDateTime eventDate) {
+		super(postId, title, text, contact, date, user, reported, presentation);
 		this.eventDate = eventDate;
 	}
 
