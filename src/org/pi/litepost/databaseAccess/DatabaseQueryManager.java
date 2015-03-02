@@ -15,8 +15,8 @@ public class DatabaseQueryManager {
 		// Comments:
 		databaseQueries.put("deleteComment", new DatabaseQuery(false,
 				"DELETE FROM Comments WHERE comment_id = ?"));
-		databaseQueries.put("deleteCommentByUser", new DatabaseQuery(false,
-				"DELETE FROM Comments WHERE comment_id = ?"));
+		databaseQueries.put("resetCommentsByUser", new DatabaseQuery(false,
+				"UPDATE Comments SET user_id = 0 WHERE user_id = ?"));
 		databaseQueries.put("getComment", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE comment_id = ?"));
 		databaseQueries.put("getCommentsByPost", new DatabaseQuery(true,
@@ -47,12 +47,16 @@ public class DatabaseQueryManager {
 				"SELECT * FROM Messages WHERE message_id = ?"));
 		databaseQueries.put("readMessage", new DatabaseQuery(false,
 				"UPDATE Messages SET read = 1 WHERE message_id = ?"));
-
+		databaseQueries.put("deleteMessagesFromUser", new DatabaseQuery(false,
+				"DELEET FROM Messages WHERE outgoing = 1 AND sender = ?"));
+		databaseQueries.put("deleteMessagesToUser", new DatabaseQuery(false,
+				"DELEET FROM Messages WHERE outgoing = 0 AND receiver = ?"));
+		
 		// Posts:
 		databaseQueries.put("deletePost", new DatabaseQuery(false,
 				"DELETE FROM Posts WHERE post_id = ?"));
-		databaseQueries.put("deletePostByUser", new DatabaseQuery(false,
-				"DELETE FROM Posts WHERE user_id = ?"));
+		databaseQueries.put("resetPostsByUser", new DatabaseQuery(false,
+				"UPDATE Posts SET user_id = 0 WHERE user_id = ?"));
 		databaseQueries.put("getReportPost", new DatabaseQuery(true,
 				"SELECT * FROM Posts WHERE reported = 1"));
 		databaseQueries.put("insertPost", new DatabaseQuery(false,
@@ -89,15 +93,12 @@ public class DatabaseQueryManager {
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,
-				"SELECT * FROM Images WHERE image_id in (SELECT image_id FROM Post_has_Images WHERE post_id = ?)"
-		));
+				"SELECT * FROM Images WHERE image_id in (SELECT image_id FROM Post_has_Images WHERE post_id = ?)"));
 		databaseQueries.put("insertImage",new DatabaseQuery(false,
 				"INSERT INTO Images(image_id, source) VALUES(?, ?)",
-				"Images"
-		));
+				"Images"));
 		databaseQueries.put("addImageToPost",new DatabaseQuery(false,
-				"INSERT INTO Post_has_Images(image_id, post_id) VALUES(?, ?)"
-		));
+				"INSERT INTO Post_has_Images(image_id, post_id) VALUES(?, ?)"));
 		
 
 		// User:

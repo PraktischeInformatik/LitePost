@@ -205,9 +205,10 @@ public class UserManager extends Manager {
 	 */
 	public void delete(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("deleteUser", id);
-		this.model.getQueryManager().executeQuery("deletePostByUser", id);
-		this.model.getQueryManager().executeQuery("deleteCommentByUser", id);
-		this.model.getQueryManager().executeQuery("deleteMessageByUser", id);
+		this.model.getQueryManager().executeQuery("resetPostsByUser", id);
+		this.model.getQueryManager().executeQuery("resetCommentsByUser", id);
+		this.model.getQueryManager().executeQuery("deleteMessagesFromUser", id);
+		this.model.getQueryManager().executeQuery("deleteMessagesToUser", id);
 	}
 
 	/**
@@ -220,10 +221,7 @@ public class UserManager extends Manager {
 	public void delete() throws SQLException {
 		User user = this.getCurrent();
 		int id = user.getUserId();
-		this.model.getQueryManager().executeQuery("deleteUser", id);
-		this.model.getQueryManager().executeQuery("deletePostByUser", id);
-		this.model.getQueryManager().executeQuery("deleteCommentByUser", id);
-		this.model.getQueryManager().executeQuery("deleteMessageByUser", id);
+		delete(id);
 	}
 
 	/**
