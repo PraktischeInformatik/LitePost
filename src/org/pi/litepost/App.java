@@ -55,17 +55,23 @@ public class App extends NanoHTTPD{
 		Router.add("readMessage", Method.GET, "/profile/messages/read/{message_id}", UserController::readMessage);
 		Router.add("deleteMessage", Method.GET, "/profile/messages/delete/{message_id}", UserController::deleteMessage);
 		Router.add("deleteUser", Method.POST, "/profile/delete", UserController::deleteUser);
+		//Router.add("myPosts", Method.GET, "/profile/posts", UserController::myPosts);
+		//Router.add("myComents", Method.GET, "/profile/comments", UserController::myComments);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
 		Router.add("newPost", Method.GET, "/posts/new", PostController::getNew);
 		Router.add("insertPost", Method.POST, "/posts/new", PostController::postNew);
+		Router.add("deletePost", Method.GET, "/post/delete/{post_id}", PostController::deletePost);
 		Router.add("singlePost", Method.GET, "/post/{post_id}", PostController::getSingle);
 		Router.add("commentPost", Method.POST, "/post/{post_id}/comment", PostController::commentPost);
-		Router.add("deletePost", Method.GET, "/post/delete/{post_id}", PostController::deletePost);
+		
 		
 		//admin
 		Router.add("adminPosts", Method.GET, "/admin/posts", AdminController::getPosts);
+		Router.add("adminDeletePost", Method.GET, "/admin/post/delete/{post_id}", PostController::adminDeletePost);
+		Router.add("adminComments", Method.GET, "/admin/comments", AdminController::getComments);
+		Router.add("adminDeleteComment", Method.GET, "/admin/comments/delete/{comment_id}", PostController::adminDeleteComment);
 		
 		//Events
 		Router.add("dailyOverview", Method.GET, "/events/{year}/{month}/{day}", EventController::getDailyOverview);
@@ -123,7 +129,7 @@ public class App extends NanoHTTPD{
 				}
 				resp = route.getHandler().handle(session, args, files, viewContext, model);
 			}else {
-				resp = new Response(Response.Status.NOT_FOUND, "text/html", View.make("404", viewContext));
+				resp = Router.notFound(viewContext);
 			}
 			return resp;
 		} catch (SQLException | ClassNotFoundException e) {
@@ -173,7 +179,7 @@ public class App extends NanoHTTPD{
 		try{
 			Seeder.seed();
 		}catch(Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		
 		Properties p = new Properties();

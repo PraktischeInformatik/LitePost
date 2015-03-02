@@ -14,7 +14,7 @@ public class DatabaseQueryManager {
 
 		// Comments:
 		databaseQueries.put("deleteComment", new DatabaseQuery(false,
-				"DELETE FROM Comments WHERE comment_id = ?"));
+				"DELETE FROM Comments WHERE comment_id = ? or parent_id = ?"));
 		databaseQueries.put("resetCommentsByUser", new DatabaseQuery(false,
 				"UPDATE Comments SET user_id = 0 WHERE user_id = ?"));
 		databaseQueries.put("getComment", new DatabaseQuery(true,
@@ -32,6 +32,10 @@ public class DatabaseQueryManager {
 				"SELECT * FROM Comments WHERE parent_id = ?"));
 		databaseQueries.put("getReportedComments", new DatabaseQuery(true,
 				"SELECT * FROM Comments WHERE reported = 1"));
+		databaseQueries.put("getCommentsByUser", new DatabaseQuery(true,
+				"SELECT * FROM Comments WHERE user_id = ?"));
+		databaseQueries.put("getAllComments", new DatabaseQuery(true,
+				"SELECT * FROM Comments"));
 
 		// Messages:
 		databaseQueries.put("deleteMessage", new DatabaseQuery(false,
@@ -57,7 +61,7 @@ public class DatabaseQueryManager {
 				"DELETE FROM Posts WHERE post_id = ?"));
 		databaseQueries.put("resetPostsByUser", new DatabaseQuery(false,
 				"UPDATE Posts SET user_id = 0 WHERE user_id = ?"));
-		databaseQueries.put("getReportPost", new DatabaseQuery(true,
+		databaseQueries.put("getReportedPosts", new DatabaseQuery(true,
 				"SELECT * FROM Posts WHERE reported = 1"));
 		databaseQueries.put("insertPost", new DatabaseQuery(false,
 				"INSERT INTO Posts(post_id, title, content, date, contact, user_id, reported, presentation) VALUES(?, ?, ?, ?, ?, ?, 0, 0)",
@@ -71,7 +75,7 @@ public class DatabaseQueryManager {
 				"SELECT * FROM Posts"));
 		databaseQueries.put("getPostById", new DatabaseQuery(true,
 				"SELECT * FROM Posts WHERE post_id = ?"));
-		databaseQueries.put("getPostByUser", new DatabaseQuery(true,
+		databaseQueries.put("getPostsByUser", new DatabaseQuery(true,
 				"SELECT * FROM Posts WHERE user_id = ?"));
 		databaseQueries.put("reportPost", new DatabaseQuery(false,
 				"UPDATE posts SET reported = 1"));
@@ -122,7 +126,9 @@ public class DatabaseQueryManager {
 		databaseQueries.put("getUserByEmail", new DatabaseQuery(true,
 				"SELECT * FROM Users WHERE email = ?"));
 		databaseQueries.put("setAdmin", new DatabaseQuery(false,
-				"UPDATE Users SET admin = 1"));
+				"UPDATE Users SET admin = 1 WHERE user_id = ?"));
+		databaseQueries.put("getAllUsers", new DatabaseQuery(true,
+				"SELECT * FROM Users"));
 
 		// Session
 		databaseQueries.put("endSession", new DatabaseQuery(false,

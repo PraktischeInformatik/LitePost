@@ -30,7 +30,7 @@ public class UserController {
 		}
 		if(user == null) {
 			try {
-				String redirect = session.getUri();
+				String redirect = session.getUri() + '?' + session.getQueryParameterString();
 				redirect = URLEncoder.encode(redirect, "UTF-8");
 				return Router.redirectTo("loginPageRedirect", redirect);
 			} catch (UnsupportedEncodingException e) {

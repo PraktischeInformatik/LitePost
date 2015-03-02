@@ -7,6 +7,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.mail.MessagingException;
@@ -233,6 +234,24 @@ public class UserManager extends Manager {
 		try {
 			delete(id);
 		} catch (ForbiddenOperationException e) {}
+	}
+	
+	/**
+	 * retreives all users from the database
+	 * 
+	 * @param userId
+	 * @throws SQLException
+	 */
+	public ArrayList<User> getAll() throws SQLException, ForbiddenOperationException {
+		if(!getCurrent().isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		ResultSet rs = model.getQueryManager().executeQuery("getAllUsers");
+		ArrayList<User> users = new ArrayList<>();
+		while(rs.next()) {
+			users.add(createUser(rs));
+		}
+		return users;
 	}
 
 	/**

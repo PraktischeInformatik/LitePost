@@ -13,5 +13,7 @@ public abstract class Manager {
 	public void setModel(Model model) {
 		this.model = model;
 	}
+	
+	public void init() {}
 
 }

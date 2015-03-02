@@ -51,7 +51,7 @@ public class CommentManager extends Manager {
 		if(user.getUserId() != comment.getUser().getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
-		this.model.getQueryManager().executeQuery("DeleteComment", id);
+		this.model.getQueryManager().executeQuery("deleteComment", id, id);
 
 	}
 
@@ -72,6 +72,19 @@ public class CommentManager extends Manager {
 		this.model.getQueryManager().executeQuery("UpdateComment", content, id);
 	}
 
+	public ArrayList<Comment> getAll() throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		if(!user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		ArrayList<Comment> comments = new ArrayList<>();
+		ResultSet rs = this.model.getQueryManager().executeQuery("getAllComments");
+		while(rs.next()) {
+			comments.add(commentFromResultSet(rs, false));
+		}
+		return comments;
+	}
+	
 	/**
 	 * returns an ArrayList containing all Comments of the given Post
 	 * 
@@ -90,13 +103,31 @@ public class CommentManager extends Manager {
 		return comments;
 	}
 	
+	public ArrayList<Comment> getByUser(int userId) throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		if(user.getUserId() != userId && !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		ArrayList<Comment> comments = new ArrayList<>();
+		ResultSet rs = this.model.getQueryManager().executeQuery(
+				"getCommentsByUser", userId);
+		while(rs.next()) {
+			comments.add(commentFromResultSet(rs, false));
+		}
+		return comments;
+	}
+	
+	private Comment commentFromResultSet(ResultSet rs) throws SQLException {
+		return commentFromResultSet(rs, true);
+	}
+
 	/**
 	 * assembles a comment and its sub comments form a result set recusively
 	 * @param rs the result set from with the comments data
 	 * @return a comment 
 	 * @throws SQLException when fetching data from result set fails
 	 */
-	private Comment commentFromResultSet(ResultSet rs) throws SQLException {
+	private Comment commentFromResultSet(ResultSet rs, boolean loadAnswers) throws SQLException {
 		int commentId = rs.getInt("comment_id");
 		int userId = rs.getInt("user_id");
 		String content = rs.getString("content");
@@ -108,10 +139,13 @@ public class CommentManager extends Manager {
 		User user = model.getUserManager().getById(userId);
 		
 		Comment comment = new Comment(commentId, user, content, date, parentId, postId, reported);
-		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getCommentsByParentId", commentId);
-		while(result.next()) {
-			comment.addSubComment(commentFromResultSet(result));
+		
+		if(loadAnswers) {
+			ResultSet result = this.model.getQueryManager().executeQuery(
+					"getCommentsByParentId", commentId);
+			while(result.next()) {
+				comment.addSubComment(commentFromResultSet(result));
+			}
 		}
 		return comment;
 	}

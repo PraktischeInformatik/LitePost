@@ -176,6 +176,23 @@ public class PostController {
 		return Router.redirectTo("singlePost", postId);
 	}
 	
+	public static Response adminDeletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+			int postId = Integer.parseInt(args.get("post_id"));
+			model.getPostManager().delete(postId);
+ 		} catch(ForbiddenOperationException e){
+ 			return Router.forbidden(context);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+ 		return Router.redirectTo("adminPosts");
+	}
+	
 	public static Response deletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Response r;
  		if((r = UserController.mustLogin(session, model, context)) != null) {
@@ -190,7 +207,41 @@ public class PostController {
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
-		return null;
+ 		return Router.redirectTo("myPosts");
+	}
+	
+	public static Response adminDeleteComment(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+			int commentId = Integer.parseInt(args.get("comment_id"));
+			model.getCommentManager().delete(commentId);
+ 		} catch(ForbiddenOperationException e){
+ 			return Router.forbidden(context);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+ 		return Router.redirectTo("adminComments");
+	}
+	
+	public static Response deleteComment(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+			int commentId = Integer.parseInt(args.get("comment_id"));
+			model.getCommentManager().delete(commentId);
+ 		} catch(ForbiddenOperationException e){
+ 			return Router.forbidden(context);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+ 		return Router.redirectTo("myComments");
 	}
 	
 }

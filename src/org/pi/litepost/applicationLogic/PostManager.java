@@ -16,7 +16,17 @@ import org.pi.litepost.exceptions.ForbiddenOperationException;
  *
  */
 public class PostManager extends Manager {
-
+	
+	
+	@Override
+	public void init()
+	{
+		try {
+			model.getQueryManager().executeQuery("deleteOldPosts", LocalDateTime.now().minusMonths(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * inserts a new Post (creates a Post-Object) and saves it in the Database;
 	 * the PostId is taken from the corresponding id-table,the Date is taken
@@ -229,7 +239,7 @@ public class PostManager extends Manager {
 			throw new ForbiddenOperationException();
 		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
-				"getRreportPost");
+				"getReportedPosts");
 		ArrayList<Post> posts = this.createPosts(result);
 		return posts;
 	}

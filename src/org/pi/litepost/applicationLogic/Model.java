@@ -84,6 +84,13 @@ public class Model implements AutoCloseable{
 	
 	public void init() throws ClassNotFoundException, SQLException {
 		dbConnector.connect();
+		sessionManager.init();
+		userManager.init();
+		messageManager.init();
+		postManager.init();
+		calenderManager.init();
+		commentManager.init();
+		mailManager.init();
 	}
 	
 	public void close() throws SQLException {

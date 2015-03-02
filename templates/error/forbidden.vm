@@ -1,0 +1,8 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+    <p>Sie haben keine Zugang zu diesem Bereich</p>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
