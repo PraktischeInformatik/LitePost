@@ -2,6 +2,9 @@
 <div id="wrapper">
   <div id="main">
 	$user.username
+  <form action="$Router.linkTo("deleteUser")" method="POST">
+    <input type="submit" class="button danger" value="Profil Löschen">
+  </form>
   </div>
   #parse("sidebar.vm")
 </div>

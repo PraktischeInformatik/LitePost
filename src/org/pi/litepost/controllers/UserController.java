@@ -143,11 +143,22 @@ public class UserController {
 	
 	public static Response deleteMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		int message_id = Integer.parseInt(args.get("message_id"));
-		try {
+		try {			
 			model.getMessageManager().deleteMessage(message_id);
 			return Router.redirectTo("messagesPage");
 		}catch(SQLException e) {
 			return Router.error(e, context);
 		}
+	}
+	
+	public static Response deleteUser(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		try {
+			int id = model.getUserManager().getCurrent().getUserId();
+			model.getUserManager().logout();
+			model.getUserManager().delete(id);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+		return Router.redirectTo("home");
 	}
 }
