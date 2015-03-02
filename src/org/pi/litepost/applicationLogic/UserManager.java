@@ -29,6 +29,7 @@ import org.pi.litepost.exceptions.UseranameExistsException;
 public class UserManager extends Manager {
 	
 	private User current;
+
 	/**
 	 * registers a new User (creates a User-Object) and saves it in the Database;
 	 * the userId is taken from the corresponding id-table

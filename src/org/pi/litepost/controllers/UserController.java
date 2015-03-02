@@ -20,7 +20,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class UserController {
 	
- 	public static Response getProfile(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+	private static Response mustLogin(IHTTPSession session, Model model, ViewContext context) {
 		User user = null;
 		try {
 			user = model.getUserManager().getCurrent();
@@ -36,28 +36,32 @@ public class UserController {
 				return Router.error(e, context);
 			}
 		}
-		context.put("user", user);
-		return new Response(View.make("user.profile", context));
+		return null;
+	}
+	
+ 	public static Response getProfile(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+ 			User user = model.getUserManager().getCurrent();
+			context.put("user", user);
+			return new Response(View.make("user.profile", context));
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
 	}
 	
 	public static Response getMessages(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		User user = null;
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+
 		try {
-			user = model.getUserManager().getCurrent();
-		} catch (SQLException e) {
-			return Router.error(e, context);
-		}
-		if(user == null) {
-			try {
-				String redirect = session.getUri();
-				redirect = URLEncoder.encode(redirect, "UTF-8");
-				return Router.redirectTo("loginPageRedirect", redirect);
-			} catch (UnsupportedEncodingException e) {
-				return Router.error(e, context);
-			}
-		}
-		
-		try {
+			User user = model.getUserManager().getCurrent();
 			ArrayList<Message> sentMessages = model.getMessageManager().getFromUser(user);
 			ArrayList<Message> receivedMessages = model.getMessageManager().getToUser(user);
 			context.put("receivedMessages", receivedMessages);
@@ -69,25 +73,20 @@ public class UserController {
 	}
 	
 	public static Response getSendMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		User user = null;
-		try {
-			user = model.getUserManager().getCurrent();
-		} catch (SQLException e) {
-			return Router.error(e, context);
-		}
-		if(user == null) {
-			try {
-				String redirect = session.getUri();
-				redirect = URLEncoder.encode(redirect, "UTF-8");
-				return Router.redirectTo("loginPageRedirect", redirect);
-			} catch (UnsupportedEncodingException e) {
-				return Router.error(e, context);
-			}
-		}
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+
 		return new Response(View.make("user.newmessage", context));
 	}
 	
 	public static Response postSendMessages(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+		
 		Predicate<String> receiverExists = s -> {
 			try {
 				return model.getUserManager().getByName(s) != null;
@@ -130,6 +129,11 @@ public class UserController {
 	}
 	
 	public static Response readMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+
 		int message_id = Integer.parseInt(args.get("message_id"));
 		try {
 			model.getMessageManager().readMessage(message_id);
@@ -142,6 +146,11 @@ public class UserController {
 	}
 	
 	public static Response deleteMessage(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+
 		int message_id = Integer.parseInt(args.get("message_id"));
 		try {			
 			model.getMessageManager().deleteMessage(message_id);
@@ -152,6 +161,11 @@ public class UserController {
 	}
 	
 	public static Response deleteUser(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+
 		try {
 			int id = model.getUserManager().getCurrent().getUserId();
 			model.getUserManager().logout();
