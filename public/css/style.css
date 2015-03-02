@@ -1043,6 +1043,7 @@ padding:0.5em;
   #main-navigation ul,
   #main-navigation li{
     width: 100%;
+    z-index: 1;
   }
 
   #sidebar {
