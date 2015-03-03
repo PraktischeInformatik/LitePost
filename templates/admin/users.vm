@@ -1,0 +1,29 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th>Email addresse</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        #foreach($user in $users)
+          <tr>
+            <td>$user.username</td>
+            <td>$user.firstname</td>
+            <td>$user.lastname</td>
+            <td>$user.email</td>
+            <td><a href="$Router.linkTo("deleteUser", $user.userId)" class="button danger">Löschen</a></td>
+          </tr>
+        #end
+      </tbody>
+    </table>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

@@ -62,7 +62,7 @@ public class App extends NanoHTTPD{
 		Router.add("sendMessagePost", Method.POST, "/profile/messages/send", UserController::postSendMessages);
 		Router.add("readMessage", Method.GET, "/profile/messages/read/{message_id}", UserController::readMessage);
 		Router.add("deleteMessage", Method.GET, "/profile/messages/delete/{message_id}", UserController::deleteMessage);
-		Router.add("deleteUser", Method.POST, "/profile/delete", UserController::deleteUser);
+		Router.add("deleteUser", Method.GET, "/profile/delete/{user_id}", UserController::deleteUser);
 		Router.add("myPosts", Method.GET, "/profile/posts", UserController::myPosts);
 		Router.add("myComments", Method.GET, "/profile/comments", UserController::myComments);
 		
@@ -81,6 +81,7 @@ public class App extends NanoHTTPD{
 		//admin
 		Router.add("adminPosts", Method.GET, "/admin/posts", AdminController::getPosts);
 		Router.add("adminComments", Method.GET, "/admin/comments", AdminController::getComments);
+		Router.add("adminUsers", Method.GET, "/admin/users", AdminController::getUsers);
 		
 		//Events
 		Router.add("dailyOverview", Method.GET, "/events/{year}/{month}/{day}", EventController::getDailyOverview);

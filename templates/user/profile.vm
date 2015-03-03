@@ -2,9 +2,7 @@
 <div id="wrapper">
   <div id="main">
     <h1>Wilkommen $currentUser.username</h1>
-    <form action="$Router.linkTo("deleteUser")" method="POST">
-      <input type="submit" class="button danger" value="Profil Löschen">
-    </form>
+    <a href="$Router.linkTo("deleteUser", $currentUser.userId)" class="button danger">Profil Löschen</a>
     <h2>Aktionen</h2>
     <ul>
       <li><a href="$Router.linkTo("myPosts")">meine Posts</a></li>
@@ -16,6 +14,7 @@
       <ul>
         <li><a href="$Router.linkTo("adminPosts")">Post übersicht</a></li>
         <li><a href="$Router.linkTo("adminComments")">Kommentar übersicht</a></li>
+        <li><a href="$Router.linkTo("adminUsers")">User übersicht</a></li>
       </ul>
     #end
   </div>

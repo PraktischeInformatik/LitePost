@@ -74,4 +74,22 @@ public class AdminController {
 			return Router.error(e, context);
 		}
  	}
+	
+	public static Response getUsers(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		
+ 		try {
+			ArrayList<User> users = model.getUserManager().getAll();
+			context.put("users", users);
+			return new Response(View.make("admin.users", context));
+		} catch (ForbiddenOperationException e) {
+			return Router.forbidden(context);
+		}catch (SQLException e) {
+			return Router.error(e, context);
+		}
+	}
+	
 }

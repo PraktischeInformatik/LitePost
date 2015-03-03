@@ -193,15 +193,23 @@ public class UserController {
  		if((r = mustLogin(session, model, context)) != null) {
  			return r;
  		}
-
+ 		boolean redirectToAdmin = false;
 		try {
-			int id = model.getUserManager().getCurrent().getUserId();
-			model.getUserManager().delete(id);
+			User user = model.getUserManager().getCurrent();
+			int userId = Integer.parseInt(args.get("user_id"));
+			if(user.isAdmin() && user.getUserId() != userId) {
+				redirectToAdmin = true; 
+			} 
+			model.getUserManager().delete(userId);
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		} catch (ForbiddenOperationException e) {
 			return Router.forbidden(context);
 		}
-		return Router.redirectTo("home");
+		if(redirectToAdmin) {
+			return Router.redirectTo("adminUsers");
+		} else {
+			return Router.redirectTo("home");
+		}
 	}
 }

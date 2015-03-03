@@ -216,12 +216,8 @@ public class UserManager extends Manager {
 		if(id != user.getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
-		logout();
+		if(user.getUserId() == id) logout();
 		model.getQueryManager().executeQuery("deleteUser", id);
-		model.getQueryManager().executeQuery("resetPostsByUser", id);
-		model.getQueryManager().executeQuery("resetCommentsByUser", id);
-		model.getQueryManager().executeQuery("deleteMessagesFromUser", id);
-		model.getQueryManager().executeQuery("deleteMessagesToUser", id);
 	}
 
 	/**
