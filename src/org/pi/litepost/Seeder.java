@@ -1,5 +1,6 @@
 package org.pi.litepost;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 import org.pi.litepost.databaseAccess.DatabaseConnector;
@@ -8,7 +9,8 @@ import org.pi.litepost.databaseAccess.DatabaseQueryManager;
 public class Seeder {
 	
 	public static void seed() throws Exception{
-	    DatabaseConnector DbConnector = new DatabaseConnector("res/litepost.db");
+		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
+	    DatabaseConnector DbConnector = new DatabaseConnector((String) App.config.getOrDefault("litepost.dbpath", defaultDbpath));
 	    System.out.println("Building schema...");
 		DbConnector.connect(true);
 		DatabaseQueryManager dbQueryManager = new DatabaseQueryManager(DbConnector);
