@@ -13,7 +13,8 @@ public class DatabaseQueryManager {
 		this.databaseConnector = databaseConnector;
 		databaseQueries = new HashMap<String, DatabaseQuery>(){{
 			put("deleteComment", new DatabaseQuery(
-					"DELETE FROM Comments WHERE comment_id = ? or parent_id = ?"));
+					"DELETE FROM Comments WHERE comment_id = ?",
+					"DELETE FROM Comments WHERE parent_id = ?"));
 			put("deleteCommentContent", new DatabaseQuery(
 					"UPDATE Comments set content = '[gelöscht]', user_id = 0 WHERE comment_id = ?"));
 			put("deleteCommentsFromPost", new DatabaseQuery(

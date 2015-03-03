@@ -208,16 +208,17 @@ public class PostController {
  			return r;
  		}
  		
+ 		boolean admin = args.get("return_to_admin").equals("true");
  		try {
 			int commentId = Integer.parseInt(args.get("comment_id"));
-			model.getCommentManager().delete(commentId);
+			model.getCommentManager().delete(commentId, admin);
  		} catch(ForbiddenOperationException e){
  			return Router.forbidden(context);
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
 
-		if(args.get("return_to_admin").equals("true")) {
+		if(admin) {
 			return Router.redirectTo("adminComments");
 		}else {
 			return Router.redirectTo("myComments");

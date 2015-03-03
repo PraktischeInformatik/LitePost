@@ -46,17 +46,21 @@ public class CommentManager extends Manager {
 	 * @throws ForbiddenOperationException 
 	 * @throws IllegalParameterLengthException
 	 */
-	public void delete(int id) throws SQLException, ForbiddenOperationException{
+	public void delete(int id, boolean force) throws SQLException, ForbiddenOperationException{
 		Comment comment = getById(id);
 		User user = model.getUserManager().getCurrent();
-		if(user.getUserId() != comment.getUser().getUserId() && !user.isAdmin()) {
-			throw new ForbiddenOperationException();
+		if(!user.isAdmin()) {
+			int currentId = user.getUserId();
+			int commentId = comment.getUser().getUserId();
+			if(comment.getUser() == null || currentId != commentId) {
+				throw new ForbiddenOperationException();
+			}
 		}
 		ResultSet rs = model.getQueryManager().executeQuery("getCommentsByParentId", id);
-		if(rs.next()) {
-			model.getQueryManager().executeQuery("deleteCommentContent", id);
+		if((user.isAdmin() && force) || !rs.next()) {
+			model.getQueryManager().executeQuery("deleteComment", id);
 		} else {
-			model.getQueryManager().executeQuery("deleteComment", id, id);
+			model.getQueryManager().executeQuery("deleteCommentContent", id);
 		}
 	}
 
