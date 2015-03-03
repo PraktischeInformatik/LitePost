@@ -2,7 +2,6 @@ package org.pi.litepost.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -132,9 +131,7 @@ public class PostController {
 			String title = validator.value("title");
 			String content = validator.value("content");
 			String contact = validator.value("contact");
-			model.getPostManager().insert(title, content, contact);
-			ResultSet rs = model.getQueryManager().executeQuery("getLastId", "Posts");
-			int postId = rs.getInt(1);
+			int postId = model.getPostManager().insert(title, content, contact);
 			for(String s : sources) {
 				String src = Router.linkTo("upload", s);
 				model.getPostManager().addImage(src, postId);

@@ -22,9 +22,8 @@ public class PostManager extends Manager {
 	public void init()
 	{
 		try {
-			model.getQueryManager().executeQuery("deleteOldPosts", LocalDateTime.now().minusMonths(1));
-			model.getQueryManager().executeQuery("deletePostsForOldEvents", LocalDateTime.now());
-			model.getQueryManager().executeQuery("deleteOldEvents", LocalDateTime.now());
+			model.getQueryManager().executeQuery("deleteOldPosts", LocalDateTime.now(clock).minusMonths(1));
+			model.getQueryManager().executeQuery("deleteOldEvents", LocalDateTime.now(clock));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -40,15 +39,16 @@ public class PostManager extends Manager {
 	 * @param userId
 	 * @throws SQLException
 	 */
-	public void insert(String title, String content, String contact)
+	public int insert(String title, String content, String contact)
 			throws SQLException {
-		LocalDateTime date = this.model.getCalenderManager().getDate();
+		LocalDateTime date = LocalDateTime.now(clock);
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getCurrent().getUserId();
 		}
-		this.model.getQueryManager().executeQuery("insertPost", title, content,
+		ResultSet rs = model.getQueryManager().executeQuery("insertPost", title, content,
 				date, contact, userId);
+		return rs.getInt(1);
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	public void deleteOld() throws SQLException {
-		LocalDateTime date = this.model.getCalenderManager().getDate();
+		LocalDateTime date = LocalDateTime.now(clock);
 		date.minusDays(30);
 		this.model.getQueryManager().executeQuery("deleteOldPost", date);
 	}

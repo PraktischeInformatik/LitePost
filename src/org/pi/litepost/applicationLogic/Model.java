@@ -18,7 +18,6 @@ public class Model implements AutoCloseable{
 	private UserManager userManager;
 	private MessageManager messageManager;
 	private PostManager postManager;
-	private CalenderManager calenderManager;
 	private CommentManager commentManager;
 	private DatabaseConnector dbConnector;
 	private DatabaseQueryManager dbQueryManager;
@@ -43,8 +42,6 @@ public class Model implements AutoCloseable{
 		mailManager = new MailManager();
 		mailManager.setModel(this);
 		
-		calenderManager = new CalenderManager();
-		
 		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
 		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("litepost.dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
@@ -66,10 +63,6 @@ public class Model implements AutoCloseable{
 		return postManager;
 	}
 
-	public CalenderManager getCalenderManager() {
-		return calenderManager;
-	}
-
 	public CommentManager getCommentManager() {
 		return commentManager;
 	}
@@ -88,7 +81,6 @@ public class Model implements AutoCloseable{
 		userManager.init();
 		messageManager.init();
 		postManager.init();
-		calenderManager.init();
 		commentManager.init();
 		mailManager.init();
 	}

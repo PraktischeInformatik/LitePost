@@ -16,7 +16,8 @@ public class DatabaseConnector implements AutoCloseable{
 	private final String jdbcDriverPath;
 	private final String databasePath;
 	private Connection connection;
-	
+	//for nesting transactions
+	private int transactionCounter = 0;
 	
 	public DatabaseConnector(String databasePath){
 		jdbcDriverPath = "org.sqlite.JDBC";
@@ -79,12 +80,17 @@ public class DatabaseConnector implements AutoCloseable{
 	}
 	
 	public void beginTransaction() throws SQLException{
+		transactionCounter++;
 		connection.setAutoCommit(false);
 	}
 	
 	public void commitTransaction() throws SQLException{
-		connection.commit();
-		connection.setAutoCommit(true);
+		transactionCounter--;
+		if(transactionCounter <= 0) {
+			transactionCounter = 0;
+			connection.commit();
+			connection.setAutoCommit(true);
+		}
 	}
 	
 	public void rollbackTransaction() throws SQLException {

@@ -38,7 +38,7 @@ public class SessionManager extends Manager {
 		ResultSet rs = model.getQueryManager().executeQuery("getAllSessions");
 		while(rs.next()) {
 			TemporalAccessor ta = COOKIE_TIME_FORMAT.parse(rs.getString("value"));
-			if(LocalDateTime.from(ta).isBefore(LocalDateTime.now())) {
+			if(LocalDateTime.from(ta).isBefore(LocalDateTime.now(clock))) {
 				expiredSessions.add(rs.getString("session_id"));
 			}
 		}
@@ -59,11 +59,11 @@ public class SessionManager extends Manager {
 		this.sessionId = newSession ? createToken(): this.sessionId;
 		if(duration == null){
 			sessionOnly = "true";
-			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(Duration.ofMinutes(15)));
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now(clock).plus(Duration.ofMinutes(15)));
 			cookie = Cookie.sessionCookie("sessionId", sessionId, "/");
 		} else {
 			sessionOnly = "false";
-			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now().plus(duration));
+			expiration = COOKIE_TIME_FORMAT.format(LocalDateTime.now(clock).plus(duration));
 			cookie = new Cookie("sessionId", sessionId, expiration, "/");
 		}
 		if(newSession || duration != null || isSessionOnly()) {

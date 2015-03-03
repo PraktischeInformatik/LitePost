@@ -27,15 +27,16 @@ public class CommentManager extends Manager {
 	 * @throws SQLException
 	 * @throws IllegalParameterLengthException
 	 */
-	public void insert(String content, int parentId, int postId)
+	public int insert(String content, int parentId, int postId)
 			throws SQLException {
-		LocalDateTime date = this.model.getCalenderManager().getDate();
+		LocalDateTime date = LocalDateTime.now(clock);
 		int userId = 0;
 		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getCurrent().getUserId();
 		}
-		this.model.getQueryManager().executeQuery("insertComment", userId,
+		ResultSet rs = model.getQueryManager().executeQuery("insertComment", userId,
 				content, date, parentId, postId);
+		return rs.getInt(1);
 	}
 
 	/**

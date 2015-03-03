@@ -26,13 +26,14 @@ public class MessageManager extends Manager {
 	 * @param content
 	 * @throws SQLException
 	 */
-	public void insert(User sender, User receiver, String subject, String content) throws SQLException{
-		LocalDateTime date = this.model.getCalenderManager().getDate();
+	public int insert(User sender, User receiver, String subject, String content) throws SQLException{
+		LocalDateTime date = LocalDateTime.now(clock);
 		
-		this.model.getQueryManager().executeQuery("insertMessage", date,
+		model.getQueryManager().executeQuery("insertMessage", date,
 				sender.getUserId(), receiver.getUserId(), true, subject, content);
-		this.model.getQueryManager().executeQuery("insertMessage", date,
+		ResultSet rs = model.getQueryManager().executeQuery("insertMessage", date,
 				sender.getUserId(), receiver.getUserId(), false, subject, content);
+		return rs.getInt(1);
 	}
 
 	/**

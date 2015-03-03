@@ -48,7 +48,7 @@ public class UserManager extends Manager {
 	 * @throws SQLException
 	 * @throws MessagingException when the verification mail send fails
 	 */
-	public void register(String username, String password, String firstname,
+	public int register(String username, String password, String firstname,
 			String lastname, String email)
 			throws UseranameExistsException,
 			NoSuchAlgorithmException, InvalidKeySpecException, SQLException, MessagingException, EmailExistsException {
@@ -66,8 +66,9 @@ public class UserManager extends Manager {
 		
 		String hpassword = PasswordHash.createHash(password);
 		
-		this.model.getQueryManager().executeQuery("insertUser", username,
+		ResultSet rs = model.getQueryManager().executeQuery("insertUser", username,
 				hpassword, firstname, lastname, email);
+		int newUserId = rs.getInt(1);
 		
 		User user = createUser(
 				this.model.getQueryManager().executeQuery("getUserByUsername", username));
@@ -83,6 +84,7 @@ public class UserManager extends Manager {
 		data.put("verificationLink", uri);
 		data.put("user", user);
 		model.getMailManager().sendSystemMail(user.getEmail(), "Wilkommen bei litepost", "mail.welcome", data);
+		return newUserId;
 	}
 
 	/**
