@@ -178,6 +178,29 @@ public class PostController {
 		return Router.redirectTo("singlePost", postId);
 	}
 	
+	public static Response reportPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		int postId = Integer.parseInt(args.get("post_id"));
+		try {
+			model.getPostManager().report(postId);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+		return Router.redirectTo("singlePost", postId);
+	}
+	
+	public static Response unblockPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		int postId = Integer.parseInt(args.get("post_id"));
+		try {
+			model.getPostManager().unblock(postId);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		} catch (ForbiddenOperationException e) {
+			return Router.forbidden(context);
+		}
+		return Router.redirectTo("adminPosts");
+	}
+	
+	
 	public static Response deletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Response r;
  		if((r = UserController.mustLogin(session, model, context)) != null) {

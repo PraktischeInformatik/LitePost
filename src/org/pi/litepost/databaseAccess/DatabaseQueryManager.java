@@ -83,7 +83,9 @@ public class DatabaseQueryManager {
 			put("getPostsByUser", new DatabaseQuery(
 					"SELECT * FROM Posts WHERE user_id = ?"));
 			put("reportPost", new DatabaseQuery(
-					"UPDATE posts SET reported = 1"));
+					"UPDATE posts SET reported = 1 WHERE post_id = ?"));
+			put("unblockPost", new DatabaseQuery(
+					"UPDATE posts SET reported = 0 WHERE post_id = ?"));
 			put("getReportedPosts", new DatabaseQuery(
 					"SELECT * FROM posts WHERE reported = 1"));
 			put("searchPosts", new DatabaseQuery(

@@ -8,6 +8,7 @@
           <th>Kontakt</th>
           <th>Datum</th>
           <th>User</th>
+          <th>Gemeldet</th>
           <th></th>
         </tr>
       </thead>
@@ -18,6 +19,11 @@
             <td>$post.contact</td>
             <td>$post.date</td>
             <td>#if($post.user)$post.user.username#end</td>
+            <td>
+              #if($post.reported)
+                <a href="$Router.linkTo("unblockPost", $post.postId)" class="button general">Freigeben</a>
+              #end
+            </td>
             <td><a href="$Router.linkTo("deletePost", $post.postId, "true")" class="button danger">Löschen</a></td>
           </tr>
         #end
@@ -31,7 +37,7 @@
       $select
       <label>
         $Input.checkbox.name("reported")
-        <div>Markierte posts anzeigen</div>
+        <div>gemeldete Posts anzeigen</div>
       </label>
       $Input.submit.general.value("Filtern")
     $Form.end()

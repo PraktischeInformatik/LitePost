@@ -34,6 +34,11 @@ $Resources.addScriptFooter("js/singlepost.js")
         #end
       </ul>
       <p><small>$post.contact</small></p>
+      #if($post.reported)
+        <b>Gemeldet!</b>
+      #else
+        <a href="$Router.linkTo("reportPost", $post.postId)" class="button danger">Post melden</a>
+      #end
       <ul>
         <li><h3>Kommentare</h3></li>
         <li>
@@ -43,7 +48,6 @@ $Resources.addScriptFooter("js/singlepost.js")
           <a href="javascript:answerComment(0)" class="button general">Kommentieren</a>
         </li>
       </ul>
-
     </div>
   #parse("sidebar.vm")
   </div>

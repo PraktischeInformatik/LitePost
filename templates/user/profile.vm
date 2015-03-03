@@ -9,6 +9,7 @@
     <ul>
       <li><a href="$Router.linkTo("myPosts")">meine Posts</a></li>
       <li><a href="$Router.linkTo("myComments")">meine Kommentare</a></li>
+      <li><a href="$Router.linkTo("messagesPage")">meine Nachrichten</a></li>
     </ul>
     #if($currentUser.admin)
       <h2>Admin bereich</h2>

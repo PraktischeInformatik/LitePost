@@ -70,10 +70,13 @@ public class App extends NanoHTTPD{
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
 		Router.add("newPost", Method.GET, "/posts/new", PostController::getNew);
 		Router.add("insertPost", Method.POST, "/posts/new", PostController::postNew);
+		Router.add("reportPost", Method.GET, "/post/report/{post_id}", PostController::reportPost);
+		Router.add("unblockPost", Method.GET, "/post/unblock/{post_id}", PostController::unblockPost);
 		Router.add("deletePost", Method.GET, "/post/delete/{post_id}/{return_to_admin}", PostController::deletePost);
 		Router.add("deleteComment", Method.GET, "/comment/delete/{comment_id}/{return_to_admin}", PostController::deleteComment);
 		Router.add("commentPost", Method.POST, "/comment/new/{post_id}", PostController::commentPost);
 		Router.add("singlePost", Method.GET, "/post/{post_id}", PostController::getSingle);
+		
 		
 		//admin
 		Router.add("adminPosts", Method.GET, "/admin/posts", AdminController::getPosts);

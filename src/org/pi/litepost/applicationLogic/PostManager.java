@@ -95,7 +95,7 @@ public class PostManager extends Manager {
 		model.getQueryManager().executeQuery("deletePost", id);
 		model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
 	}
-
+	
 	/**
 	 * deletes all Posts which are older than 30 days
 	 * 
@@ -228,6 +228,21 @@ public class PostManager extends Manager {
 	 */
 	public void report(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("reportPost", id);
+	}
+	
+	/**
+	 * unblock Post with given id
+	 * 
+	 * @param id
+	 * @throws SQLException
+	 * @throws ForbiddenOperationException 
+	 */
+	public void unblock(int postId) throws SQLException, ForbiddenOperationException {
+		User user = model.getUserManager().getCurrent();
+		if(user == null || !user.isAdmin()) {
+			throw new ForbiddenOperationException();
+		}
+		model.getQueryManager().executeQuery("unblockPost", postId);
 	}
 
 	/**
