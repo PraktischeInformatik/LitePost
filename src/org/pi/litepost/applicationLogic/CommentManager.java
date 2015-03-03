@@ -51,8 +51,12 @@ public class CommentManager extends Manager {
 		if(user.getUserId() != comment.getUser().getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
-		this.model.getQueryManager().executeQuery("deleteComment", id, id);
-
+		ResultSet rs = model.getQueryManager().executeQuery("getCommentsByParentId", id);
+		if(rs.next()) {
+			model.getQueryManager().executeQuery("deleteCommentContent", id);
+		} else {
+			model.getQueryManager().executeQuery("deleteComment", id, id);
+		}
 	}
 
 	private Comment getById(int id) throws SQLException {
@@ -101,6 +105,19 @@ public class CommentManager extends Manager {
 			comments.add(this.commentFromResultSet(result));
 		}
 		return comments;
+	}
+	
+	public ArrayList<Comment> getByUser() throws SQLException {
+		User user = model.getUserManager().getCurrent();
+		if (user != null) {
+			int userId = user.getUserId();
+			try {
+				return getByUser(userId);
+			} catch (ForbiddenOperationException e) {
+				//not going to happen, since we made sure userId is the current Users id
+			}
+		}
+		return null;
 	}
 	
 	public ArrayList<Comment> getByUser(int userId) throws SQLException, ForbiddenOperationException {

@@ -24,9 +24,9 @@
       <li><a href="${Router.linkTo("calendarToday")}">Kalendar</a></li>
    </ul>
 </nav>
-  #if($username)
+  #if($currentUser)
     <div id="profile">
-      <a href="$Router.linkTo("profilePage")">$username</a>
+      <a href="$Router.linkTo("profilePage")">$currentUser.username</a>
       <ul>
         <li><a href="$Router.linkTo("profilePage")">Profil</a></li>
         <li><a href="$Router.linkTo("messagesPage")">Nachrichten</a></li>

@@ -15,6 +15,10 @@ public class DatabaseQueryManager {
 		// Comments:
 		databaseQueries.put("deleteComment", new DatabaseQuery(false,
 				"DELETE FROM Comments WHERE comment_id = ? or parent_id = ?"));
+		databaseQueries.put("deleteCommentContent", new DatabaseQuery(false,
+				"UPDATE Comments set content = '[gelöscht]', user_id = 0 WHERE comment_id = ?"));
+		databaseQueries.put("deleteCommentsFromPost", new DatabaseQuery(false,
+				"DELETE FROM Comments WHERE post_id = ?"));
 		databaseQueries.put("resetCommentsByUser", new DatabaseQuery(false,
 				"UPDATE Comments SET user_id = 0 WHERE user_id = ?"));
 		databaseQueries.put("getComment", new DatabaseQuery(true,
@@ -36,7 +40,7 @@ public class DatabaseQueryManager {
 				"SELECT * FROM Comments WHERE user_id = ?"));
 		databaseQueries.put("getAllComments", new DatabaseQuery(true,
 				"SELECT * FROM Comments"));
-
+		
 		// Messages:
 		databaseQueries.put("deleteMessage", new DatabaseQuery(false,
 				"DELETE FROM Messages WHERE message_id = ?"));
@@ -66,7 +70,6 @@ public class DatabaseQueryManager {
 		databaseQueries.put("insertPost", new DatabaseQuery(false,
 				"INSERT INTO Posts(post_id, title, content, date, contact, user_id, reported, presentation) VALUES(?, ?, ?, ?, ?, ?, 0, 0)",
 				"Posts"));
-		// TODO funktioniert das so?
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false,
 				"DELETE FROM Posts WHERE date < ?"));
 		databaseQueries.put("updatePost", new DatabaseQuery(false,

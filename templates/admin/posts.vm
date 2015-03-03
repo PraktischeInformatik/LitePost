@@ -1,40 +1,40 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main"> 
-  <table>
-    <thead>
-      <tr>
-        <th>Titel</th>
-        <th>Kontakt</th>
-        <th>Datum</th>
-        <th>User</th>
-        <th></th>
-      </tr>
-    </thead>
-    <body>
-      #foreach($post in $posts)
-        <tr data-link="$Router.linkTo("singlePost", $post.postId)">
-          <td>$post.title</td>
-          <td>$post.contact</td>
-          <td>$post.date</td>
-          <td>#if($post.user)$post.user.username#end</td>
-          <td><a href="$Router.linkTo("adminDeletePost", $post.postId)" class="button danger">Löschen</a></td>
+    <table>
+      <thead>
+        <tr>
+          <th>Titel</th>
+          <th>Kontakt</th>
+          <th>Datum</th>
+          <th>User</th>
+          <th></th>
         </tr>
+      </thead>
+      <tbody>
+        #foreach($post in $posts)
+          <tr data-link="$Router.linkTo("singlePost", $post.postId)">
+            <td>$post.title</td>
+            <td>$post.contact</td>
+            <td>$post.date</td>
+            <td>#if($post.user)$post.user.username#end</td>
+            <td><a href="$Router.linkTo("deletePost", $post.postId, "true")" class="button danger">Löschen</a></td>
+          </tr>
+        #end
+      </tbody>
+    </table>
+    $Form.begin("GET", $Router.linkTo("adminPosts"))
+      #set($select = $Input.select.name("user_id").addOption("", "Alle Benutzer"))
+      #foreach($user in $users)
+        #set($select = $select.addOption($user.userId.toString(), $user.username))
       #end
-    </body>
-  </table>
-  $Form.begin("GET", $Router.linkTo("adminPosts"))
-    #set($select = $Input.select.name("user_id").addOption("", "Alle Benutzer"))
-    #foreach($user in $users)
-      #set($select = $select.addOption($user.userId.toString(), $user.username))
-    #end
-    $select
-    <label>
-      $Input.checkbox.name("reported")
-      <div>Markierte posts anzeigen</div>
-    </label>
-    $Input.submit.general.value("Filtern")
-  $Form.end()
+      $select
+      <label>
+        $Input.checkbox.name("reported")
+        <div>Markierte posts anzeigen</div>
+      </label>
+      $Input.submit.general.value("Filtern")
+    $Form.end()
   </div>
   #parse("sidebar.vm")
 </div>

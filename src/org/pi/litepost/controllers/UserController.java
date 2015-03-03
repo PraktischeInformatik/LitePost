@@ -10,8 +10,10 @@ import java.util.function.Predicate;
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.ViewContext;
+import org.pi.litepost.applicationLogic.Comment;
 import org.pi.litepost.applicationLogic.Message;
 import org.pi.litepost.applicationLogic.Model;
+import org.pi.litepost.applicationLogic.Post;
 import org.pi.litepost.applicationLogic.User;
 import org.pi.litepost.exceptions.ForbiddenOperationException;
 import org.pi.litepost.html.Validator;
@@ -45,17 +47,13 @@ public class UserController {
  		if((r = mustLogin(session, model, context)) != null) {
  			return r;
  		}
- 		
- 		try {
- 			User user = model.getUserManager().getCurrent();
-			context.put("user", user);
-			return new Response(View.make("user.profile", context));
-		} catch (SQLException e) {
-			return Router.error(e, context);
-		}
+ 		//current user is already in ViewContext by default
+ 		//no need to put him there again
+ 		//just render the view
+ 		return new Response(View.make("user.profile", context));
 	}
 	
-	public static Response getMessages(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+ 	public static Response getMessages(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Response r;
  		if((r = mustLogin(session, model, context)) != null) {
  			return r;
@@ -68,6 +66,33 @@ public class UserController {
 			context.put("receivedMessages", receivedMessages);
 			context.put("sentMessages", sentMessages);
 			return new Response(View.make("user.messages", context));
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+	}
+ 	public static Response myPosts(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+ 		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		try {
+			ArrayList<Post> posts = model.getPostManager().getByUser();
+			context.put("posts", posts);
+			return new Response(View.make("user.myposts", context));
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		}
+ 	}
+ 	
+ 	public static Response myComments(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		try {
+			ArrayList<Comment> comments = model.getCommentManager().getByUser();
+			context.put("comments", comments);
+			return new Response(View.make("user.mycomments", context));
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}

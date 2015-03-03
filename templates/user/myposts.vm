@@ -1,0 +1,27 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+    <table>
+      <thead>
+        <tr>
+          <th>Titel</th>
+          <th>Kontakt</th>
+          <th>User</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        #foreach($post in $posts)
+          <tr data-link="$Router.linkTo("singlePost", $post.postId)">
+            <td>$post.title</td>
+            <td>$post.contact</td>
+            <td>$post.date</td>
+            <td><a href="$Router.linkTo("deletePost", $post.postId, "false")" class="button danger">Löschen</a></td>
+          </tr>
+        #end
+      </tbody>
+    </table>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")

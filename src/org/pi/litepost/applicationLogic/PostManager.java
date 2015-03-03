@@ -79,7 +79,7 @@ public class PostManager extends Manager {
 	}
 
 	/**
-	 * deletes Comment with given id
+	 * deletes Post with given id
 	 * 
 	 * @param id
 	 * @throws SQLException
@@ -90,7 +90,8 @@ public class PostManager extends Manager {
 		if(post.getUser().getUserId() != user.getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
-		this.model.getQueryManager().executeQuery("deletePost", id);
+		model.getQueryManager().executeQuery("deletePost", id);
+		model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
 	}
 
 	/**
@@ -134,9 +135,8 @@ public class PostManager extends Manager {
 	 * @return
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public ArrayList<Post> search(String[] keywords) throws SQLException {
-		ArrayList<Post> posts = null;
+		ArrayList<Post> posts = new ArrayList<>();
 		for (int i = 0; i < keywords.length; i++) {
 			String keyword = "%" + keywords[i] + "%";
 			ResultSet result = this.model.getQueryManager().executeQuery(
@@ -155,7 +155,7 @@ public class PostManager extends Manager {
 	public ArrayList<Post> getAll() throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getAllPosts");
-		ArrayList<Post> posts = this.createPosts(result);
+		ArrayList<Post> posts = this.createPosts(result, false);
 		return posts;
 	}
 
@@ -178,7 +178,7 @@ public class PostManager extends Manager {
 
 	/**
 	 * returns an ArrayList containing all Post of the given User without their
-	 * Comments
+	 * Comments or images
 	 * 
 	 * @param userId
 	 * @return
@@ -193,21 +193,22 @@ public class PostManager extends Manager {
 		
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser", userId);
-		ArrayList<Post> posts = this.createPosts(result);
+		ArrayList<Post> posts = this.createPosts(result, false);
 		return posts;
 	}
 
 	/**
 	 * returns an ArrayList containing all Post of the actual User without their
-	 * Comments
+	 * Comments or images
 	 * 
 	 * @param userId
 	 * @return
 	 * @throws SQLException
 	 */
 	public ArrayList<Post> getByUser() throws SQLException {
-		if (this.model.getSessionManager().exists("username")) {
-			int userId = model.getUserManager().getCurrent().getUserId();
+		User user = model.getUserManager().getCurrent();
+		if (user != null) {
+			int userId = user.getUserId();
 			try {
 				return getByUser(userId);
 			} catch (ForbiddenOperationException e) {
@@ -228,7 +229,7 @@ public class PostManager extends Manager {
 	}
 
 	/**
-	 * returns an ArrayList containing all reported Post without their Comments
+	 * returns an ArrayList containing all reported Post without their Comments or images
 	 * 
 	 * @return
 	 * @throws SQLException
@@ -311,6 +312,7 @@ public class PostManager extends Manager {
 		return posts;
 	}
 
+	
 	/**
 	 * method creates all Posts of given ResultSet
 	 * 
@@ -319,9 +321,13 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	private ArrayList<Post> createPosts(ResultSet result) throws SQLException {
+		return createPosts(result, true);
+	}
+
+	private ArrayList<Post> createPosts(ResultSet result, boolean loadExtra) throws SQLException {
 		ArrayList<Post> posts = new ArrayList<>();
 		while (result.next()) {
-			posts.add(createPost(result));
+			posts.add(createPost(result, loadExtra));
 		}
 		return posts;
 	}
@@ -334,6 +340,10 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	private Post createPost(ResultSet rs) throws SQLException {
+		return createPost(rs, true);
+	}
+	
+	private Post createPost(ResultSet rs, boolean loadExtra) throws SQLException {
 		int id = rs.getInt("post_id");
 		String title = rs.getString("title");
 		String content = rs.getString("content");
@@ -358,19 +368,22 @@ public class PostManager extends Manager {
 			post = new Post(id, title, content, contact, date, user,
 					reported, presentation);
 		}
+		if(loadExtra) {
+			ResultSet imResult = this.model.getQueryManager().executeQuery(
+					"getImagesByPost", id);
 		
-		ResultSet imResult = this.model.getQueryManager().executeQuery(
-				"getImagesByPost", id);
+			while (imResult.next()) {
+				int imageId = imResult.getInt("image_id");
+				String source = imResult.getString("source");
+				post.addImage(new Image(imageId, source));
+			}
 		
-		while (imResult.next()) {
-			int imageId = imResult.getInt("image_id");
-			String source = imResult.getString("source");
-			post.addImage(new Image(imageId, source));
+			for (Comment comment : this.model.getCommentManager().getByPost(id)) {
+				post.addComment(comment);
+			}	
 		}
 		
-		for (Comment comment : this.model.getCommentManager().getByPost(id)) {
-			post.addComment(comment);
-		}
+		
 
 		return post;
 	}

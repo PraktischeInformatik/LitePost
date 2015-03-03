@@ -1,38 +1,38 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main"> 
-  <table>
-    <thead>
-      <tr>
-        <th>Inhalt</th>
-        <th>Datum</th>
-        <th>User</th>
-        <th></th>
-      </tr>
-    </thead>
-    <body>
-      #foreach($comment in $comments)
-        <tr data-link="$Router.linkTo("singlePost", $comment.postId)">
-          <td>$comment.text</td>
-          <td>$comment.date</td>
-          <td>#if($comment.user)$comment.user.username#end</td>
-          <td><a href="$Router.linkTo("adminDeleteComment", $comment.commentId)" class="button danger">Löschen</a></td>
+    <table>
+      <thead>
+        <tr>
+          <th>Inhalt</th>
+          <th>Datum</th>
+          <th>User</th>
+          <th></th>
         </tr>
+      </thead>
+      <tbody>
+        #foreach($comment in $comments)
+          <tr data-link="$Router.linkTo("singlePost", $comment.postId)">
+            <td>$comment.text</td>
+            <td>$comment.date</td>
+            <td>#if($comment.user)$comment.user.username#end</td>
+            <td><a href="$Router.linkTo("deleteComment", $comment.commentId, "true")" class="button danger">Löschen</a></td>
+          </tr>
+        #end
+      </tbody>
+    </table>
+    $Form.begin("GET", $Router.linkTo("adminComments"))
+      #set($select = $Input.select.name("user_id").addOption("", "Alle Benutzer"))
+      #foreach($user in $users)
+        #set($select = $select.addOption($user.userId.toString(), $user.username))
       #end
-    </body>
-  </table>
-  $Form.begin("GET", $Router.linkTo("adminComments"))
-    #set($select = $Input.select.name("user_id").addOption("", "Alle Benutzer"))
-    #foreach($user in $users)
-      #set($select = $select.addOption($user.userId.toString(), $user.username))
-    #end
-    $select
-    <label>
-      $Input.checkbox.name("reported")
-      <div>Markierte Kommentare anzeigen</div>
-    </label>
-    $Input.submit.general.value("Filtern")
-  $Form.end()
+      $select
+      <label>
+        $Input.checkbox.name("reported")
+        <div>Markierte Kommentare anzeigen</div>
+      </label>
+      $Input.submit.general.value("Filtern")
+    $Form.end()
   </div>
   #parse("sidebar.vm")
 </div>

@@ -12,7 +12,14 @@ import java.util.Properties;
 import org.apache.velocity.app.Velocity;
 import org.pi.litepost.Router.Route;
 import org.pi.litepost.applicationLogic.Model;
-import org.pi.litepost.controllers.*;
+import org.pi.litepost.controllers.AdminController;
+import org.pi.litepost.controllers.ConfigController;
+import org.pi.litepost.controllers.EventController;
+import org.pi.litepost.controllers.FileController;
+import org.pi.litepost.controllers.HomeController;
+import org.pi.litepost.controllers.LoginController;
+import org.pi.litepost.controllers.PostController;
+import org.pi.litepost.controllers.UserController;
 import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -55,23 +62,21 @@ public class App extends NanoHTTPD{
 		Router.add("readMessage", Method.GET, "/profile/messages/read/{message_id}", UserController::readMessage);
 		Router.add("deleteMessage", Method.GET, "/profile/messages/delete/{message_id}", UserController::deleteMessage);
 		Router.add("deleteUser", Method.POST, "/profile/delete", UserController::deleteUser);
-		//Router.add("myPosts", Method.GET, "/profile/posts", UserController::myPosts);
-		//Router.add("myComents", Method.GET, "/profile/comments", UserController::myComments);
+		Router.add("myPosts", Method.GET, "/profile/posts", UserController::myPosts);
+		Router.add("myComments", Method.GET, "/profile/comments", UserController::myComments);
 		
 		//posts
 		Router.add("allPosts", Method.GET, "/posts", PostController::getAll);
 		Router.add("newPost", Method.GET, "/posts/new", PostController::getNew);
 		Router.add("insertPost", Method.POST, "/posts/new", PostController::postNew);
-		Router.add("deletePost", Method.GET, "/post/delete/{post_id}", PostController::deletePost);
+		Router.add("deletePost", Method.GET, "/post/delete/{post_id}/{return_to_admin}", PostController::deletePost);
+		Router.add("deleteComment", Method.GET, "/comment/delete/{comment_id}/{return_to_admin}", PostController::deleteComment);
+		Router.add("commentPost", Method.POST, "/comment/new/{post_id}", PostController::commentPost);
 		Router.add("singlePost", Method.GET, "/post/{post_id}", PostController::getSingle);
-		Router.add("commentPost", Method.POST, "/post/{post_id}/comment", PostController::commentPost);
-		
 		
 		//admin
 		Router.add("adminPosts", Method.GET, "/admin/posts", AdminController::getPosts);
-		Router.add("adminDeletePost", Method.GET, "/admin/post/delete/{post_id}", PostController::adminDeletePost);
 		Router.add("adminComments", Method.GET, "/admin/comments", AdminController::getComments);
-		Router.add("adminDeleteComment", Method.GET, "/admin/comments/delete/{comment_id}", PostController::adminDeleteComment);
 		
 		//Events
 		Router.add("dailyOverview", Method.GET, "/events/{year}/{month}/{day}", EventController::getDailyOverview);
@@ -108,10 +113,9 @@ public class App extends NanoHTTPD{
 			model.getSessionManager().resumeSession(session.getCookies());
 			model.getSessionManager().cleanSessions();
 			
-			String username = model.getSessionManager().get("username");
-			if(username != null)
-			{
-				viewContext.put("username", username);
+			org.pi.litepost.applicationLogic.User user = model.getUserManager().getCurrent();
+			if(user != null) {
+				viewContext.put("currentUser", user);
 			}
 			
 			Route route = Router.getHandler(session);
@@ -176,12 +180,6 @@ public class App extends NanoHTTPD{
 	}
 	
 	public static void main(String[] args) {
-		try{
-			Seeder.seed();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
 		Properties p = new Properties();
 		p.setProperty("resource.loader", "file");
         p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
@@ -191,6 +189,12 @@ public class App extends NanoHTTPD{
 		Velocity.init(p);
 		
 		loadConfig();
+		
+		try{
+			Seeder.seed();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 		File file = new File((String) config.get("litepost.public.uploadfolder"));
 		if(!file.exists() || !file.isDirectory())

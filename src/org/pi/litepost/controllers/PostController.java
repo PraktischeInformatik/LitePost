@@ -30,14 +30,20 @@ public class PostController {
 	private static DateTimeFormatter EVENT_TIME_FORMAT = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
 	
 	public static Response getAll(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		ArrayList<Post> posts = new ArrayList<>();
 		try {
-			posts = model.getPostManager().getAll();
+			ArrayList<Post> posts = new ArrayList<>();
+			String search = session.getParms().getOrDefault("query", "");
+			if(!search.isEmpty()) {
+				context.put("search", search);
+				posts = model.getPostManager().search(search.split(" "));
+			} else {
+				posts = model.getPostManager().getAll();
+			}
+			context.put("posts", posts);
+			return new Response(View.make("post.all", context));
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
-		context.put("posts", posts);
-		return new Response(View.make("post.all", context));
 	} 
 	
 	public static Response getSingle(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) { 
@@ -172,25 +178,7 @@ public class PostController {
 		} catch (SQLException  e) {
 			return Router.error(e, context);
 		}
-		
 		return Router.redirectTo("singlePost", postId);
-	}
-	
-	public static Response adminDeletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		Response r;
- 		if((r = UserController.mustLogin(session, model, context)) != null) {
- 			return r;
- 		}
- 		
- 		try {
-			int postId = Integer.parseInt(args.get("post_id"));
-			model.getPostManager().delete(postId);
- 		} catch(ForbiddenOperationException e){
- 			return Router.forbidden(context);
-		} catch (SQLException e) {
-			return Router.error(e, context);
-		}
- 		return Router.redirectTo("adminPosts");
 	}
 	
 	public static Response deletePost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
@@ -207,25 +195,15 @@ public class PostController {
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
- 		return Router.redirectTo("myPosts");
-	}
-	
-	public static Response adminDeleteComment(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		Response r;
- 		if((r = UserController.mustLogin(session, model, context)) != null) {
- 			return r;
- 		}
- 		
- 		try {
-			int commentId = Integer.parseInt(args.get("comment_id"));
-			model.getCommentManager().delete(commentId);
- 		} catch(ForbiddenOperationException e){
- 			return Router.forbidden(context);
-		} catch (SQLException e) {
-			return Router.error(e, context);
+
+		if(args.get("return_to_admin").equals("true")) {
+			return Router.redirectTo("adminPosts");
+		}else {
+			return Router.redirectTo("myPosts");
 		}
- 		return Router.redirectTo("adminComments");
+ 		
 	}
+
 	
 	public static Response deleteComment(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		Response r;
@@ -241,7 +219,12 @@ public class PostController {
 		} catch (SQLException e) {
 			return Router.error(e, context);
 		}
- 		return Router.redirectTo("myComments");
+
+		if(args.get("return_to_admin").equals("true")) {
+			return Router.redirectTo("adminComments");
+		}else {
+			return Router.redirectTo("myComments");
+		}
 	}
 	
 }

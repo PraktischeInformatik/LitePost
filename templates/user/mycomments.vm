@@ -1,0 +1,25 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+    <table>
+      <thead>
+        <tr>
+          <th>Inhalt</th>
+          <th>Datum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        #foreach($comment in $comments)
+          <tr data-link="$Router.linkTo("singlePost", $comment.postId)">
+            <td>$comment.text</td>
+            <td>$comment.date</td>
+            <td><a href="$Router.linkTo("deleteComment", $comment.commentId, "false")" class="button danger">Löschen</a></td>
+          </tr>
+        #end
+      </tbody>
+    </table>
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
