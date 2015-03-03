@@ -46,7 +46,7 @@ public class Model implements AutoCloseable{
 		calenderManager = new CalenderManager();
 		
 		String defaultDbpath = "res" + File.separatorChar + "litepost.db";
-		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("liteposrt.dbpath", defaultDbpath));
+		dbConnector = new DatabaseConnector((String) App.config.getOrDefault("litepost.dbpath", defaultDbpath));
 		dbQueryManager = new DatabaseQueryManager(this.dbConnector);
 	}
 
