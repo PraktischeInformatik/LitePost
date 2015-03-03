@@ -23,6 +23,8 @@ public class PostManager extends Manager {
 	{
 		try {
 			model.getQueryManager().executeQuery("deleteOldPosts", LocalDateTime.now().minusMonths(1));
+			model.getQueryManager().executeQuery("deletePostsForOldEvents", LocalDateTime.now());
+			model.getQueryManager().executeQuery("deleteOldEvents", LocalDateTime.now());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

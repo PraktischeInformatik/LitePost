@@ -71,7 +71,9 @@ public class DatabaseQueryManager {
 				"INSERT INTO Posts(post_id, title, content, date, contact, user_id, reported, presentation) VALUES(?, ?, ?, ?, ?, ?, 0, 0)",
 				"Posts"));
 		databaseQueries.put("deleteOldPosts", new DatabaseQuery(false,
-				"DELETE FROM Posts WHERE date < ?"));
+				"DELETE FROM Posts WHERE date < ? AND post_id IN ("
+				+ "SELECT Posts.post_id FROM Posts LEFT JOIN Events ON Events.post_id = Posts.post_id WHERE event_id is NULL"
+				+ ")"));
 		databaseQueries.put("updatePost", new DatabaseQuery(false,
 				"UPDATE Comments SET title = ?, content = ?, contact = ? WHERE comment_id = ?"));
 		databaseQueries.put("getAllPosts", new DatabaseQuery(true,
@@ -97,6 +99,12 @@ public class DatabaseQueryManager {
 				"Events"));
 		databaseQueries.put("getEventForPost", new DatabaseQuery(true,
 				"SELECT * FROM Events WHERE post_id = ?"));
+		databaseQueries.put("deleteOldEvents", new DatabaseQuery(false,
+				"DELETE FROM Events WHERE event_date < ?"));
+		databaseQueries.put("deletePostsForOldEvents", new DatabaseQuery(false,
+				"DELETE FROM Posts WHERE post_id IN ("
+						+ "SELECT Posts.post_id FROM Posts LEFT JOIN Events ON Events.post_id = Posts.post_id WHERE event_date < ?"
+						+ ")"));
 		
 		// Images:
 		databaseQueries.put("getImagesByPost",new DatabaseQuery(true,

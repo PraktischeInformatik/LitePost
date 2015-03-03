@@ -192,14 +192,20 @@ public class App extends NanoHTTPD{
 		
 		loadConfig();
 		
+		
 		String dbpath = (String) App.config.getProperty("litepost.dbpath");
 		try(DatabaseConnector dbConnector = new DatabaseConnector(dbpath)){
-			dbConnector.connect(Seeders.getAll());
+			if(App.config.getProperty("litepost.debug").equalsIgnoreCase("true")) {
+				dbConnector.connect(Seeders.getAll());
+			} else {
+				dbConnector.connect(false);
+			}
 		}catch(Exception e){
 			System.out.println("could not Connect to database");
 			e.printStackTrace();
 			System.exit(-1);
 		}
+				
 		
 		File file = new File(config.getProperty("litepost.public.uploadfolder"));
 		if(!file.exists() || !file.isDirectory())

@@ -56,8 +56,13 @@ class Posts implements IDatabaseSeeder {
 	@Override
 	public void seed(DatabaseQueryManager db) throws Exception {
 		db.executeQuery("insertPost", "Was ist Text?", "Text schmerz mich", LocalDateTime.of(2015, 2, 15, 5, 15), "0090/99913213", 1);
+		
+		//Diese beiden sollten dierekt beim ersten request raus fliegen, weil sie zu alt sind
 		db.executeQuery("insertPost", "Old but gold", "Oldies but goldies", LocalDateTime.now().minusMonths(1), "0800/666666", 0);
+		db.executeQuery("insertPost", "Schnee von gestern", "Party schon vorbei", LocalDateTime.now().minusMonths(1), "Partystraße 5", 0);
 		db.executeQuery("makeEvent", 1 , LocalDateTime.of(2015, 3, 15, 5, 15));
+		db.executeQuery("makeEvent", 2 , LocalDateTime.now().minusDays(1));
+		
 		db.executeQuery("insertPost", "Mein supertolles neues Fahrrad", "Mir wurde zu Weihnachten ein supertolles neues Fahrrad geschenkt, welches ich aber nicht brauche, also wollte ich es verkaufen.", LocalDateTime.of(2015, 2, 15, 5, 20), "Schlachthausstraße 19", 3);
 		db.executeQuery("insertPost", "Gamer PC DDDDD FFFFF 00000 1 x 109191000hz TKraft 73", "", LocalDateTime.of(2015, 2, 15, 8, 1), "Burgumstraße 20", 4);
 		db.executeQuery("insertPost", "Schärfe-Wettessen", "Beispiel-Text zur Demonstration des Forums.", LocalDateTime.of(2015, 2, 15, 17, 15), "I-wo beliebiges", 2);
