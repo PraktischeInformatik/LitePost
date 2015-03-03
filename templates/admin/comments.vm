@@ -29,7 +29,7 @@
       $select
       <label>
         $Input.checkbox.name("reported")
-        <div>Markierte Kommentare anzeigen</div>
+        <div>gemeldete Kommentare anzeigen</div>
       </label>
       $Input.submit.general.value("Filtern")
     $Form.end()
