@@ -7,7 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+
+import org.pi.litepost.App;
 
 public class DatabaseConnector implements AutoCloseable{
 	private final String jdbcDriverPath;
@@ -43,6 +46,31 @@ public class DatabaseConnector implements AutoCloseable{
 			for(String s : DatabaseSchema.SCHEMA.getDropAndCreate()) {
 				connection.createStatement().executeUpdate(s);
 			}
+		}
+	}
+	
+	public void connect(Collection<IDatabaseSeeder> seeders) throws ClassNotFoundException, SQLException {
+		boolean debug = App.config.getProperty("litepost.debug").equalsIgnoreCase("true");
+		if(debug) {
+			System.out.println("Building database...");
+			connect(true);
+		} else {
+			connect(false);
+		}
+		
+		if(!debug) return;
+		DatabaseQueryManager db = new DatabaseQueryManager(this);
+		if(seeders.size() != 0) {
+			for(IDatabaseSeeder s : seeders) {
+				try {
+					System.out.println("Seeding " + s.getName() + "...");
+					s.seed(db);
+				} catch(Exception e) {
+					System.out.println("Failed in seeder " + s.getName());
+					e.printStackTrace();
+				}
+			}
+			System.out.println("Done Seeding ");
 		}
 	}
 	

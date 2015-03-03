@@ -20,6 +20,7 @@ import org.pi.litepost.controllers.HomeController;
 import org.pi.litepost.controllers.LoginController;
 import org.pi.litepost.controllers.PostController;
 import org.pi.litepost.controllers.UserController;
+import org.pi.litepost.databaseAccess.DatabaseConnector;
 import org.pi.litepost.html.Validator;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -147,12 +148,13 @@ public class App extends NanoHTTPD{
 		Properties generalProps = new Properties();
 		Properties machineProps = new Properties();
 		
-		defaultProps.put("litepost.serverport", "8080");
-		defaultProps.put("litepost.serverhost", "127.0.0.1:8080");
-		defaultProps.put("litepost.public.folder", "public");
-		defaultProps.put("litepost.public.uploadfolder", "public/upload");
-		defaultProps.put("litepost.debug", "false");
-		defaultProps.put("litepost.configured", "false");
+		defaultProps.setProperty("litepost.serverport", "8080");
+		defaultProps.setProperty("litepost.serverhost", "127.0.0.1:8080");
+		defaultProps.setProperty("litepost.public.folder", "public");
+		defaultProps.setProperty("litepost.public.uploadfolder", "public" + File.separatorChar + "upload");
+		defaultProps.setProperty("litepost.debug", "false");
+		defaultProps.setProperty("litepost.configured", "false");
+		defaultProps.setProperty("litepost.dbpath", "res" + File.separatorChar + "litepost.db");
 		
 		String generalFilePath = "res" + File.separatorChar + "config.properties";
 		try {
@@ -190,13 +192,16 @@ public class App extends NanoHTTPD{
 		
 		loadConfig();
 		
-		try{
-			Seeder.seed();
+		String dbpath = (String) App.config.getProperty("litepost.dbpath");
+		try(DatabaseConnector dbConnector = new DatabaseConnector(dbpath)){
+			dbConnector.connect(Seeders.getAll());
 		}catch(Exception e){
+			System.out.println("could not Connect to database");
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		
-		File file = new File((String) config.get("litepost.public.uploadfolder"));
+		File file = new File(config.getProperty("litepost.public.uploadfolder"));
 		if(!file.exists() || !file.isDirectory())
 		{
 			if (!file.mkdirs())
@@ -207,8 +212,8 @@ public class App extends NanoHTTPD{
 		}
 		
 		
-		String hostname = (String) config.get("litepost.serverhost");
-		String serverport = (String) config.get("litepost.serverport");
+		String hostname = config.getProperty("litepost.serverhost");
+		String serverport = config.getProperty("litepost.serverport");
 		int port = 8080;
 		try {
 			port = Integer.parseInt(serverport);
