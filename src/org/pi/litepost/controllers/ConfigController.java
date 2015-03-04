@@ -20,7 +20,6 @@ import fi.iki.elonen.NanoHTTPD.Response;
 public class ConfigController {
 	
 	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
-		context.put("serverhost", session.getHeaders().get("host"));
 		return new Response(View.make("setup.firstrun", context));
 	}
 	
@@ -34,7 +33,6 @@ public class ConfigController {
 			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
 			.validateSingle("validServerPort", s -> s.matches("[0-9]*"), "serverport")
 			.validateSingle("validMailSystemaddress", model.getMailManager()::validEmail, "systemmail")
-			.validateExists("hasPublicFolder", "publicfolder")
 			.validateExists("hasUploadFolder", "uploadfolder")
 			.validateMultiple("SSLNeedsUsernameAndPassword", sslValidation, "usessl", "mailusername", "mailpassword")
 			.validateExists("hasMailHost", "mailhost")

@@ -27,19 +27,19 @@
     #end
     $Form.begin("POST", $Router.linkTo("setupPost"))
       <h2>Einrichtung</h2>
-      $Input.text.name(serverhost).value("Host").prepopulate()
-      $Input.text.name(serverport).value("Port").prepopulate()
-      $Input.text.name(uploadfolder).value("Ordner für hochgeladene Dateien").prepopulate()
+      $Input.text.name("serverhost").placeholder("Host").prepopulate()
+      $Input.text.name("serverport").placeholder("Port").prepopulate()
+      $Input.text.name("uploadfolder").placeholder("Ordner für hochgeladene Dateien").prepopulate()
       <h2>Email Einstellungen</h2>
-      $Input.text.name(mailhost).value("Mail Host").prepopulate()
-      $Input.text.name(mailport).value("Mail Port").prepopulate()
-      $Input.text.name(mailusername).value("Mail Benutzername").prepopulate()
-      $Input.password.name(mailpassword).value("Mail Passwort").prepopulate()
+      $Input.text.name("mailhost").placeholder("Mail Host").prepopulate()
+      $Input.text.name("mailport").placeholder("Mail Port").prepopulate()
+      $Input.text.name("mailusername").placeholder("Mail Benutzername").prepopulate()
+      $Input.password.name("mailpassword").placeholder("Mail Passwort").prepopulate()
       <label>
-        $Input.checkbox.name(usessl).prepopulate()
+        $Input.checkbox.name("usessl").prepopulate()
         <div>SSL verwenden</div>
       </label>
-      $Input.text.name(systemmail).value("Email addresse für Systemnachrichten").prepopulate()
+      $Input.text.name("systemmail").placeholder("Email addresse für Systemnachrichten").prepopulate()
       $Input.csrfToken
       $Input.submit.general.value("Weiter")
     $Form.end()
