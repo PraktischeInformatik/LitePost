@@ -19,8 +19,12 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class ConfigController {
 	
-	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+	public static Response getFirstrun(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
 		return new Response(View.make("setup.firstrun", context));
+	}
+	
+	public static Response getSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		return new Response(View.make("setup.setup", context));
 	}
 	
 	public static Response postSetup(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
@@ -40,7 +44,7 @@ public class ConfigController {
 		
 		if(!validator.validate(session.getParms())) {
 			context.setValidator(validator);
-			return new Response(View.make("setup.firstrun", context));
+			return new Response(View.make("setup.setup", context));
 		}
 		App.config.put("litepost.serverport" , validator.value("serverport"));
 		App.config.put("litepost.serverhost" , validator.value("serverhost"));

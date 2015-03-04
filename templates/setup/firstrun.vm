@@ -1,49 +1,8 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
-    #if($Input.error("validCsrfToken"))
-      <p>CsrfToken not valid</p>
-    #end
-    #if($Input.error("validServerPort"))
-      <p>ServerPort not valid</p>
-    #end
-    #if($Input.error("validMailSystemaddress"))
-      <p>MailSystemaddress not valid</p>
-    #end
-    #if($Input.error("hasPublicFolder"))
-      <p>has no PublicFolder</p>
-    #end
-    #if($Input.error("hasUploadFolder"))
-      <p>has no UploadFolder</p>
-    #end
-    #if($Input.error("SSLNeedsUsernameAndPassword"))
-      <p>SSL Needs Username And Password</p>
-    #end
-    #if($Input.error("hasMailHost"))
-      <p>has no MailHost</p>
-    #end
-    #if($Input.error("hasMailPort"))
-      <p>has no MailPort</p>
-    #end
-    $Form.begin("POST", $Router.linkTo("setupPost"))
-      <h2>Einrichtung</h2>
-      $Input.text.name("serverhost").placeholder("Host").prepopulate()
-      $Input.text.name("serverport").placeholder("Port").prepopulate()
-      $Input.text.name("uploadfolder").placeholder("Ordner für hochgeladene Dateien").prepopulate()
-      <h2>Email Einstellungen</h2>
-      $Input.text.name("mailhost").placeholder("Mail Host").prepopulate()
-      $Input.text.name("mailport").placeholder("Mail Port").prepopulate()
-      $Input.text.name("mailusername").placeholder("Mail Benutzername").prepopulate()
-      $Input.password.name("mailpassword").placeholder("Mail Passwort").prepopulate()
-      <label>
-        $Input.checkbox.name("usessl").prepopulate()
-        <div>SSL verwenden</div>
-      </label>
-      $Input.text.name("systemmail").placeholder("Email addresse für Systemnachrichten").prepopulate()
-      $Input.csrfToken
-      $Input.submit.general.value("Weiter")
-    $Form.end()
+    <h1>Das System ist noch nicht eingerichtet</h1>
+    <a href="$Router.linkTo("setupPage")">Hier geht es zur Einrichtung</a>
   </div>
-  #parse("sidebar.vm")
 </div>
 #parse("footer.vm")

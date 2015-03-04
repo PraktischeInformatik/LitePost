@@ -38,6 +38,7 @@ public class App extends NanoHTTPD{
 		Router.add("home", Method.GET, "/", HomeController::getHome);
 		
 		//configuration
+		Router.add("firstrun", Method.GET, "/firstrun", ConfigController::getFirstrun);
 		Router.add("setupPage", Method.GET, "/setup", ConfigController::getSetup);
 		Router.add("setupPost", Method.POST, "/setup", ConfigController::postSetup);
 		
@@ -106,8 +107,11 @@ public class App extends NanoHTTPD{
 		
 		//first time configuration
 		if(!config.getProperty("litepost.configured").equals("true")) {
-			if(!session.getUri().equals(Router.linkTo("setupPage"))) {
-				return Router.redirectTo("setupPage");
+			String uri = session.getUri();
+			String setup = Router.linkTo("setupPage");
+			String firstrun = Router.linkTo("firstrun");
+			if(!uri.equals(setup) && !uri.equals(firstrun)) {
+				return Router.redirectTo("firstrun");
 			}
 		}
 		
