@@ -159,6 +159,10 @@ public class App extends NanoHTTPD{
 		defaultProps.setProperty("litepost.debug", "false");
 		defaultProps.setProperty("litepost.configured", "false");
 		defaultProps.setProperty("litepost.dbpath", "res" + File.separatorChar + "litepost.db");
+		defaultProps.setProperty("litepost.mail.smtp.host", "");
+		defaultProps.setProperty("litepost.mail.smtp.port", "");
+		defaultProps.setProperty("litepost.mail.systemmail", "");
+		defaultProps.setProperty("litepost.mail.usessl", "false");
 		
 		String generalFilePath = "res" + File.separatorChar + "config.properties";
 		try {

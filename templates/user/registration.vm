@@ -1,35 +1,32 @@
 #parse("header.vm")
 <div id="wrapper">
   <div id="main">
-
-    #if($Validation)
-      #if($Input.error("validCsrfToken"))
-        <p>csrfToken not valid</p>
-      #end
-      #if($Input.error("hasUsername"))
-        <p>has no Username</p>
-      #end
-      #if($Input.error("hasFirstname"))
-        <p>has no Firstname</p>
-      #end
-      #if($Input.error("hasLastname"))
-        <p>has no Lastname</p>
-      #end
-      #if($Input.error("validEmail"))
-        <p>Email not valid</p>
-      #end
-      #if($Input.error("passwordMinLength"))
-        <p>password needs at least 5 characters</p>
-      #end
-      #if($Input.error("passwordsMatch"))
-        <p>passwords dont Match</p>
-      #end
-      #if($Input.error("usernameAvailable"))
-        <p>username unavailable</p>
-      #end
-      #if($Input.error("emailAvailable"))
-        <p>email unavailable</p>
-      #end
+    #if($Input.error("validCsrfToken"))
+     <p>csrfToken not valid</p>
+    #end
+    #if($Input.error("hasUsername"))
+     <p>has no Username</p>
+    #end
+    #if($Input.error("hasFirstname"))
+     <p>has no Firstname</p>
+    #end
+    #if($Input.error("hasLastname"))
+     <p>has no Lastname</p>
+    #end
+    #if($Input.error("validEmail"))
+     <p>Email not valid</p>
+    #end
+    #if($Input.error("passwordMinLength"))
+     <p>password needs at least 5 characters</p>
+    #end
+    #if($Input.error("passwordsMatch"))
+     <p>passwords dont Match</p>
+    #end
+    #if($Input.error("usernameAvailable"))
+     <p>username unavailable</p>
+    #end
+    #if($Input.error("emailAvailable"))
+     <p>email unavailable</p>
     #end
     $Form.begin("POST", ${Router.linkTo("registrationPost")})
       <h2>Registrieren</h2>

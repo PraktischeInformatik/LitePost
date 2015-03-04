@@ -137,7 +137,6 @@ public class LoginController {
 
 		String csrfToken = params.getOrDefault("csrf_token", "");
 		if(!model.getSessionManager().validateToken(csrfToken)) {
-			//TODO bessere fehlerbehandlung
 			return Router.redirectTo("lostPasswordPage");	
 		}
 		
@@ -164,7 +163,6 @@ public class LoginController {
 		
 		String csrfToken = params.getOrDefault("csrf_token", "");
 		if(!model.getSessionManager().validateToken(csrfToken)) {
-			//TODO bessere fehlerbehandlung
 			return Router.redirectTo("resetPasswordPage");	
 		}
 		
