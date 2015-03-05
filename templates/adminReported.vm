@@ -1,0 +1,58 @@
+#parse("header.vm")
+<div id="wrapper">
+  <div id="main"> 
+
+
+<div class="reported">
+   <h1> gemeldete Posts/Events/Kommentare </h1>
+
+   <table>
+     <tr>
+       <td class="reportedType">
+         Event
+       </td>
+       <td class="reportedTitle">
+         Titel
+       </td>
+       <td class="reportedAuthor">
+         Veranstalter
+       </td>
+       <td class="reportedApprove">
+         <button>freigeben</button>
+       </td>
+       <td class="reportedBlock">
+         <button>sperren</button>
+       </td>
+     </tr>
+
+
+     <tr>
+       <td class="reportedType">
+         Post
+       </td>
+       <td class="reportedTitle">
+         Lampenstaenderrrr
+       </td>
+       <td class="reportedAuthor">
+         ich
+       </td>
+       <td class="reportedApprove">
+         <button>freigeben</button>
+       </td>
+       <td class="reportedBlock">
+         <button>sperren</button>
+       </td>
+     </tr>
+
+
+   </table>
+
+ </div>
+
+
+  
+  
+  </div>
+  #parse("sidebar.vm")
+</div>
+#parse("footer.vm")
