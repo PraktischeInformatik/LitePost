@@ -17,8 +17,8 @@ public class DatabaseQueryManager {
 					"DELETE FROM Comments WHERE parent_id = ?"));
 			put("deleteCommentContent", new DatabaseQuery(
 					"UPDATE Comments set content = '[gelöscht]', user_id = 0 WHERE comment_id = ?"));
-			put("deleteCommentsFromPost", new DatabaseQuery(
-					"DELETE FROM Comments WHERE post_id = ?"));
+//			put("deleteCommentsFromPost", new DatabaseQuery(
+//					"DELETE FROM Comments WHERE post_id = ?"));
 			put("getComment", new DatabaseQuery(
 					"SELECT * FROM Comments WHERE comment_id = ?"));
 			put("getCommentsByPost", new DatabaseQuery(
@@ -57,10 +57,8 @@ public class DatabaseQueryManager {
 			// Posts:
 			put("deletePost", new DatabaseQuery(
 					"DELETE FROM Posts WHERE post_id = ?",
-					"UPDATE Posts SET user_id = 0 WHERE user_id = ?",
-					"UPDATE Comments SET user_id = 0 WHERE user_id = ?",
-					"DELETE FROM Messages WHERE outgoing = 1 AND sender = ?",
-					"DELETE FROM Messages WHERE outgoing = 0 AND receiver = ?"));
+					"DELETE FROM Comments WHERE post_id = ?"
+					));
 			put("getReportedPosts", new DatabaseQuery(
 					"SELECT * FROM Posts WHERE reported = 1"));
 			put("insertPost", new DatabaseQuery(
@@ -114,7 +112,11 @@ public class DatabaseQueryManager {
 
 			// User:
 			put("deleteUser", new DatabaseQuery(
-					"DELETE FROM Users WHERE user_id = ?"));
+					"DELETE FROM Users WHERE user_id = ?",
+					"DELETE FROM Posts WHERE user_id = ?",
+					"DELETE FROM Comments WHERE user_id = ?",
+					"DELETE FROM Messages WHERE outgoing = 1 AND sender = ?",
+					"DELETE FROM Messages WHERE outgoing = 0 AND receiver = ?"));
 			put("checkUserData", new DatabaseQuery(
 					"SELECT * FROM Users WHERE username = ? or email = ?"));
 			put("insertUser", new DatabaseQuery(

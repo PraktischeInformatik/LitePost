@@ -6,7 +6,7 @@
     #if($message.outgoing)
       #set($msgUsername = $message.receiver.username)
     #end
-    <h2>Nacricht #if($message.outgoing)an#{else}von#{end} $msgUsername</h2>  
+    <h2>Nachricht #if($message.outgoing)an#{else}von#{end} $msgUsername</h2>  
     <h3>$message.subject</h3>
     <p>$message.text</p>
   </div>

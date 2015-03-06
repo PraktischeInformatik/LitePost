@@ -93,7 +93,7 @@ public class PostManager extends Manager {
 			throw new ForbiddenOperationException();
 		}
 		model.getQueryManager().executeQuery("deletePost", id);
-		model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
+//		model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
 	}
 	
 	/**
@@ -138,14 +138,17 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	public ArrayList<Post> search(String[] keywords) throws SQLException {
-		ArrayList<Post> posts = new ArrayList<>();
+		ArrayList<Post> allPosts = new ArrayList<>();
 		for (int i = 0; i < keywords.length; i++) {
 			String keyword = "%" + keywords[i] + "%";
 			ResultSet result = this.model.getQueryManager().executeQuery(
 					"searchPosts", keyword, keyword);
-			posts.addAll(this.createPosts(result));
+			ArrayList<Post> singlePosts = this.createPosts(result);
+			for(Post p : singlePosts)
+				if(! allPosts.contains(p))
+					allPosts.add(p);
 		}
-		return posts;
+		return allPosts;
 	}
 
 	/**
