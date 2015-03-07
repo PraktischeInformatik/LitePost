@@ -16,18 +16,19 @@ import org.pi.litepost.exceptions.ForbiddenOperationException;
  *
  */
 public class PostManager extends Manager {
-	
-	
+
 	@Override
-	public void init()
-	{
+	public void init() {
 		try {
-			model.getQueryManager().executeQuery("deleteOldPosts", LocalDateTime.now(clock).minusMonths(1));
-			model.getQueryManager().executeQuery("deleteOldEvents", LocalDateTime.now(clock));
+			model.getQueryManager().executeQuery("deleteOldPosts",
+					LocalDateTime.now(clock).minusMonths(1));
+			model.getQueryManager().executeQuery("deleteOldEvents",
+					LocalDateTime.now(clock));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * inserts a new Post (creates a Post-Object) and saves it in the Database;
 	 * the PostId is taken from the corresponding id-table,the Date is taken
@@ -46,20 +47,20 @@ public class PostManager extends Manager {
 		if (this.model.getSessionManager().exists("username")) {
 			userId = model.getUserManager().getCurrent().getUserId();
 		}
-		ResultSet rs = model.getQueryManager().executeQuery("insertPost", title, content,
-				date, contact, userId);
+		ResultSet rs = model.getQueryManager().executeQuery("insertPost",
+				title, content, date, contact, userId);
 		return rs.getInt(1);
 	}
-	
+
 	/**
 	 * creates an event for a post
 	 * 
-	 * @param postId  
+	 * @param postId
 	 * @param eventDate
 	 * @throws SQLException
 	 */
-	public void makeEvent(int postId, LocalDateTime eventDate) 
-			throws SQLException	{
+	public void makeEvent(int postId, LocalDateTime eventDate)
+			throws SQLException {
 		model.getQueryManager().executeQuery("makeEvent", postId, eventDate);
 	}
 
@@ -89,13 +90,13 @@ public class PostManager extends Manager {
 	public void delete(int id) throws SQLException, ForbiddenOperationException {
 		Post post = getById(id);
 		User user = model.getUserManager().getCurrent();
-		if(post.getUser().getUserId() != user.getUserId() && !user.isAdmin()) {
+		if (post.getUser().getUserId() != user.getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
 		model.getQueryManager().executeQuery("deletePost", id);
-//		model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
+		// model.getQueryManager().executeQuery("deleteCommentsFromPost", id);
 	}
-	
+
 	/**
 	 * deletes all Posts which are older than 30 days
 	 * 
@@ -117,13 +118,13 @@ public class PostManager extends Manager {
 	 * @param contact
 	 * @param userId
 	 * @throws SQLException
-	 * @throws ForbiddenOperationException 
+	 * @throws ForbiddenOperationException
 	 */
 	public void update(int id, String title, String content, String contact)
 			throws SQLException, ForbiddenOperationException {
 		Post post = getById(id);
 		User user = model.getUserManager().getCurrent();
-		if(user.getUserId() != post.getUser().getUserId() && !user.isAdmin()) {
+		if (user.getUserId() != post.getUser().getUserId() && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
 		this.model.getQueryManager().executeQuery("updatePost", title, content,
@@ -144,9 +145,17 @@ public class PostManager extends Manager {
 			ResultSet result = this.model.getQueryManager().executeQuery(
 					"searchPosts", keyword, keyword);
 			ArrayList<Post> singlePosts = this.createPosts(result);
-			for(Post p : singlePosts)
-				if(! allPosts.contains(p))
+			
+			//Post already in the list?
+			for (Post p : singlePosts) {
+				boolean contains = false;
+				for (Post po : allPosts) {
+					if (po.getPostId() == p.getPostId())
+						contains = true;
+				}
+				if(!contains)
 					allPosts.add(p);
+			}
 		}
 		return allPosts;
 	}
@@ -174,9 +183,9 @@ public class PostManager extends Manager {
 	public Post getById(int id) throws SQLException {
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostById", id);
-		if(result.next()) {
+		if (result.next()) {
 			return createPost(result);
-		}else {
+		} else {
 			return null;
 		}
 	}
@@ -188,14 +197,15 @@ public class PostManager extends Manager {
 	 * @param userId
 	 * @return
 	 * @throws SQLException
-	 * @throws ForbiddenOperationException 
+	 * @throws ForbiddenOperationException
 	 */
-	public ArrayList<Post> getByUser(int userId) throws SQLException, ForbiddenOperationException {
+	public ArrayList<Post> getByUser(int userId) throws SQLException,
+			ForbiddenOperationException {
 		User user = model.getUserManager().getCurrent();
-		if(user.getUserId() != userId && !user.isAdmin()) {
+		if (user.getUserId() != userId && !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
-		
+
 		ResultSet result = this.model.getQueryManager().executeQuery(
 				"getPostsByUser", userId);
 		ArrayList<Post> posts = this.createPosts(result, false);
@@ -217,7 +227,8 @@ public class PostManager extends Manager {
 			try {
 				return getByUser(userId);
 			} catch (ForbiddenOperationException e) {
-				//not going to happen, since we made sure userId is the current Users id
+				// not going to happen, since we made sure userId is the current
+				// Users id
 			}
 		}
 		return null;
@@ -232,31 +243,34 @@ public class PostManager extends Manager {
 	public void report(int id) throws SQLException {
 		this.model.getQueryManager().executeQuery("reportPost", id);
 	}
-	
+
 	/**
 	 * unblock Post with given id
 	 * 
 	 * @param id
 	 * @throws SQLException
-	 * @throws ForbiddenOperationException 
+	 * @throws ForbiddenOperationException
 	 */
-	public void unblock(int postId) throws SQLException, ForbiddenOperationException {
+	public void unblock(int postId) throws SQLException,
+			ForbiddenOperationException {
 		User user = model.getUserManager().getCurrent();
-		if(user == null || !user.isAdmin()) {
+		if (user == null || !user.isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
 		model.getQueryManager().executeQuery("unblockPost", postId);
 	}
 
 	/**
-	 * returns an ArrayList containing all reported Post without their Comments or images
+	 * returns an ArrayList containing all reported Post without their Comments
+	 * or images
 	 * 
 	 * @return
 	 * @throws SQLException
-	 * @throws ForbiddenOperationException 
+	 * @throws ForbiddenOperationException
 	 */
-	public ArrayList<Post> getReports() throws SQLException, ForbiddenOperationException {
-		if(!model.getUserManager().getCurrent().isAdmin())  {
+	public ArrayList<Post> getReports() throws SQLException,
+			ForbiddenOperationException {
+		if (!model.getUserManager().getCurrent().isAdmin()) {
 			throw new ForbiddenOperationException();
 		}
 		ResultSet result = this.model.getQueryManager().executeQuery(
@@ -273,18 +287,19 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	public ArrayList<Event> getEvents(YearMonth month) throws SQLException {
-		LocalDateTime begin =  month.atDay(1).atStartOfDay();
+		LocalDateTime begin = month.atDay(1).atStartOfDay();
 		LocalDateTime end = month.atEndOfMonth().plusDays(1).atStartOfDay();
-		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween", begin, end);
-		
+		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween",
+				begin, end);
+
 		ArrayList<Event> events = new ArrayList<>();
-		while(rs.next()) {
+		while (rs.next()) {
 			events.add(createEvent(rs));
 		}
-		
+
 		return events;
 	}
-	
+
 	/**
 	 * returns an ArrayList containing all Events on the given date
 	 * 
@@ -293,15 +308,16 @@ public class PostManager extends Manager {
 	 * @throws SQLException
 	 */
 	public ArrayList<Event> getEvents(LocalDate date) throws SQLException {
-		LocalDateTime begin =  date.atStartOfDay();
+		LocalDateTime begin = date.atStartOfDay();
 		LocalDateTime end = date.plusDays(1).atStartOfDay();
-		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween", begin, end);
-		
+		ResultSet rs = model.getQueryManager().executeQuery("getEventsBetween",
+				begin, end);
+
 		ArrayList<Event> events = new ArrayList<>();
-		while(rs.next()) {
+		while (rs.next()) {
 			events.add(createEvent(rs));
 		}
-		
+
 		return events;
 	}
 
@@ -332,7 +348,6 @@ public class PostManager extends Manager {
 		return posts;
 	}
 
-	
 	/**
 	 * method creates all Posts of given ResultSet
 	 * 
@@ -344,7 +359,8 @@ public class PostManager extends Manager {
 		return createPosts(result, true);
 	}
 
-	private ArrayList<Post> createPosts(ResultSet result, boolean loadExtra) throws SQLException {
+	private ArrayList<Post> createPosts(ResultSet result, boolean loadExtra)
+			throws SQLException {
 		ArrayList<Post> posts = new ArrayList<>();
 		while (result.next()) {
 			posts.add(createPost(result, loadExtra));
@@ -362,8 +378,9 @@ public class PostManager extends Manager {
 	private Post createPost(ResultSet rs) throws SQLException {
 		return createPost(rs, true);
 	}
-	
-	private Post createPost(ResultSet rs, boolean loadExtra) throws SQLException {
+
+	private Post createPost(ResultSet rs, boolean loadExtra)
+			throws SQLException {
 		int id = rs.getInt("post_id");
 		String title = rs.getString("title");
 		String content = rs.getString("content");
@@ -373,41 +390,40 @@ public class PostManager extends Manager {
 		boolean reported = rs.getBoolean("reported");
 		boolean presentation = rs.getBoolean("presentation");
 
-		Post post; 
+		Post post;
 
 		ResultSet evResult = this.model.getQueryManager().executeQuery(
 				"getEventForPost", id);
-		
+
 		User user = model.getUserManager().getById(userId);
-		
-		if(evResult.next()) {
-			LocalDateTime eventDate = evResult.getTimestamp("event_date").toLocalDateTime();
-			post = new Event(id, title, content, contact, date, user,
-					reported, presentation, eventDate);
+
+		if (evResult.next()) {
+			LocalDateTime eventDate = evResult.getTimestamp("event_date")
+					.toLocalDateTime();
+			post = new Event(id, title, content, contact, date, user, reported,
+					presentation, eventDate);
 		} else {
-			post = new Post(id, title, content, contact, date, user,
-					reported, presentation);
+			post = new Post(id, title, content, contact, date, user, reported,
+					presentation);
 		}
-		if(loadExtra) {
+		if (loadExtra) {
 			ResultSet imResult = this.model.getQueryManager().executeQuery(
 					"getImagesByPost", id);
-		
+
 			while (imResult.next()) {
 				int imageId = imResult.getInt("image_id");
 				String source = imResult.getString("source");
 				post.addImage(new Image(imageId, source));
 			}
-		
+
 			for (Comment comment : this.model.getCommentManager().getByPost(id)) {
 				post.addComment(comment);
-			}	
+			}
 		}
-		
-		
 
 		return post;
 	}
-	
+
 	/**
 	 * method creates one Event of given ResultSet
 	 * 
@@ -424,22 +440,23 @@ public class PostManager extends Manager {
 		int userId = rs.getInt("user_id");
 		boolean reported = rs.getBoolean("reported");
 		boolean presentation = rs.getBoolean("presentation");
-		LocalDateTime eventDate = rs.getTimestamp("event_date").toLocalDateTime();
-		
+		LocalDateTime eventDate = rs.getTimestamp("event_date")
+				.toLocalDateTime();
+
 		User user = model.getUserManager().getById(userId);
-		
+
 		Event event = new Event(id, title, content, contact, date, user,
 				reported, presentation, eventDate);
-		
+
 		ResultSet imResult = this.model.getQueryManager().executeQuery(
 				"getImagesByPost", id);
-		
+
 		while (imResult.next()) {
 			int imageId = imResult.getInt("image_id");
 			String source = imResult.getString("source");
 			event.addImage(new Image(imageId, source));
 		}
-		
+
 		for (Comment comment : this.model.getCommentManager().getByPost(id)) {
 			event.addComment(comment);
 		}
