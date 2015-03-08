@@ -11,36 +11,48 @@ $Resources.addScriptFooter("js/newpost.js")
 
 <div id="wrapper">
   <div id="main">
-    #if($error)
-      <p>Bitte füllen sie alle benötigten Felder aus</p>
+    #if($Input.error("validCsrfToken"))
+      <p>Error in validation: "validCsrfToken"</p>
+    #end
+    #if($Input.error("hasTitle"))
+      <p>Error in validation: "hasTitle"</p>
+    #end
+    #if($Input.error("hasContent"))
+      <p>Error in validation: "hasContent"</p>
+    #end
+    #if($Input.error("hasContact"))
+      <p>Error in validation: "hasContact"</p>
+    #end
+    #if($Input.error("validDateIfEvent"))
+      <p>Error in validation: "validDateIfEvent"</p>
     #end
 
-      $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
-        $Input.text.name("title").placeholder("Titel").prepopulate()
-        $Input.hidden.name("content").id("input-content").prepopulate()
-        $Input.hidden.name("date").prepopulate()
-        #set($content = $Input.value("content"))
-        #if(not $content or $content.isEmpty())
-          #set($content = "")
-        #end
-        <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
-        $Input.text.name("contact").placeholder("Kontakt").prepopulate()
-        <label>
-          $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)").prepopulate()
-          <div>Dieser Post ist ein Event</div>
-        </label>
-        <div id="date-div">
-          $Input.hidden.name("date").id("pikaday-field").prepopulate()
-          $Input.text.id("pikaday").placeholder("Datum").style("width: auto")
-          $Input.select.id("pikatime").addTimes().style("width: auto")
-        </div>
-        <div id="images">
-          <div>Bilder anfügen</div>
-        </div>
-        <div><button onclick="add_image(); return false;" class="button secondary">+</button></div>
-        $Input.csrfToken
-        $Input.submit.general.value("Posten")        
-      $Form.end()
+    $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
+      $Input.text.name("title").placeholder("Titel").prepopulate()
+      $Input.hidden.name("content").id("input-content").prepopulate()
+      $Input.hidden.name("date").prepopulate()
+      #set($content = $Input.value("content"))
+      #if(not $content or $content.isEmpty())
+        #set($content = "")
+      #end
+      <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
+      $Input.text.name("contact").placeholder("Kontakt").prepopulate()
+      <label>
+        $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)").prepopulate()
+        <div>Dieser Post ist ein Event</div>
+      </label>
+      <div id="date-div">
+        $Input.hidden.name("date").id("pikaday-field").prepopulate()
+        $Input.text.id("pikaday").placeholder("Datum").style("width: auto")
+        $Input.select.id("pikatime").addTimes().style("width: auto")
+      </div>
+      <div id="images">
+        <div>Bilder anfügen</div>
+      </div>
+      <div><button onclick="add_image(); return false;" class="button secondary">+</button></div>
+      $Input.csrfToken
+      $Input.submit.general.value("Posten")        
+    $Form.end()
+  </div>
 </div>
-
 #parse("footer.vm")
