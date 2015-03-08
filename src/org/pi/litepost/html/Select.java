@@ -15,7 +15,7 @@ public class Select extends Input {
 	}
 	
 	public Select addTimes() {
-		for(int hour = 0; hour <= 24; hour++) {
+		for(int hour = 0; hour < 24; hour++) {
 			for(int minute = 0; minute <= 45; minute += 15) {
 				String value = String.format("%02d%02d", hour, minute);
 				String content = String.format("%02d:%02d", hour, minute);
