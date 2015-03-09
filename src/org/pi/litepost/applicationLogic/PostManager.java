@@ -58,6 +58,7 @@ public class PostManager extends Manager {
 	 * @param postId
 	 * @param eventDate
 	 * @throws SQLException
+	 * @throws InvalidDateException 
 	 */
 	public void makeEvent(int postId, LocalDateTime eventDate) throws SQLException {
 		model.getQueryManager().executeQuery("makeEvent", postId, eventDate);

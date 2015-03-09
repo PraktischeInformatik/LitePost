@@ -2,6 +2,7 @@ package org.pi.litepost.applicationLogic;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.time.Clock;
 
 import org.pi.litepost.App;
 import org.pi.litepost.databaseAccess.DatabaseConnector;
@@ -22,6 +23,7 @@ public class Model implements AutoCloseable{
 	private DatabaseConnector dbConnector;
 	private DatabaseQueryManager dbQueryManager;
 	private MailManager mailManager;
+	private Clock clock = Clock.systemDefaultZone();
 
 	public Model() {
 		sessionManager = new SessionManager();
@@ -87,6 +89,10 @@ public class Model implements AutoCloseable{
 	
 	public void close() throws SQLException {
 		dbConnector.close();
+	}
+
+	public Clock getClock() {
+		return clock ;
 	}
 
 }
