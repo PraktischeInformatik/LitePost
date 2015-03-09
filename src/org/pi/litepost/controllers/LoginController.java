@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import org.pi.litepost.Router;
 import org.pi.litepost.View;
 import org.pi.litepost.ViewContext;
@@ -146,8 +148,10 @@ public class LoginController {
 		}
 		try {
 			model.getUserManager().sendResetPassword(email);
-		} catch (Exception e) {
+		} catch (SQLException | MessagingException e) {
 			return Router.error(e, context);
+		} catch (PasswordResetException e) {
+			return new Response(View.make("user.lostpassword", context));
 		}
 		return Router.redirectTo("login");
 	}

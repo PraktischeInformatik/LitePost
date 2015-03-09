@@ -158,12 +158,16 @@ public class UserManager extends Manager {
 	 * @param email the email address to send the link to
 	 * @throws MessagingException when sending the email fails 
 	 * @throws SQLException 
+	 * @throws PasswordResetException 
 	 */
-	public void sendResetPassword(String email) throws MessagingException, SQLException {
+	public void sendResetPassword(String email) throws MessagingException, SQLException, PasswordResetException {
 		HashMap<String, Object> data = new HashMap<>();
 		String token = createToken();
 		
 		ResultSet rs = model.getQueryManager().executeQuery("getUserByEmail", email);
+		if(!rs.next()) {
+			throw new PasswordResetException();
+		}
 		int userId = rs.getInt("user_id");
 		model.getQueryManager().executeQuery("setPasswordResetToken", userId, token);
 		
