@@ -20,7 +20,7 @@
      <ul>
       <li><a href="${Router.linkTo("allPosts")}">Posts</a></li>
       <li><a href="${Router.linkTo("overview")}">Events</a></li>
-      <li><a href="${Router.linkTo("calendarToday")}">Kalendar</a></li>
+      <li><a href="${Router.linkTo("calendarToday")}">Kalender</a></li>
    </ul>
 </nav>
   #if($currentUser)
