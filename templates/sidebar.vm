@@ -1,7 +1,7 @@
 <div id="sidebar">
     <h2>Neuer Post</h2>
     $Form.begin("POST", ${Router.linkTo("newPost")}).id("sidebar-form")
-      $Input.text.id("input-title").name("title").placeholder("Title").prepopulate()
+      $Input.text.id("input-title").name("title").placeholder("Titel").prepopulate()
       $Input.textarea.id("input-content").name("content").placeholder("Inhalt").prepopulate()
       $Input.text.id("input-contact").name("contact").placeholder("Kontakt").prepopulate()
       $Input.csrfToken

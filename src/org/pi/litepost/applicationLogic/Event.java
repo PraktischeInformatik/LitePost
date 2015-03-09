@@ -1,6 +1,7 @@
 package org.pi.litepost.applicationLogic;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Julia Moos
@@ -22,5 +23,14 @@ public class Event extends Post {
 	@Override
 	public boolean isEvent() {
 		return true;
+	}
+	
+	public String formatEventDate() {
+		return formatEventDate(STANDARD_DATE_FORMAT);
+	}
+	
+	public String formatEventDate(String pattern) {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		return format.format(getEventDate());
 	}
 }

@@ -17,7 +17,7 @@
           <tr data-link="$Router.linkTo("singlePost", $post.postId)">
             <td>$post.title</td>
             <td>$post.contact</td>
-            <td>$post.date</td>
+            <td>$post.formatDate()</td>
             <td>#if($post.user)$post.user.username#end</td>
             <td>
               #if($post.reported)

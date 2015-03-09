@@ -1,6 +1,7 @@
 package org.pi.litepost.applicationLogic;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -8,6 +9,7 @@ import java.util.ArrayList;
  *
  */
 public class Post {
+	protected final static String STANDARD_DATE_FORMAT = "dd. MMMM uuuu HH:mm";
 	private final int postId;
 	private final String title;
 	private final String text;
@@ -83,5 +85,14 @@ public class Post {
 
 	public boolean isPresentation() {
 		return presentation;
+	}
+	
+	public String formatDate() {
+		return formatDate(STANDARD_DATE_FORMAT);
+	}
+	
+	public String formatDate(String pattern) {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		return format.format(getDate());
 	}
 }
