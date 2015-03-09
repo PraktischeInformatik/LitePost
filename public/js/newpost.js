@@ -3,7 +3,7 @@ var
   editor,
   pikatime,
   images,
-  datetime_format = 'YYYY-MM-DD hh:mm';
+  datetime_format = 'YYYY-MM-DD HH:mm';
 
 (function() {
   moment.locale("de");
