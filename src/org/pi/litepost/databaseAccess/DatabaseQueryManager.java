@@ -117,8 +117,8 @@ public class DatabaseQueryManager {
 			// User:
 			put("deleteUser", new DatabaseQuery(
 					"DELETE FROM Users WHERE user_id = ?",
-					"DELETE FROM Posts WHERE user_id = ?",
-					"DELETE FROM Comments WHERE user_id = ?",
+					"UPDATE Posts set user_id = 0 WHERE user_id = ?",
+					"UPDATE Comments SET user_id = 0 WHERE user_id = ?",
 					"DELETE FROM Messages WHERE outgoing = 1 AND sender = ?",
 					"DELETE FROM Messages WHERE outgoing = 0 AND receiver = ?"));
 			put("checkUserData", new DatabaseQuery(
