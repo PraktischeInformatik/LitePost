@@ -2,28 +2,28 @@
 <div id="wrapper">
   <div id="main">
     #if($Input.error("validCsrfToken"))
-      <p>CsrfToken not valid</p>
+      <p>Ein Fehler ist aufgetreten</p>
     #end
     #if($Input.error("validServerPort"))
-      <p>ServerPort not valid</p>
+      <p>Ungültiger Serverport</p>
     #end
     #if($Input.error("validMailSystemaddress"))
-      <p>MailSystemaddress not valid</p>
+      <p>Email Addresse ungültig</p>
     #end
     #if($Input.error("hasPublicFolder"))
-      <p>has no PublicFolder</p>
+      <p>kein Public Ordner</p>
     #end
     #if($Input.error("hasUploadFolder"))
-      <p>has no UploadFolder</p>
+      <p>kein Upload Ordner</p>
     #end
     #if($Input.error("SSLNeedsUsernameAndPassword"))
-      <p>SSL Needs Username And Password</p>
+      <p>SSL benötigt einen benutzernamen und ein Passwort</p>
     #end
     #if($Input.error("hasMailHost"))
-      <p>has no MailHost</p>
+      <p>kein EMail Host</p>
     #end
     #if($Input.error("hasMailPort"))
-      <p>has no MailPort</p>
+      <p>kein EMail Port</p>
     #end
     $Form.begin("POST", $Router.linkTo("setupPost"))
       <h2>Einrichtung</h2>

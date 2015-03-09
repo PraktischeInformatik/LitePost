@@ -3,19 +3,19 @@
   <div id="main">
     <div id="login-container">
       #if($Input.error("csrfTokenValid"))
-        <p>csrfToken not Valid</p>
+        <p>Ein Fehler ist aufgetreten</p>
       #end
       #if($Input.error("hasUsername"))
-        <p>has no Username</p>
+        <p>kein Benutzernamr</p>
       #end
       #if($Input.error("hasPassword"))
-        <p>has no Password</p>
+        <p>kein Passwort</p>
       #end
       #if($Input.error("emailVerified"))
-        <p>email not Verified</p>
+        <p>die EMail adresse wurde noch nicht verifiziert</p>
       #end
       #if($Input.error("loginSuccessful"))
-        <p>login unsuccessful</p>
+        <p>Login fehlgeschlagen</p>
       #end
       #set($link = $Router.linkTo("loginPost"))
       #if($redirect)

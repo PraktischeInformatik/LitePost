@@ -2,31 +2,31 @@
 <div id="wrapper">
   <div id="main">
     #if($Input.error("validCsrfToken"))
-     <p>csrfToken not valid</p>
+     <p>Ein Fehler ist aufgetreten</p>
     #end
     #if($Input.error("hasUsername"))
-     <p>has no Username</p>
+     <p>kein Benutzername</p>
     #end
     #if($Input.error("hasFirstname"))
-     <p>has no Firstname</p>
+     <p>kein Vorname</p>
     #end
     #if($Input.error("hasLastname"))
-     <p>has no Lastname</p>
+     <p>kein Nachname</p>
     #end
     #if($Input.error("validEmail"))
-     <p>Email not valid</p>
+     <p>EMail addresse ungültig</p>
     #end
     #if($Input.error("passwordMinLength"))
-     <p>password needs at least 5 characters</p>
+     <p>Passwort zu kurz</p>
     #end
     #if($Input.error("passwordsMatch"))
-     <p>passwords dont Match</p>
+     <p>Passwörter stimmen nicht überein</p>
     #end
     #if($Input.error("usernameAvailable"))
-     <p>username unavailable</p>
+     <p>Benutzername ist schon vergeben</p>
     #end
     #if($Input.error("emailAvailable"))
-     <p>email unavailable</p>
+     <p>EMail addresse ist schon vergeben</p>
     #end
     $Form.begin("POST", ${Router.linkTo("registrationPost")})
       <h2>Registrieren</h2>

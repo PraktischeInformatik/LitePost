@@ -12,19 +12,19 @@ $Resources.addScriptFooter("js/newpost.js")
 <div id="wrapper">
   <div id="main">
     #if($Input.error("validCsrfToken"))
-      <p>Error in validation: "validCsrfToken"</p>
+      <p>Ein Fehler ist aufgetreten</p>
     #end
     #if($Input.error("hasTitle"))
-      <p>Error in validation: "hasTitle"</p>
+      <p>Der post benötigt einen Titel</p>
     #end
     #if($Input.error("hasContent"))
-      <p>Error in validation: "hasContent"</p>
+      <p>Der post benötigt einen Inhalt</p>
     #end
     #if($Input.error("hasContact"))
-      <p>Error in validation: "hasContact"</p>
+      <p>Der post benötigt einen Kontakt</p>
     #end
     #if($Input.error("validDateIfEvent"))
-      <p>Error in validation: "validDateIfEvent"</p>
+      <p>Das event datum ist ungültig</p>
     #end
 
     $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
