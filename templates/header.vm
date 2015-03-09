@@ -18,7 +18,6 @@
     <div id="menu-toggle" style="display: none;"><a href="javascript:toggle_menu()">Menü</a></div>
     <nav id="main-navigation">
      <ul>
-      <li><a href="#">About</a></li>
       <li><a href="${Router.linkTo("allPosts")}">Posts</a></li>
       <li><a href="${Router.linkTo("overview")}">Events</a></li>
       <li><a href="${Router.linkTo("calendarToday")}">Kalendar</a></li>
