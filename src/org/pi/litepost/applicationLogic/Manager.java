@@ -11,14 +11,11 @@ import java.time.Clock;
 public abstract class Manager {
 
 	protected Model model;
-	protected Clock clock = Clock.systemDefaultZone();
+	protected Clock clock;
 
 	public void setModel(Model model) {
 		this.model = model;
-	}
-	
-	public void setClock(Clock clock) {
-		this.clock = clock;
+		this.clock = model.getClock();
 	}
 	
 	public void init() {}

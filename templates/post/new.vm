@@ -26,6 +26,9 @@ $Resources.addScriptFooter("js/newpost.js")
     #if($Input.error("validDateIfEvent"))
       <p>Das event datum ist ungültig</p>
     #end
+    #if($Input.error("dateIsInFuture"))
+      <p>Error in validation: "dateIsInFuture"</p>
+    #end
 
     $Form.begin("POST", ${Router.linkTo("insertPost")}).attr("enctype", "multipart/form-data")
       $Input.text.name("title").placeholder("Titel").prepopulate()

@@ -59,6 +59,7 @@ function set_moment(datetime) {
     var hour = datetime.hour();
     hour = ("00" + String(hour)).slice(-2);
     pikatime.value = hour + minute;
+    pikaday_select();
   } else {
     var input = document.getElementById("pikaday-field");
     if(input.value !== "") {

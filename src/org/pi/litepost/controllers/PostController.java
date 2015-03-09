@@ -84,12 +84,25 @@ public class PostController {
 			.validateSingle("hasContent", saniziteContent, s -> s.length() > 0, "content")
 			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
 			.validateMultiple("validDateIfEvent", p -> !p[0].equals("on") || p[1].matches(datePattern), "is-event", "date")
-			.validateFlag("isEvent", "is-event");
+			.validateFlag("isEvent", "is-event")
+			.manual("dateIsInFuture");
 		context.setValidator(validator);
 		
 		if(!validator.validate(session.getParms())) {
 			return new Response(View.make("post.new", context));
 		}
+		
+		boolean isEvent = validator.flag("is-event"); 
+		LocalDateTime eventDate = null;
+		if(isEvent) {
+			eventDate = LocalDateTime.from(
+					EVENT_TIME_FORMAT.parse(validator.value("date")));
+			if(eventDate.isBefore(LocalDateTime.now(model.getClock()))) {
+				validator.manual("dateIsInFuture", false);
+				return new Response(View.make("post.new", context));
+			}
+		}
+		
 		int i = 0;
 		String image = "image" + i;
 		Map<String, String> params = session.getParms();
@@ -133,14 +146,12 @@ public class PostController {
 			String content = validator.value("content");
 			String contact = validator.value("contact");
 			int postId = model.getPostManager().insert(title, content, contact);
+			if(isEvent) {
+				model.getPostManager().makeEvent(postId, eventDate);
+			}
 			for(String s : sources) {
 				String src = Router.linkTo("upload", s);
 				model.getPostManager().addImage(src, postId);
-			}
-			if(validator.flag("is-event")) {
-				LocalDateTime date = LocalDateTime.from(
-						EVENT_TIME_FORMAT.parse(validator.value("date")));
-				model.getPostManager().makeEvent(postId, date);
 			}
 		} catch (SQLException e) {
 			return Router.error(e, context);
