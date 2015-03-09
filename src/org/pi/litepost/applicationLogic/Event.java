@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
  *
  */
 public class Event extends Post {
-	private final static String STANDARD_DATE_FORMAT = "dd. MMMM uuuu HH:mm";
 	private final LocalDateTime eventDate;
 
 	public Event(int postId, String title, String text, String contact,
@@ -26,11 +25,11 @@ public class Event extends Post {
 		return true;
 	}
 	
-	public String formatDate() {
-		return formatDate(STANDARD_DATE_FORMAT);
+	public String formatEventDate() {
+		return formatEventDate(STANDARD_DATE_FORMAT);
 	}
 	
-	public String formatDate(String pattern) {
+	public String formatEventDate(String pattern) {
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 		return format.format(getEventDate());
 	}

@@ -49,7 +49,7 @@ $Resources.addScriptFooter("js/newpost.js")
       </label>
       <div id="date-div">
         #if($post.event)
-          $Input.hidden.name("date").id("pikaday-field").value($post.formatDate("uuuu-MM-dd HH:mm")).prepopulate()
+          $Input.hidden.name("date").id("pikaday-field").value($post.formatEventDate("uuuu-MM-dd HH:mm")).prepopulate()
         #else
           $Input.hidden.name("date").id("pikaday-field").prepopulate()
         #end

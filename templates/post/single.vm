@@ -22,7 +22,7 @@ $Resources.addScriptFooter("js/singlepost.js")
       <h2>$post.title</h2>
       <p>$post.text</p>
       #if($post.event)
-        <i>$post.eventDate</i>
+        <i>$post.formatEventDate()</i>
       #end
       #if($post.user)
         <i>von $post.user.username</i>

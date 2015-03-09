@@ -1,12 +1,14 @@
 package org.pi.litepost.applicationLogic;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Julia Moos
  *
  */
 public class Message {
+	protected final static String STANDARD_DATE_FORMAT = "dd. MMMM uuuu HH:mm";
 	private final int messageId;
 	private final LocalDateTime date;
 	private final User sender;
@@ -64,5 +66,14 @@ public class Message {
 	
 	public boolean isOutgoing() {
 		return outgoing;
+	}
+	
+	public String formatDate() {
+		return formatDate(STANDARD_DATE_FORMAT);
+	}
+	
+	public String formatDate(String pattern) {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		return format.format(getDate());
 	}
 }

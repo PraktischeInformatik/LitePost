@@ -3,7 +3,7 @@
   <div id="main"> 
     <ul>
       #foreach($event in $events)
-        <li><a href="${Router.linkTo("singlePost", $event.postId)}">$event.title <i>$event.eventDate</i></a></li>
+        <li><a href="${Router.linkTo("singlePost", $event.postId)}">$event.title <i>$event.formatEventDate()</i></a></li>
       #end
     </ul>
   </div>

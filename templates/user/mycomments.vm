@@ -13,7 +13,7 @@
         #foreach($comment in $comments)
           <tr data-link="$Router.linkTo("singlePost", $comment.postId)">
             <td>$comment.text</td>
-            <td>$comment.date</td>
+            <td>$comment.formatDate()</td>
             <td><a href="$Router.linkTo("deleteComment", $comment.commentId, "false")" class="button danger">Löschen</a></td>
           </tr>
         #end
