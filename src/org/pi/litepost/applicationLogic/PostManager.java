@@ -59,9 +59,30 @@ public class PostManager extends Manager {
 	 * @param eventDate
 	 * @throws SQLException
 	 */
-	public void makeEvent(int postId, LocalDateTime eventDate)
-			throws SQLException {
+	public void makeEvent(int postId, LocalDateTime eventDate) throws SQLException {
 		model.getQueryManager().executeQuery("makeEvent", postId, eventDate);
+	}
+	
+	/**
+	 * updates an event for a post
+	 * 
+	 * @param postId
+	 * @param eventDate
+	 * @throws SQLException
+	 */
+	public void updateEvent(int postId, LocalDateTime eventDate) throws SQLException{
+		model.getQueryManager().executeQuery("updateEvent", postId, eventDate);
+	}
+	
+	/**
+	 * deltes an event for a post
+	 * 
+	 * @param postId
+	 * @param eventDate
+	 * @throws SQLException
+	 */
+	public void deleteEvent(int postId) throws SQLException{
+		model.getQueryManager().executeQuery("deleteEvent", postId);
 	}
 
 	/**
@@ -463,4 +484,5 @@ public class PostManager extends Manager {
 
 		return event;
 	}
+
 }

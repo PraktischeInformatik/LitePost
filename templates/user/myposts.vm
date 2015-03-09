@@ -6,7 +6,7 @@
         <tr>
           <th>Titel</th>
           <th>Kontakt</th>
-          <th>User</th>
+          <th>Datum</th>
           <th></th>
         </tr>
       </thead>
@@ -16,7 +16,10 @@
             <td>$post.title</td>
             <td>$post.contact</td>
             <td>$post.date</td>
-            <td><a href="$Router.linkTo("deletePost", $post.postId, "false")" class="button danger">Löschen</a></td>
+            <td>
+              <a href="$Router.linkTo("updatePage", $post.postId)" class="button general">Bearbeiten</a>
+              <a href="$Router.linkTo("deletePost", $post.postId, "false")" class="button danger">Löschen</a>
+            </td>
           </tr>
         #end
       </tbody>

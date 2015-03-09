@@ -69,7 +69,7 @@ public class DatabaseQueryManager {
 					+ "SELECT Posts.post_id FROM Posts LEFT JOIN Events ON Events.post_id = Posts.post_id WHERE event_id is NULL"
 					+ ")"));
 			put("updatePost", new DatabaseQuery(
-					"UPDATE Comments SET title = ?, content = ?, contact = ? WHERE comment_id = ?"));
+					"UPDATE Posts SET title = ?, content = ?, contact = ? WHERE post_id = ?"));
 			put("getAllPosts", new DatabaseQuery(
 					"SELECT * FROM Posts"));
 			put("getPostById", new DatabaseQuery(
@@ -93,6 +93,10 @@ public class DatabaseQueryManager {
 			put("makeEvent", new DatabaseQuery(
 					"INSERT INTO events(event_id, post_id, event_date) VALUES(?, ?, ?)")
 					.autoIncrement("Events"));
+			put("updateEvent", new DatabaseQuery(
+					"UPDATE events set event_date = ? WHERE post_id = ?"));
+			put("deleteEvent", new DatabaseQuery(
+					"DELETE FROM Events WHERE post_id = ?"));
 			put("getEventForPost", new DatabaseQuery(
 					"SELECT * FROM Events WHERE post_id = ?"));
 			put("deleteOldEvents", new DatabaseQuery(

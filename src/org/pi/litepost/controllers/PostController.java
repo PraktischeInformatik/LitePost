@@ -15,6 +15,7 @@ import org.pi.litepost.View;
 import org.pi.litepost.ViewContext;
 import org.pi.litepost.applicationLogic.Model;
 import org.pi.litepost.applicationLogic.Post;
+import org.pi.litepost.applicationLogic.User;
 import org.pi.litepost.exceptions.ForbiddenOperationException;
 import org.pi.litepost.html.Validator;
 
@@ -145,6 +146,90 @@ public class PostController {
 			return Router.error(e, context);
 		}
 		return Router.redirectTo("allPosts");
+	}
+	
+	public static Response getUpdate(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		int id = 0;
+		try {
+			id = Integer.parseInt(args.get("post_id"));
+		}catch(NumberFormatException e) {
+			return Router.notFound(context);
+		}
+		
+		try {
+			User user = model.getUserManager().getCurrent();
+			Post post = model.getPostManager().getById(id);
+			if(post == null) {
+				return Router.notFound(context);
+			}
+			if(post.getUser() == null || post.getUser().getUserId() != user.getUserId()) {
+				return Router.forbidden(context);
+			}
+			context.put("post", post);
+			return new Response(View.make("post.update", context));
+		} catch (SQLException e) {
+			return Router.notFound(context);
+		}
+	}
+	
+	public static Response postUpdate(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {
+		Response r;
+ 		if((r = UserController.mustLogin(session, model, context)) != null) {
+ 			return r;
+ 		}
+ 		int id = 0;
+		try {
+			id = Integer.parseInt(args.get("post_id"));
+		}catch(NumberFormatException e) {
+			return Router.notFound(context);
+		}
+		
+		String datePattern = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}";
+		
+		Function<String, String> saniziteContent = 
+				s -> View.sanitizePostContent(
+						s.replace("&quot;", "\"")
+						 .replace("&amp;", "&"));
+		Validator validator = new Validator(model.getSessionManager())
+			.validateSingle("validCsrfToken", model.getSessionManager()::validateToken, "csrf_token")
+			.validateSingle("hasTitle", View::sanitizeStrict, s -> s.length() > 0, "title")
+			.validateSingle("hasContent", saniziteContent, s -> s.length() > 0, "content")
+			.validateSingle("hasContact", View::sanitizeStrict, s -> s.length() > 0, "contact")
+			.validateMultiple("validDateIfEvent", p -> !p[0].equals("on") || p[1].matches(datePattern), "is-event", "date")
+			.validateFlag("isEvent", "is-event");
+		context.setValidator(validator);
+		
+		if(!validator.validate(session.getParms())) {
+			return getUpdate(session, args, files, context, model);
+		}
+		
+		try {
+			Post post = model.getPostManager().getById(id);
+			if(post.isEvent() && !validator.flag("is-event")) {
+				model.getPostManager().deleteEvent(id);
+			}else if (!post.isEvent() && validator.flag("is-event")){
+				LocalDateTime date = LocalDateTime.from(
+						EVENT_TIME_FORMAT.parse(validator.value("date")));
+				model.getPostManager().makeEvent(id, date);
+			}else if(validator.flag("is-event")) {
+				LocalDateTime date = LocalDateTime.from(
+						EVENT_TIME_FORMAT.parse(validator.value("date")));
+				model.getPostManager().updateEvent(id, date);
+			}
+			String title = validator.value("title");
+			String content = validator.value("content");
+			String contact = validator.value("contact");
+			model.getPostManager().update(id, title, content, contact);
+		} catch (SQLException e) {
+			return Router.error(e, context);
+		} catch (ForbiddenOperationException e) {
+			return Router.forbidden(context);
+		}
+		return Router.redirectTo("myPosts");
 	}
 	
 	public static Response commentPost(IHTTPSession session, Map<String, String> args, Map<String, String> files, ViewContext context, Model model) {

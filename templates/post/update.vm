@@ -1,0 +1,64 @@
+$Resources.addStyle("css/pikaday.css")
+$Resources.addStyle("css/medium-editor.css")
+$Resources.addStyle("css/themes/bootstrap.css")
+$Resources.addScriptFooter("js/medium-editor.min.js")
+$Resources.addScriptFooter("js/medium-editor-mobile-plugin.min.js")
+$Resources.addScriptFooter("js/moment-with-locales.min.js")
+$Resources.addScriptFooter("js/pikaday.js")
+$Resources.addScriptFooter("js/newpost.js")
+
+#parse("header.vm")
+
+<div id="wrapper">
+  <div id="main">
+    #if($Input.error("validCsrfToken"))
+      <p>Error in validation: "validCsrfToken"</p>
+    #end
+    #if($Input.error("hasTitle"))
+      <p>Error in validation: "hasTitle"</p>
+    #end
+    #if($Input.error("hasContent"))
+      <p>Error in validation: "hasContent"</p>
+    #end
+    #if($Input.error("hasContact"))
+      <p>Error in validation: "hasContact"</p>
+    #end
+    #if($Input.error("validDateIfEvent"))
+      <p>Error in validation: "validDateIfEvent"</p>
+    #end
+
+    $Form.begin("POST", ${Router.linkTo("updatePost", $post.postId)})
+      $Input.text.name("title").placeholder("Titel").value($post.title).prepopulate()
+      $Input.hidden.name("content").id("input-content").value($post.text).prepopulate()
+      $Input.hidden.name("date").prepopulate()
+
+      #set($content = $post.text)
+      #if($Input.value("content") and not $Input.value("content").isEmpty())
+        #set($content = $Input.value("content"))
+      #end
+      <div onblur="serialize_text()" id="input-editor" type="text" name="content" rows="10" placeholder="Inhalt">$content</div>
+      $Input.text.name("contact").placeholder("Kontakt").value($post.contact).prepopulate()
+      <label>
+        #set($Checkbox = $Input.checkbox.name("is-event").attr("onclick", "toggle_event(this)"))
+        #if($post.event)
+          $Checkbox.attr("checked")
+        #else
+          $Checkbox.prepopulate()
+        #end
+        <div>Dieser Post ist ein Event</div>
+      </label>
+      <div id="date-div">
+        #if($post.event)
+          $Input.hidden.name("date").id("pikaday-field").value($post.formatDate("uuuu-MM-dd HH:mm")).prepopulate()
+        #else
+          $Input.hidden.name("date").id("pikaday-field").prepopulate()
+        #end
+        $Input.text.id("pikaday").placeholder("Datum").style("width: auto")
+        $Input.select.id("pikatime").addTimes().style("width: auto")
+      </div>
+      $Input.csrfToken
+      $Input.submit.general.value("Update")        
+    $Form.end()
+  </div>
+</div>
+#parse("footer.vm")

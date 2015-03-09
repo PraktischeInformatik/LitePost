@@ -13,9 +13,12 @@ public class Input extends Tag<Input>{
 		if(validator != null && attributes.containsKey("name")) {
 			String value = validator.value(attributes.get("name"));
 			if(attributes.get("type").equalsIgnoreCase("checkbox")) {
-				if(value.equals("true")) checked();
-			}else {
-				value(value.replace("&", "&amp;").replace("\"", "&quot;"));	
+				if(!attributes.containsKey("checked")
+						&& value.equals("true")) {
+					checked();
+				}
+			}else if(attributes.getOrDefault("value", "").isEmpty()) {
+				value(value.replace("&", "&amp;").replace("\"", "&quot;"));
 			}
 		}
 		return this;
